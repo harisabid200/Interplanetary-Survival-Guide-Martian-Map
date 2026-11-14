@@ -1,0 +1,22 @@
+{
+  "name": "marswalk",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --config ./vite.config.js --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 4173 --strictPort",
+    "test": "node --test tests/coordinates.test.js tests/api.test.js tests/environment-map.test.js",
+    "test:browser": "playwright test"
+  },
+  "dependencies": {
+    "ol": "10.11.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "vite": "8.3.8",
+    "@playwright/test": "1.65.1"
+  }
+}

@@ -1,0 +1,297 @@
+{
+  "generated_utc": "2026-11-14T04:45:02.989894+00:00",
+  "status": "validated",
+  "source_url": "https://planetarymaps.usgs.gov/mosaic/mars2020_trn/CTX/ScienceInvestigationMaps_JPL/M20_JezeroCrater_CTXDEM_20m.tif",
+  "local_path": "data/raw/M20_JezeroCrater_CTXDEM_20m.tif",
+  "bytes": 90345300,
+  "sha256": "ba7f706ea1b5d63a562f28a7dcf7a7f3c79bce7f048e6974b57e8a33c30d1ba2",
+  "local_download_completed_utc": "2026-11-14T04:37:27.084013+00:00",
+  "pds4_label_checks": "Dimensions, nodata and Mars radius agree with actual GeoTIFF",
+  "product_id": "urn:nasa:pds:mars2020_ctx_basemap_2021:data:m20_ctxdem_mosaic",
+  "product_version": "1.0",
+  "mission": "Mars Reconnaissance Orbiter",
+  "instrument": "CTX",
+  "publisher": "USGS Astrogeology / NASA PDS",
+  "publication_year": 2021,
+  "publication_date": "2021-10-14 (USGS catalog)",
+  "acquisition_time": null,
+  "acquisition_time_note": "PDS4 label marks times inapplicable",
+  "citation": "Mangold et al. (2021), Science, doi:10.1126/science.abl4051 (PDS4 label citation); catalog originator Fred Calef / PDS",
+  "license": "Public Domain (USGS catalog)",
+  "dimensions": {
+    "width": 4456,
+    "height": 5067,
+    "bands": 1
+  },
+  "dtype": "float32",
+  "crs_wkt": "PROJCS[\"Jezero_Crater_Projection\",GEOGCS[\"GCS_Mars_2000_Sphere\",DATUM[\"Mars_2000_(Sphere)\",SPHEROID[\"Mars_2000_Sphere\",3396190,0]],PRIMEM[\"Reference_Meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Equirectangular\"],PARAMETER[\"standard_parallel_1\",18.4663],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]",
+  "crs_projjson": {
+    "$schema": "https://proj.org/schemas/v0.7/projjson.schema.json",
+    "type": "ProjectedCRS",
+    "name": "Jezero_Crater_Projection",
+    "base_crs": {
+      "name": "GCS_Mars_2000_Sphere",
+      "datum": {
+        "type": "GeodeticReferenceFrame",
+        "name": "Mars_2000_(Sphere)",
+        "ellipsoid": {
+          "name": "Mars_2000_Sphere",
+          "radius": 3396190
+        },
+        "prime_meridian": {
+          "name": "Reference_Meridian",
+          "longitude": 0
+        }
+      },
+      "coordinate_system": {
+        "subtype": "ellipsoidal",
+        "axis": [
+          {
+            "name": "Longitude",
+            "abbreviation": "lon",
+            "direction": "east",
+            "unit": "degree"
+          },
+          {
+            "name": "Latitude",
+            "abbreviation": "lat",
+            "direction": "north",
+            "unit": "degree"
+          }
+        ]
+      }
+    },
+    "conversion": {
+      "name": "unnamed",
+      "method": {
+        "name": "Equidistant Cylindrical (Spherical)",
+        "id": {
+          "authority": "EPSG",
+          "code": 1029
+        }
+      },
+      "parameters": [
+        {
+          "name": "Latitude of 1st standard parallel",
+          "value": 18.4663,
+          "unit": "degree",
+          "id": {
+            "authority": "EPSG",
+            "code": 8823
+          }
+        },
+        {
+          "name": "Longitude of natural origin",
+          "value": 0,
+          "unit": "degree",
+          "id": {
+            "authority": "EPSG",
+            "code": 8802
+          }
+        },
+        {
+          "name": "False easting",
+          "value": 0,
+          "unit": "metre",
+          "id": {
+            "authority": "EPSG",
+            "code": 8806
+          }
+        },
+        {
+          "name": "False northing",
+          "value": 0,
+          "unit": "metre",
+          "id": {
+            "authority": "EPSG",
+            "code": 8807
+          }
+        }
+      ]
+    },
+    "coordinate_system": {
+      "subtype": "Cartesian",
+      "axis": [
+        {
+          "name": "Easting",
+          "abbreviation": "",
+          "direction": "east",
+          "unit": "metre"
+        },
+        {
+          "name": "Northing",
+          "abbreviation": "",
+          "direction": "north",
+          "unit": "metre"
+        }
+      ]
+    }
+  },
+  "affine": [
+    20.0,
+    0.0,
+    4328999.999999998,
+    0.0,
+    -20.0,
+    1143420.0000000028
+  ],
+  "pixel_size_projected_m": [
+    20.0,
+    20.0
+  ],
+  "projected_bounds_m": [
+    4328999.999999998,
+    1042080.0000000028,
+    4418119.999999998,
+    1143420.0000000028
+  ],
+  "geographic_bounds_lonlat": [
+    76.99743706146,
+    17.58051991054475,
+    78.58256332408818,
+    19.29018700686615
+  ],
+  "nodata": -3.4028234663852886e+38,
+  "mask_flags": [
+    "8"
+  ],
+  "valid_cells": 22564575,
+  "total_cells": 22578552,
+  "valid_fraction": 0.9993809611882994,
+  "valid_min_m": -3504.645263671875,
+  "valid_max_m": -475.8408203125,
+  "valid_percentiles_m": [
+    -3504.645263671875,
+    -2625.4990234375,
+    -2332.377197265625,
+    -2044.5560913085938,
+    -475.8408203125
+  ],
+  "band_units": null,
+  "elevation_units": "metres per USGS catalog; GeoTIFF band unit absent",
+  "vertical_reference": "Catalog: localized vertically to MOLA; no explicit vertical CRS in GeoTIFF",
+  "raster_tags": {
+    "AREA_OR_POINT": "Area"
+  },
+  "samples": [
+    {
+      "row": 2519,
+      "col": 1244,
+      "x_m": 4353889.999999998,
+      "y_m": 1093030.0000000028,
+      "lon_east_deg": 77.44014119831834,
+      "lat_planetocentric_deg": 18.44007722806572,
+      "elevation_m": -2561.019775390625
+    },
+    {
+      "row": 2395,
+      "col": 1120,
+      "x_m": 4351409.999999998,
+      "y_m": 1095510.0000000028,
+      "lon_east_deg": 77.39603086246426,
+      "lat_planetocentric_deg": 18.48191632811385,
+      "elevation_m": -2449.898681640625
+    },
+    {
+      "row": 2643,
+      "col": 1368,
+      "x_m": 4356369.999999998,
+      "y_m": 1090550.0000000028,
+      "lon_east_deg": 77.48425153417246,
+      "lat_planetocentric_deg": 18.3982381280176,
+      "elevation_m": -2612.667236328125
+    },
+    {
+      "row": 2395,
+      "col": 1368,
+      "x_m": 4356369.999999998,
+      "y_m": 1095510.0000000028,
+      "lon_east_deg": 77.48425153417246,
+      "lat_planetocentric_deg": 18.48191632811385,
+      "elevation_m": -2562.927978515625
+    },
+    {
+      "row": 2643,
+      "col": 1120,
+      "x_m": 4351409.999999998,
+      "y_m": 1090550.0000000028,
+      "lon_east_deg": 77.39603086246426,
+      "lat_planetocentric_deg": 18.3982381280176,
+      "elevation_m": -2516.29345703125
+    }
+  ],
+  "pilot": {
+    "status": "DEM validated; imagery overlap checked separately",
+    "proposed_center_lonlat": [
+      77.44,
+      18.44
+    ],
+    "window_col_row_width_height": [
+      1119,
+      2394,
+      250,
+      250
+    ],
+    "projected_bounds_m": [
+      4351379.999999998,
+      1090540.0000000028,
+      4356379.999999998,
+      1095540.0000000028
+    ],
+    "corners_lonlat": [
+      [
+        77.39549726969183,
+        18.398069421969016
+      ],
+      [
+        77.48442939842994,
+        18.398069421969016
+      ],
+      [
+        77.48442939842994,
+        18.482422446259594
+      ],
+      [
+        77.39549726969183,
+        18.482422446259594
+      ]
+    ],
+    "geographic_bounds_lonlat": [
+      77.39549726969183,
+      18.398069421969016,
+      77.48442939842994,
+      18.482422446259594
+    ],
+    "valid_cells": 62500,
+    "total_cells": 62500,
+    "min_elevation_m": -2627.249755859375,
+    "max_elevation_m": -2444.906982421875,
+    "projected_width_height_m": [
+      5000.0,
+      5000.0
+    ],
+    "mars_geodesic_south_width_west_height_m": [
+      5001.984771990898,
+      5000.0000000002265
+    ],
+    "center_parallel_scale": 0.9998468424860102,
+    "center_meridional_scale": 1.000000000001
+  },
+  "limitations": [
+    "20 m sampling cannot resolve astronaut-scale holes or establish safe travel",
+    "Catalog radius 3396160 m conflicts with raster and PDS4 label 3396190 m; use raster CRS",
+    "No terrain interpolation, slope generation or route analysis performed in M0"
+  ],
+  "processing": [
+    "Read full band and combine GDAL nodata mask with finite-value check",
+    "Choose native-grid 250x250 pilot, verify every cell and five coordinate roundtrips"
+  ],
+  "versions": {
+    "python": "3.13.0",
+    "rasterio": "1.4.4",
+    "gdal": "3.10.3",
+    "numpy": "2.5.4",
+    "pyproj": "3.7.2",
+    "proj": "9.5.1"
+  }
+}

@@ -1,0 +1,13 @@
+HTTP/1.1 200 OK
+Date: Sat, 14 Nov 2026 04:41:56 GMT
+Server: Apache/2.4.65 (Unix) OpenSSL/3.4.3
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+X-Content-Type-Options: nosniff
+Last-Modified: Wed, 29 Jul 2020 23:17:36 GMT
+ETag: "bd26-5ab9cc2e51302"
+Accept-Ranges: bytes
+Content-Length: 48422
+Access-Control-Allow-Origin: *
+Content-Type: image/png
+Content-Security-Policy: frame-ancestors 'self' aelp.smartsparrow.com;
+

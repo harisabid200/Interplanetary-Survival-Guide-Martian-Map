@@ -1,0 +1,357 @@
+{
+  "schema_version": 1,
+  "status": "derived",
+  "generated_utc": "2026-11-14T04:50:27.914737+00:00",
+  "width": 250,
+  "height": 250,
+  "affine": [
+    20.0,
+    0.0,
+    4351379.999999998,
+    0.0,
+    -20.0,
+    1095540.0000000028
+  ],
+  "bounds_m": [
+    4351379.999999998,
+    1090540.0000000028,
+    4356379.999999998,
+    1095540.0000000028
+  ],
+  "bounds_lonlat": [
+    77.39549726969183,
+    18.398069421969016,
+    77.48442939842994,
+    18.482422446259594
+  ],
+  "crs": {
+    "code": "MARS:JEZERO",
+    "wkt": "PROJCRS[\"Jezero_Crater_Projection\",BASEGEOGCRS[\"GCS_Mars_2000_Sphere\",DATUM[\"Mars_2000_(Sphere)\",ELLIPSOID[\"Mars_2000_Sphere\",3396190,0,LENGTHUNIT[\"metre\",1,ID[\"EPSG\",9001]]]],PRIMEM[\"Reference_Meridian\",0,ANGLEUNIT[\"degree\",0.0174532925199433,ID[\"EPSG\",9122]]]],CONVERSION[\"unnamed\",METHOD[\"Equidistant Cylindrical (Spherical)\",ID[\"EPSG\",1029]],PARAMETER[\"Latitude of 1st standard parallel\",18.4663,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8823]],PARAMETER[\"Longitude of natural origin\",0,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8802]],PARAMETER[\"False easting\",0,LENGTHUNIT[\"metre\",1],ID[\"EPSG\",8806]],PARAMETER[\"False northing\",0,LENGTHUNIT[\"metre\",1],ID[\"EPSG\",8807]]],CS[Cartesian,2],AXIS[\"easting\",east,ORDER[1],LENGTHUNIT[\"metre\",1,ID[\"EPSG\",9001]]],AXIS[\"northing\",north,ORDER[2],LENGTHUNIT[\"metre\",1,ID[\"EPSG\",9001]]]]",
+    "radius_m": 3396190.0,
+    "standard_parallel_deg": 18.4663,
+    "central_meridian_deg": 0,
+    "axis_order": "easting,northing in metres; geographic positive-east longitude,planetocentric latitude in degrees"
+  },
+  "imagery_bounds_m": [
+    4348470.631337284,
+    1088825.2543099513,
+    4358353.519135778,
+    1099244.6347339698
+  ],
+  "imagery_bounds_lonlat": [
+    77.34375,
+    18.369140625,
+    77.51953125,
+    18.544921875
+  ],
+  "imagery_size": [
+    512,
+    512
+  ],
+  "statistics": {
+    "valid_elevation_cells": 62500,
+    "valid_slope_cells": 62500,
+    "elevation_range_m": [
+      -2627.249755859375,
+      -2444.906982421875
+    ],
+    "slope_range_deg": [
+      0.009407950565218925,
+      34.379825592041016
+    ],
+    "slope_percentiles_deg": [
+      2.363213062286377,
+      5.679671573638916,
+      18.362170181274426
+    ]
+  },
+  "slope_method": "Central differences on native grid with 1-cell source halo. dzdx=(zE-zW)/Mars-geodesic-distance(W,E), dzdy=(zN-zS)/Mars-geodesic-distance(S,N); slope=atan(hypot(dzdx,dzdy)) in degrees. Center plus four neighbors must be valid. No filling or terrain resampling.",
+  "horizontal_neighbor_span_m": {
+    "east_range": [
+      39.99627907204056,
+      40.015839385832884
+    ],
+    "north_range": [
+      39.999999999640096,
+      40.000000000394216
+    ]
+  },
+  "legend": {
+    "breaks_deg": [
+      5,
+      10,
+      15,
+      20
+    ],
+    "colors": [
+      [
+        62,
+        143,
+        148
+      ],
+      [
+        178,
+        179,
+        120
+      ],
+      [
+        232,
+        163,
+        79
+      ],
+      [
+        220,
+        104,
+        61
+      ],
+      [
+        157,
+        62,
+        75
+      ]
+    ],
+    "labels": [
+      "<5\u00b0",
+      "5\u201310\u00b0",
+      "10\u201315\u00b0",
+      "15\u201320\u00b0",
+      "\u226520\u00b0"
+    ]
+  },
+  "encoding": "Binary arrays row-major from northwest, float32 little endian (NaN missing), uint8 masks (1 valid, 0 invalid). TIFF slope missing=-9999.",
+  "sources": {
+    "dem": {
+      "source_url": "https://planetarymaps.usgs.gov/mosaic/mars2020_trn/CTX/ScienceInvestigationMaps_JPL/M20_JezeroCrater_CTXDEM_20m.tif",
+      "sha256": "ba7f706ea1b5d63a562f28a7dcf7a7f3c79bce7f048e6974b57e8a33c30d1ba2",
+      "product_id": "urn:nasa:pds:mars2020_ctx_basemap_2021:data:m20_ctxdem_mosaic",
+      "product_version": "1.0",
+      "publication_date": "2021-10-14 (USGS catalog)",
+      "citation": "Mangold et al. (2021), Science, doi:10.1126/science.abl4051 (PDS4 label citation); catalog originator Fred Calef / PDS",
+      "license": "Public Domain (USGS catalog)",
+      "vertical_reference": "Catalog: localized vertically to MOLA; no explicit vertical CRS in GeoTIFF",
+      "local_download_completed_utc": "2026-11-14T04:37:27.084013+00:00"
+    },
+    "imagery": {
+      "layer": "JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0",
+      "citation": "Fergason et al. (2020), Mars 2020 Terrain Relative Navigation Flight Product Generation, doi:10.5066/P906QQT8; NASA Mars Trek layer JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0",
+      "license": "No license field in retrieved WMTS/catalog response; retain NASA/USGS attribution and verify source use terms before submission",
+      "matrix": {
+        "id": "11",
+        "width": 4096,
+        "height": 2048,
+        "tile_width": 256,
+        "tile_height": 256,
+        "origin_lonlat": [
+          -180.0,
+          90.0
+        ],
+        "tile_span_degrees": [
+          0.087890625,
+          0.087890625
+        ],
+        "degrees_per_pixel": [
+          0.00034332275390625,
+          0.00034332275390625
+        ],
+        "advertised_scale_denominator": 136341.6192861693,
+        "advertised_metres_per_pixel_at_0_28mm": 38.1756534001274,
+        "mars_equatorial_metres_per_pixel": 20.350352390661467
+      },
+      "template": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+      "tiles": [
+        {
+          "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/11/813/2928.png",
+          "local_path": "data/raw/ctx_11_813_2928.png",
+          "sha256": "f523acd20b25c13a484e9b704ce5e774c1f861d85ed5928b9f58a328fc98c7d4",
+          "bytes": 55500,
+          "row": 813,
+          "col": 2928,
+          "cors_headers": [
+            "Access-Control-Allow-Origin: *"
+          ],
+          "modified_utc": "2026-11-14T04:41:55.071644+00:00"
+        },
+        {
+          "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/11/813/2929.png",
+          "local_path": "data/raw/ctx_11_813_2929.png",
+          "sha256": "4596b498525e0f294992d4a1ef941270da6f6e67d7799e61b3c5fda5ccd767fb",
+          "bytes": 48422,
+          "row": 813,
+          "col": 2929,
+          "cors_headers": [
+            "Access-Control-Allow-Origin: *"
+          ],
+          "modified_utc": "2026-11-14T04:41:57.339296+00:00"
+        },
+        {
+          "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/11/814/2928.png",
+          "local_path": "data/raw/ctx_11_814_2928.png",
+          "sha256": "169de8f424576c5435b59855058290c12d37d2f63a9832040a1f683c48f9b272",
+          "bytes": 52040,
+          "row": 814,
+          "col": 2928,
+          "cors_headers": [
+            "Access-Control-Allow-Origin: *"
+          ],
+          "modified_utc": "2026-11-14T04:41:59.487840+00:00"
+        },
+        {
+          "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/11/814/2929.png",
+          "local_path": "data/raw/ctx_11_814_2929.png",
+          "sha256": "fee1a881abefdb7e6d7e4aaa7bab8b81f865d5e5e30323de5a5bc4db13798d51",
+          "bytes": 48904,
+          "row": 814,
+          "col": 2929,
+          "cors_headers": [
+            "Access-Control-Allow-Origin: *"
+          ],
+          "modified_utc": "2026-11-14T04:42:01.643344+00:00"
+        }
+      ]
+    }
+  },
+  "control_points": [
+    {
+      "row": 125,
+      "col": 125,
+      "x_m": 4353889.999999998,
+      "y_m": 1093030.0000000028,
+      "lonlat": [
+        77.44014119831834,
+        18.44007722806572
+      ],
+      "imagery_pixel": [
+        280.7597143551542,
+        305.38216806599456
+      ],
+      "placement_residual_m": 9.313225746154785e-10,
+      "elevation_m": -2561.019775390625,
+      "slope_deg": 4.449712753295898
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "x_m": 4351409.999999998,
+      "y_m": 1095510.0000000028,
+      "lonlat": [
+        77.39603086246426,
+        18.48191632811385
+      ],
+      "imagery_pixel": [
+        152.2790489981158,
+        183.51695647691895
+      ],
+      "placement_residual_m": 0.0,
+      "elevation_m": -2449.898681640625,
+      "slope_deg": 1.6593867540359497
+    },
+    {
+      "row": 249,
+      "col": 249,
+      "x_m": 4356369.999999998,
+      "y_m": 1090550.0000000028,
+      "lonlat": [
+        77.48425153417246,
+        18.3982381280176
+      ],
+      "imagery_pixel": [
+        409.24037971227534,
+        427.2473796550495
+      ],
+      "placement_residual_m": 2.3283064365386963e-10,
+      "elevation_m": -2612.667236328125,
+      "slope_deg": 0.782868504524231
+    },
+    {
+      "row": 1,
+      "col": 249,
+      "x_m": 4356369.999999998,
+      "y_m": 1095510.0000000028,
+      "lonlat": [
+        77.48425153417246,
+        18.48191632811385
+      ],
+      "imagery_pixel": [
+        409.24037971227534,
+        183.51695647691895
+      ],
+      "placement_residual_m": 0.0,
+      "elevation_m": -2562.927978515625,
+      "slope_deg": 9.02996826171875
+    },
+    {
+      "row": 249,
+      "col": 1,
+      "x_m": 4351409.999999998,
+      "y_m": 1090550.0000000028,
+      "lonlat": [
+        77.39603086246426,
+        18.3982381280176
+      ],
+      "imagery_pixel": [
+        152.2790489981158,
+        427.2473796550495
+      ],
+      "placement_residual_m": 2.3283064365386963e-10,
+      "elevation_m": -2516.29345703125,
+      "slope_deg": 1.7712163925170898
+    }
+  ],
+  "versions": {
+    "python": "3.13.0",
+    "rasterio": "1.4.4",
+    "gdal": "3.10.3",
+    "numpy": "2.5.4",
+    "pyproj": "3.7.2",
+    "proj": "9.5.1"
+  },
+  "limitations": [
+    "20 m DEM sampling cannot resolve astronaut-scale holes or certify travel.",
+    "Slope is a derived terrain metric, not a safety classification.",
+    "Pilot is a proposed demo extent, not a mission travel limit.",
+    "Alignment checks verify georeferencing and relative terrain structure, not survey accuracy.",
+    "Cached imagery only within the shown footprint; no live weather, radiation or resource availability."
+  ],
+  "outputs": {
+    "dem.tif": {
+      "sha256": "18451531b0f9fef8d3214682915510528a875cbe508e02efc431e6bf2d98fe94",
+      "bytes": 185310
+    },
+    "slope.tif": {
+      "sha256": "9853f6ed2b3a6bf1afee281aff87e6d669ff5794b5b08c3659f87b01b76f25c8",
+      "bytes": 226125
+    },
+    "valid-mask.tif": {
+      "sha256": "6a69c8c65c5ecffe73dc0873074635baf77e3a95b83dadea36bc2cfd587141f1",
+      "bytes": 962
+    },
+    "slope-mask.tif": {
+      "sha256": "6a69c8c65c5ecffe73dc0873074635baf77e3a95b83dadea36bc2cfd587141f1",
+      "bytes": 962
+    },
+    "elevation.f32": {
+      "sha256": "3cf6870c25d8e1040e2b76d24a704c17779b029a137c2f9ae87105bde65a43b0",
+      "bytes": 250000
+    },
+    "slope.f32": {
+      "sha256": "a9088956e1f28e06c9cbd30169804f14474b2135286edb0fb599866b5080519a",
+      "bytes": 250000
+    },
+    "valid.u8": {
+      "sha256": "87af484be96971f6ad5402beef5f6ee6071048f47545093fdd5a4ee4b3954e36",
+      "bytes": 62500
+    },
+    "slope-valid.u8": {
+      "sha256": "87af484be96971f6ad5402beef5f6ee6071048f47545093fdd5a4ee4b3954e36",
+      "bytes": 62500
+    },
+    "slope.png": {
+      "sha256": "a15215b3d954b85143dc8fda448cf61864067817b593aa598ac505d77e2af8a4",
+      "bytes": 6240
+    },
+    "imagery.png": {
+      "sha256": "edf4f9c20060657c10ac9720ac87b4513d1eec992db5780d5be12877f9c91052",
+      "bytes": 235313
+    }
+  }
+}

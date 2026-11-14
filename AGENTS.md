@@ -1,0 +1,28 @@
+# AGENTS.md — Marswalk engineering instructions
+
+## Mission
+Build MARSWALK, an interactive astronaut survival, navigation and scientific exploration map for Jezero Crater, Mars. Environmental Intelligence, Scientific Intelligence and Mission Intelligence are core product modules. Optimize for a credible NASA Space Apps 2026 demo, not production flight software.
+
+## Decisions and authority
+Confirmed: Jezero Crater; M0–M2 implementation is retained. The user expanded the scope after M2: environmental and scientific intelligence are core requirements, alongside navigation, route comparison, budgets and candidate locations. This is an expansion, not a restart. Preserve the working React/Vite/OpenLayers map, actual NASA/USGS data pipeline, Python M2 routing engine, tests and evidence. Treat 5 km as a proposed pilot extent, not an EVA limit. Original handoff and pre-expansion scope are preserved in docs/history/pre-expansion/.
+
+Read PRD.md, DATA_SOURCES.md, PLANS.md and STATUS.md before edits. Inspect existing repository and preserve team work. Use existing stack where viable; otherwise propose React + Vite + OpenLayers (custom Mars projection), Python Rasterio/NumPy and FastAPI; simplify if appropriate. Avoid paid services or LLM dependencies on the critical path.
+
+## Engineering rules
+- M0–M2 gates are passed; continue with revised M3–M7 in PLANS.md. Revalidate source hashes and regressions when touching data or routing. Never fabricate scientific data. Synthetic fixtures must be labeled and excluded from real demo outputs.
+- Store raw data outside tracked source (gitignore); include reproducible fetch/preprocess commands, data manifest, citations, checksums and version information. Do not commit large binaries or secrets. Do not overwrite raw assets.
+- Use Mars CRS and proper coordinate transforms; explicitly distinguish longitude/latitude, raster index and projected metres. Do not silently use Earth Web Mercator or Earth distance formulas. Verify tile matrix, extent and axis order.
+- Image tiles are imagery, not numeric elevation. Propagate nodata and coverage boundaries; never interpolate missing terrain into a claim of safety.
+- Route scoring must be deterministic and explainable. LLM is optional narration of structured verified observations, not a geospatial oracle. Never claim a route, landing site or habitat is safe/certified; no fabricated live weather, radiation or water availability.
+- Keep UI functional, map-first, responsive and accessible. Label observation, derived metric, assumption and unavailable data separately.
+- Distinguish historical observation (time/location/instrument), reference estimate (transfer/model assumptions), derived calculation (inputs/method) and unavailable/planned capability. Core requirement does not imply data is already acquired or spatially validated.
+- MEDA is local historical rover weather; its Radiation and Dust Sensor is optical/UV/IR context, not RAD ionizing dosimetry. Gale RAD measurements must never be represented as measured Jezero radiation or painted into local Jezero hazard maps. MARCI regional images do not create local storm forecasts. CRISM spectra/summary parameters are not mineral concentration, accessible water or confirmed resource inventories.
+- Ancient aqueous geology is evidence of past processes, never accessible drinking water or extractable ice. Candidate locations must state explicit criteria and missing inputs; never certify habitat/landing safety. Geographic overlays require verified footprints, CRS, coverage and uncertainty. Keep unsupported layers unavailable with source/validation status rather than drawing illustrative distributions.
+- Build vertical slices; run tests and actual smoke checks. Report exact files changed, commands/results, blockers and next step. Update STATUS.md after each milestone; do not mark untested work as complete.
+- Coordinate parallel agents by file ownership; avoid broad rewrites, concurrent edits to shared interfaces, destructive Git commands and unnecessary dependency additions.
+
+## Historical first instruction (completed in M0; retained as context)
+Inspect repo, identify existing work, then implement the data feasibility spike. Fetch the CTX DEM listed in DATA_SOURCES.md, inspect metadata and numeric samples, determine a valid pilot footprint and report results. If network permission is needed, request it or provide a reproducible command. Proceed to map integration only with explicit status of source access. Check official challenge rules/resources before final submission.
+
+## Current execution instruction
+M0–M4 are implemented; proceed next with M5 scientific intelligence, then M6 budgets/recommendations and M7 validation/submission. Preserve the M4 checksum-validated MEDA historical import, dated MARCI report and Gale-only RAD metadata reference. The original M4 context slice did not provide environmental rasters. Its subsequent map extension adds verified THEMIS thermal inertia; temperature/storm/radiation rasters, live forecasts, wind/humidity/opacity and numeric RAD dose remain unavailable. MEDA ancillary positions remain landing-site-relative M2020_TOPO metres; do not treat them as geodetic/map coordinates without a verified frame transformation. ATS/pressure labels provide no per-row quality flags; finite-only screening is not quality certification. Preserve the explicit pressure-uncertainty label anomaly and do not invent corrected units/values. Use independent layer controls and contextual source panels. Do not silently replace verified runtime data or existing tests; preserve milestone evidence. Scope snapshots and chronological STATUS records must remain reviewable.

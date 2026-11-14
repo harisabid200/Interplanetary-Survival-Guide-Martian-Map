@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "raw_source_unchanged": true,
+  "crop_equal_to_source": true,
+  "crs_affine_nodata_preserved": true,
+  "tiff_binary_and_public_checksums_match": true,
+  "independent_real_slope_checks": 5,
+  "max_slope_residual_degrees": 2.6856521628815244e-07,
+  "control_placement_max_residual_m": 9.313225746154785e-10,
+  "note": "Georeferencing residuals are numeric consistency, not independent survey positional accuracy."
+}

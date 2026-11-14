@@ -1,0 +1,120 @@
+{
+  "status": "downloaded; numerical validation pending",
+  "sol": 15,
+  "generated_utc": "2026-11-14T07:41:57.047724+00:00",
+  "certificate_verification": "Python ssl default validation + certifi CA bundle; no verification bypass",
+  "sources": [
+    {
+      "url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/",
+      "path": "data/raw/environment/meda-bundle.html",
+      "bytes": 3078,
+      "sha256": "26ba0385b03a10f7eb29e7c8156bc3a0b583a520d7eabe7e05be8e7dddb32b78",
+      "download_completed_utc": "2026-11-14T07:20:00.622609+00:00"
+    },
+    {
+      "url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/readme.txt",
+      "path": "data/raw/environment/meda-readme.txt",
+      "bytes": 6621,
+      "sha256": "c32e17b081984383dde8ed132f877397e664d40762457588bcc11310053a0d80",
+      "download_completed_utc": "2026-11-14T07:20:02.445088+00:00"
+    },
+    {
+      "url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_calibrated_env/",
+      "path": "data/raw/environment/data_calibrated_env.html",
+      "bytes": 4710,
+      "sha256": "78a2f3a889782ed1311f77b95efc2126fc611ea3871d1389aaa7cb5ea52736e2",
+      "download_completed_utc": "2026-11-14T07:20:04.566782+00:00"
+    },
+    {
+      "url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_calibrated_env/sol_0000_0089/",
+      "path": "data/raw/environment/data_calibrated_env-early-sols.html",
+      "bytes": 15946,
+      "sha256": "a4b5520b5254469cdbffec52fcd28af344fe4c780b32e334b28d6cdb97cda4e9",
+      "download_completed_utc": "2026-11-14T07:20:07.016617+00:00"
+    },
+    {
+      "url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_calibrated_env/sol_0000_0089/sol_0015/",
+      "path": "data/raw/environment/data_calibrated_env-sol-0015.html",
+      "bytes": 4266,
+      "sha256": "766e06590096ff69c252a8da3d45b9261a31dfa1045ab5f39300a95c61ad7e32",
+      "download_completed_utc": "2026-11-14T07:20:08.830343+00:00"
+    },
+    {
+      "url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_calibrated_env/sol_0000_0089/sol_0015/WE__0015___________CAL_ATS_________________P01.xml",
+      "path": "data/raw/environment/sol-0015/WE__0015___________CAL_ATS_________________P01.xml",
+      "bytes": 9810,
+      "sha256": "001c7515d26679b8c2d7b791a883b96d114cf9a267f04e5e263c1a8aa0acf080",
+      "download_completed_utc": "2026-11-14T07:20:10.914633+00:00"
+    },
+    {
+      "url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_calibrated_env/sol_0000_0089/sol_0015/WE__0015___________CAL_ATS_________________P01.CSV",
+      "path": "data/raw/environment/sol-0015/WE__0015___________CAL_ATS_________________P01.CSV",
+      "bytes": 4329777,
+      "sha256": "f0b96d72990b8458c3f9038a094514470044cf17b170417125b51e58d232cdb0",
+      "download_completed_utc": "2026-11-14T07:22:35.891696+00:00"
+    },
+    {
+      "url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_calibrated_env/sol_0000_0089/sol_0015/WE__0015___________CAL_PS__________________P02.xml",
+      "path": "data/raw/environment/sol-0015/WE__0015___________CAL_PS__________________P02.xml",
+      "bytes": 12592,
+      "sha256": "57e9a5fcc3dbad6baa2f4b8621103b5cd99863017b9394337c0f072ff1309ce1",
+      "download_completed_utc": "2026-11-14T07:22:37.643971+00:00"
+    },
+    {
+      "url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_calibrated_env/sol_0000_0089/sol_0015/WE__0015___________CAL_PS__________________P02.CSV",
+      "path": "data/raw/environment/sol-0015/WE__0015___________CAL_PS__________________P02.CSV",
+      "bytes": 2512699,
+      "sha256": "53314f4776a0bc38f7921cec2dc672fe7f872de2f86bc6c4cd54d6ab5af34030",
+      "download_completed_utc": "2026-11-14T07:24:20.967325+00:00"
+    },
+    {
+      "url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/",
+      "path": "data/raw/environment/data_derived_env.html",
+      "bytes": 4692,
+      "sha256": "e7f178230603b42e88fae8c3ae3695cc81524da8dc34e644c5e689a90b428020",
+      "download_completed_utc": "2026-11-14T07:24:23.231385+00:00"
+    },
+    {
+      "url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0000_0089/",
+      "path": "data/raw/environment/data_derived_env-early-sols.html",
+      "bytes": 15937,
+      "sha256": "99f4c35479ed854fd4491ef53817547af97afd3f93ac05728b488f562d349e13",
+      "download_completed_utc": "2026-11-14T07:24:31.193995+00:00"
+    },
+    {
+      "url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0000_0089/sol_0015/",
+      "path": "data/raw/environment/data_derived_env-sol-0015.html",
+      "bytes": 3145,
+      "sha256": "3f22c345c8cc68f21c6b35bfbae0880cfb024c7416eaa5f2120bd7577ee4fe4b",
+      "download_completed_utc": "2026-11-14T07:24:34.322266+00:00"
+    },
+    {
+      "url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0000_0089/sol_0015/WE__0015___________DER_ANCILLARY___________P04.xml",
+      "path": "data/raw/environment/sol-0015/WE__0015___________DER_ANCILLARY___________P04.xml",
+      "bytes": 16415,
+      "sha256": "7bfc6bd5ff42a1736843bdfbb6017677612b5f8a12122cfebc3aaa28d6b18767",
+      "download_completed_utc": "2026-11-14T07:24:39.622140+00:00"
+    },
+    {
+      "url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0000_0089/sol_0015/WE__0015___________DER_ANCILLARY___________P04.CSV",
+      "path": "data/raw/environment/sol-0015/WE__0015___________DER_ANCILLARY___________P04.CSV",
+      "bytes": 5371090,
+      "sha256": "3e8e4b37a4a2bbd326cb9c59cc0dd1e736b9c1f1577644d1172b2bc03bfb6982",
+      "download_completed_utc": "2026-11-14T07:34:46.590930+00:00"
+    },
+    {
+      "url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0000_0089/sol_0015/WE__0015___________DER_PS__________________P02.xml",
+      "path": "data/raw/environment/sol-0015/WE__0015___________DER_PS__________________P02.xml",
+      "bytes": 9331,
+      "sha256": "80eca1628f5e69e96ffb1205f2ce1eeb64228d25e0eb2ffeb1fef636d7e0bb5e",
+      "download_completed_utc": "2026-11-14T07:34:49.113130+00:00"
+    },
+    {
+      "url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0000_0089/sol_0015/WE__0015___________DER_PS__________________P02.CSV",
+      "path": "data/raw/environment/sol-0015/WE__0015___________DER_PS__________________P02.CSV",
+      "bytes": 1448229,
+      "sha256": "bd3e5e6fc579631999bdf2b7138ad413bd17cc3b6b56ab1da5d7083566467f4e",
+      "download_completed_utc": "2026-11-14T07:36:03.309863+00:00"
+    }
+  ]
+}

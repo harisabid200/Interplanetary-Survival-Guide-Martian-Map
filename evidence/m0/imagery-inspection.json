@@ -1,0 +1,112 @@
+{
+  "status": "validated",
+  "generated_utc": "2026-11-14T04:45:04.680483+00:00",
+  "publisher": "NASA/JPL Mars Trek; source product USGS Astrogeology",
+  "mission": "Mars Reconnaissance Orbiter",
+  "instrument": "CTX",
+  "catalog_created_date": "2020-08-03T22:38:00Z",
+  "acquisition_date": null,
+  "citation": "Fergason et al. (2020), Mars 2020 Terrain Relative Navigation Flight Product Generation, doi:10.5066/P906QQT8; NASA Mars Trek layer JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0",
+  "source_projection_wkt": "PROJCS[\"Equirectangular Mars 2000 Sphere IAU\",GEOGCS[\"GCS_Mars_2000_Sphere\",DATUM[\"Mars_2000_Sphere\",SPHEROID[\"Mars_2000_Sphere_IAU\",3396190,0]],PRIMEM[\"Reference_Meridian\",0],UNIT[\"degree\",0.0174532925199433]],PROJECTION[\"Equirectangular\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",0],PARAMETER[\"standard_parallel_1\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]]]",
+  "license": "No license field in retrieved WMTS/catalog response; retain NASA/USGS attribution and verify source use terms before submission",
+  "layer": "JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0",
+  "style": "default",
+  "matrix_set": "default028mm",
+  "supported_crs": "urn:ogc:def:crs:EPSG::104905",
+  "catalog_projection": "Mars sphere 3396190 m, equirectangular standard parallel 0",
+  "axis_order": "service tile grid x=positive-east longitude, y=planetocentric latitude; origin west,north",
+  "source_bounds_lonlat": [
+    77.1604655,
+    18.2110274,
+    77.6991776,
+    18.7211945
+  ],
+  "template": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png",
+  "matrix": {
+    "id": "11",
+    "width": 4096,
+    "height": 2048,
+    "tile_width": 256,
+    "tile_height": 256,
+    "origin_lonlat": [
+      -180.0,
+      90.0
+    ],
+    "tile_span_degrees": [
+      0.087890625,
+      0.087890625
+    ],
+    "degrees_per_pixel": [
+      0.00034332275390625,
+      0.00034332275390625
+    ],
+    "advertised_scale_denominator": 136341.6192861693,
+    "advertised_metres_per_pixel_at_0_28mm": 38.1756534001274,
+    "mars_equatorial_metres_per_pixel": 20.350352390661467
+  },
+  "tile_matrix_limits": "None advertised; enforce matrix dimensions and catalog coverage",
+  "pilot_dem_cells_with_opaque_imagery": 62500,
+  "pilot_dem_cells": 62500,
+  "pilot_common_bounds_lonlat": [
+    77.39549726969183,
+    18.398069421969016,
+    77.48442939842994,
+    18.482422446259594
+  ],
+  "tiles": [
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/11/813/2928.png",
+      "local_path": "data/raw/ctx_11_813_2928.png",
+      "sha256": "f523acd20b25c13a484e9b704ce5e774c1f861d85ed5928b9f58a328fc98c7d4",
+      "bytes": 55500,
+      "row": 813,
+      "col": 2928,
+      "cors_headers": [
+        "Access-Control-Allow-Origin: *"
+      ],
+      "modified_utc": "2026-11-14T04:41:55.071644+00:00"
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/11/813/2929.png",
+      "local_path": "data/raw/ctx_11_813_2929.png",
+      "sha256": "4596b498525e0f294992d4a1ef941270da6f6e67d7799e61b3c5fda5ccd767fb",
+      "bytes": 48422,
+      "row": 813,
+      "col": 2929,
+      "cors_headers": [
+        "Access-Control-Allow-Origin: *"
+      ],
+      "modified_utc": "2026-11-14T04:41:57.339296+00:00"
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/11/814/2928.png",
+      "local_path": "data/raw/ctx_11_814_2928.png",
+      "sha256": "169de8f424576c5435b59855058290c12d37d2f63a9832040a1f683c48f9b272",
+      "bytes": 52040,
+      "row": 814,
+      "col": 2928,
+      "cors_headers": [
+        "Access-Control-Allow-Origin: *"
+      ],
+      "modified_utc": "2026-11-14T04:41:59.487840+00:00"
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/11/814/2929.png",
+      "local_path": "data/raw/ctx_11_814_2929.png",
+      "sha256": "fee1a881abefdb7e6d7e4aaa7bab8b81f865d5e5e30323de5a5bc4db13798d51",
+      "bytes": 48904,
+      "row": 814,
+      "col": 2929,
+      "cors_headers": [
+        "Access-Control-Allow-Origin: *"
+      ],
+      "modified_utc": "2026-11-14T04:42:01.643344+00:00"
+    }
+  ],
+  "limitations": [
+    "Capabilities CRS/bounding-box labels and scale denominator are inconsistent with the degree-valued global grid; use explicit degree grid and custom Mars transform in M1",
+    "Opaque imagery samples establish data access, not positional accuracy; visual control-point alignment remains M1",
+    "HTTP CORS headers checked; no browser integration tested in M0",
+    "ResourceURL double slash preserved exactly as advertised and successfully tested"
+  ]
+}

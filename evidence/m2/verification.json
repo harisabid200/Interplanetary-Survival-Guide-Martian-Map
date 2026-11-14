@@ -1,0 +1,78 @@
+{
+  "status": "passed",
+  "data": "real M1 Jezero CTX products only; no synthetic fixtures",
+  "endpoints": "M1 verification sample 1 to sample 2, not actual base or science target",
+  "terrain_weight": 100,
+  "default_run_cell_slope_limit": null,
+  "checks": [
+    {
+      "objective": "distance",
+      "verified_cells": 125,
+      "all_cells_and_diagonal_support_valid": true,
+      "independently_recomputed_metrics": {
+        "distance_m": 3507.303793900053,
+        "positive_ascent_m": 156.87890625,
+        "descent_m": 45.7578125,
+        "max_sampled_segment_slope_deg": 13.295863481982892,
+        "max_sampled_cell_slope_deg": 14.156987190246582,
+        "terrain_penalty_cost_m": 0.0,
+        "objective_cost_m": 3507.303793900053
+      }
+    },
+    {
+      "objective": "terrain",
+      "verified_cells": 164,
+      "all_cells_and_diagonal_support_valid": true,
+      "independently_recomputed_metrics": {
+        "distance_m": 3964.3021282773148,
+        "positive_ascent_m": 118.04345703125,
+        "descent_m": 6.92236328125,
+        "max_sampled_segment_slope_deg": 8.691442482703401,
+        "max_sampled_cell_slope_deg": 14.134654998779297,
+        "terrain_penalty_cost_m": 795.1095338412342,
+        "objective_cost_m": 4759.411662118549
+      }
+    }
+  ],
+  "real_cell_slope_limit_10deg_checks": [
+    {
+      "objective": "distance",
+      "verified_cells": 151,
+      "all_cells_and_diagonal_support_valid": true,
+      "independently_recomputed_metrics": {
+        "distance_m": 3000.4581944151637,
+        "positive_ascent_m": 30.447509765625,
+        "descent_m": 63.14453125,
+        "max_sampled_segment_slope_deg": 7.550434985311391,
+        "max_sampled_cell_slope_deg": 7.973604202270508,
+        "terrain_penalty_cost_m": 0.0,
+        "objective_cost_m": 3000.4581944151637
+      }
+    },
+    {
+      "objective": "terrain",
+      "verified_cells": 151,
+      "all_cells_and_diagonal_support_valid": true,
+      "independently_recomputed_metrics": {
+        "distance_m": 3066.7077162485534,
+        "positive_ascent_m": 22.203369140625,
+        "descent_m": 54.900390625,
+        "max_sampled_segment_slope_deg": 4.15078818715817,
+        "max_sampled_cell_slope_deg": 5.671466827392578,
+        "terrain_penalty_cost_m": 282.1855669856967,
+        "objective_cost_m": 3348.8932832342502
+      }
+    }
+  ],
+  "repeated_result_identical": true,
+  "astar_costs_match_dijkstra": true,
+  "real_same_cell_route_passed": true,
+  "identical_paths": false,
+  "timings_seconds": {
+    "load_and_edge_precompute": 0.3595551000034902,
+    "astar_both_objectives": 0.2771665000182111,
+    "dijkstra_both_objectives": 1.56130159998429
+  },
+  "input_manifest_sha256": "92a388c7bba2bd9612b17a78fdf4e3aa681a704d6e6aa95bd9eb059840d49134",
+  "routing_source_sha256": "e7b260dd4c062be1ef840b6b9207b4c5ff0401e904a0d4c36c09ab5f8657640e"
+}

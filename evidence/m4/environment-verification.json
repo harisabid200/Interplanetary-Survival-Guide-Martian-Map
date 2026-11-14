@@ -1,0 +1,538 @@
+{
+  "manifest": {
+    "schema_version": 1,
+    "path": "environment.json",
+    "sha256": "7bf547fff1d5b03065e31eef1477c696e72b9df9e6e9691335ad571902051ecf",
+    "bytes": 339844,
+    "provenance": [
+      {
+        "product_id": "urn:nasa:pds:mars2020_meda:data_calibrated_env:we__0015___________cal_ats_________________p",
+        "version": "1.0",
+        "data_sha256": "f0b96d72990b8458c3f9038a094514470044cf17b170417125b51e58d232cdb0",
+        "label_sha256": "001c7515d26679b8c2d7b791a883b96d114cf9a267f04e5e263c1a8aa0acf080",
+        "label_url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_calibrated_env/sol_0000_0089/sol_0015/WE__0015___________CAL_ATS_________________P01.xml"
+      },
+      {
+        "product_id": "urn:nasa:pds:mars2020_meda:data_derived_env:we__0015___________der_ps__________________p",
+        "version": "2.0",
+        "data_sha256": "bd3e5e6fc579631999bdf2b7138ad413bd17cc3b6b56ab1da5d7083566467f4e",
+        "label_sha256": "80eca1628f5e69e96ffb1205f2ce1eeb64228d25e0eb2ffeb1fef636d7e0bb5e",
+        "label_url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0000_0089/sol_0015/WE__0015___________DER_PS__________________P02.xml"
+      },
+      {
+        "product_id": "urn:nasa:pds:mars2020_meda:data_derived_env:we__0015___________der_ancillary___________p",
+        "version": "4.0",
+        "data_sha256": "3e8e4b37a4a2bbd326cb9c59cc0dd1e736b9c1f1577644d1172b2bc03bfb6982",
+        "label_sha256": "7bfc6bd5ff42a1736843bdfbb6017677612b5f8a12122cfebc3aaa28d6b18767",
+        "label_url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0000_0089/sol_0015/WE__0015___________DER_ANCILLARY___________P04.xml"
+      }
+    ],
+    "spatial_overlays": [],
+    "observation_scope": "MEDA historical rover-local; MARCI historical regional report; RAD Gale metadata reference only"
+  },
+  "meda": {
+    "sol": 15,
+    "temperature_product": {
+      "product_id": "urn:nasa:pds:mars2020_meda:data_calibrated_env:we__0015___________cal_ats_________________p",
+      "version": "1.0",
+      "start_utc": "2021-03-05T14:18:04.798Z",
+      "stop_utc": "2021-03-06T14:00:57.471Z",
+      "sol": 15,
+      "records": 54121,
+      "label_sha256": "001c7515d26679b8c2d7b791a883b96d114cf9a267f04e5e263c1a8aa0acf080",
+      "data_sha256": "f0b96d72990b8458c3f9038a094514470044cf17b170417125b51e58d232cdb0",
+      "bytes": 4329777,
+      "filename": "WE__0015___________CAL_ATS_________________P01.CSV",
+      "fields": [
+        {
+          "name": "SCLK",
+          "unit": "second",
+          "description": "Spacecraft Clock, as approximated by MEDA internal clock, at the time of the observation, without partition and including decimal thousandths of a second",
+          "special_constants": []
+        },
+        {
+          "name": "LMST",
+          "unit": null,
+          "description": "Local Mean Solar Time",
+          "special_constants": []
+        },
+        {
+          "name": "LTST",
+          "unit": null,
+          "description": "Local True Solar Time",
+          "special_constants": []
+        },
+        {
+          "name": "ATS_LOCAL_TEMP1",
+          "unit": "kelvin",
+          "description": "Local air temperature near the unit mounted on the RSM at 50\u00ba",
+          "special_constants": []
+        },
+        {
+          "name": "ATS_LOCAL_TEMP2",
+          "unit": "kelvin",
+          "description": "Local air temperature near the unit mounted on the RSM at 155\u00ba",
+          "special_constants": []
+        },
+        {
+          "name": "ATS_LOCAL_TEMP3",
+          "unit": "kelvin",
+          "description": "Local air temperature near the unit mounted on the RSM at 290\u00ba",
+          "special_constants": []
+        },
+        {
+          "name": "ATS_LOCAL_TEMP4",
+          "unit": "kelvin",
+          "description": "Local air temperature near the unit mounted on the RFB at Port side/Pilot",
+          "special_constants": []
+        },
+        {
+          "name": "ATS_LOCAL_TEMP5",
+          "unit": "kelvin",
+          "description": "Local air temperature near the unit mounted on the RFB at Starboard/Co-pilot",
+          "special_constants": []
+        }
+      ],
+      "sampling_sclk_seconds": {
+        "dominant_step": 0.5,
+        "largest_gap": 26654.5,
+        "interval_counts": [
+          {
+            "seconds": 0.5,
+            "count": 54113
+          },
+          {
+            "seconds": 3393.5,
+            "count": 1
+          },
+          {
+            "seconds": 3404.5,
+            "count": 1
+          },
+          {
+            "seconds": 3454.5,
+            "count": 1
+          },
+          {
+            "seconds": 3463.5,
+            "count": 1
+          },
+          {
+            "seconds": 3464.5,
+            "count": 1
+          },
+          {
+            "seconds": 14480.5,
+            "count": 1
+          },
+          {
+            "seconds": 26654.5,
+            "count": 1
+          }
+        ]
+      },
+      "label_url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_calibrated_env/sol_0000_0089/sol_0015/WE__0015___________CAL_ATS_________________P01.xml"
+    },
+    "pressure_product": {
+      "product_id": "urn:nasa:pds:mars2020_meda:data_derived_env:we__0015___________der_ps__________________p",
+      "version": "2.0",
+      "start_utc": "2021-03-05T14:18:05.298Z",
+      "stop_utc": "2021-03-06T14:00:26.971Z",
+      "sol": 15,
+      "records": 26818,
+      "label_sha256": "80eca1628f5e69e96ffb1205f2ce1eeb64228d25e0eb2ffeb1fef636d7e0bb5e",
+      "data_sha256": "bd3e5e6fc579631999bdf2b7138ad413bd17cc3b6b56ab1da5d7083566467f4e",
+      "bytes": 1448229,
+      "filename": "WE__0015___________DER_PS__________________P02.CSV",
+      "fields": [
+        {
+          "name": "SCLK",
+          "unit": "second",
+          "description": "Spacecraft Clock, as approximated by MEDA internal clock, at the time of the observation, without partition and including decimal thousandths of a second",
+          "special_constants": []
+        },
+        {
+          "name": "LMST",
+          "unit": null,
+          "description": "Local Mean Solar Time",
+          "special_constants": []
+        },
+        {
+          "name": "LTST",
+          "unit": null,
+          "description": "Local True Solar Time",
+          "special_constants": []
+        },
+        {
+          "name": "PRESSURE",
+          "unit": "pascal",
+          "description": "Pressure",
+          "special_constants": []
+        },
+        {
+          "name": "PRESSURE_UNCERTAINTY",
+          "unit": "kelvin",
+          "description": "Pressure uncertainty",
+          "special_constants": [],
+          "label_name": "PRESSURE UNCERTAINTY"
+        },
+        {
+          "name": "TRANSDUCER",
+          "unit": null,
+          "description": "Transducer used: 1 / 2",
+          "special_constants": []
+        }
+      ],
+      "sampling_sclk_seconds": {
+        "dominant_step": 1.0,
+        "largest_gap": 26689.0,
+        "interval_counts": [
+          {
+            "seconds": 1.0,
+            "count": 26805
+          },
+          {
+            "seconds": 4.0,
+            "count": 5
+          },
+          {
+            "seconds": 3421.0,
+            "count": 1
+          },
+          {
+            "seconds": 3427.0,
+            "count": 1
+          },
+          {
+            "seconds": 3481.0,
+            "count": 1
+          },
+          {
+            "seconds": 3489.0,
+            "count": 1
+          },
+          {
+            "seconds": 3499.0,
+            "count": 1
+          },
+          {
+            "seconds": 14510.0,
+            "count": 1
+          },
+          {
+            "seconds": 26689.0,
+            "count": 1
+          }
+        ]
+      },
+      "label_url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0000_0089/sol_0015/WE__0015___________DER_PS__________________P02.xml"
+    },
+    "position_product": {
+      "product_id": "urn:nasa:pds:mars2020_meda:data_derived_env:we__0015___________der_ancillary___________p",
+      "version": "4.0",
+      "start_utc": "2021-03-05T14:18:04.798Z",
+      "stop_utc": "2021-03-06T14:00:57.971Z",
+      "sol": 15,
+      "records": 54242,
+      "label_sha256": "7bfc6bd5ff42a1736843bdfbb6017677612b5f8a12122cfebc3aaa28d6b18767",
+      "data_sha256": "3e8e4b37a4a2bbd326cb9c59cc0dd1e736b9c1f1577644d1172b2bc03bfb6982",
+      "bytes": 5371090,
+      "filename": "WE__0015___________DER_ANCILLARY___________P04.CSV",
+      "fields": [
+        {
+          "name": "SCLK",
+          "unit": "second",
+          "description": "Spacecraft Clock, as approximated by MEDA internal clock, at the time of the observation, without partition and including decimal thousandths of a second",
+          "special_constants": []
+        },
+        {
+          "name": "LMST",
+          "unit": null,
+          "description": "Local Mean Solar Time",
+          "special_constants": []
+        },
+        {
+          "name": "LTST",
+          "unit": null,
+          "description": "Local True Solar Time",
+          "special_constants": []
+        },
+        {
+          "name": "SOLAR_LONGITUDE_ANGLE",
+          "unit": "degree",
+          "description": "Solar azimuth angle relative to M2020 local level frame rotated 180 degrees over the X axis (+X points to the local north direction; +Z points up; +Y completes the right handed frame, pointing to the local west direction; the origin is located between the rover middle wheels and moves with the rover) It is the angle between the positive X-axis and the orthogonal projection of the Sun onto the XY plane. It increases in the counterclockwise sense about the positive Z-axis. Range of -180 to 180 degrees",
+          "special_constants": []
+        },
+        {
+          "name": "SOLAR_ZENITHAL_ANGLE",
+          "unit": "degree",
+          "description": "Solar elevation angle relative to M2020 local level frame rotated 180 degrees over the X axis (+X points to the local north direction; +Z points up; +Y completes the right handed frame, pointing to the local west direction; the origin is located between the rover middle wheels and moves with the rover) It is the angle between the direction of the Sun and the positive Z-axis. A value of 0 degrees represents Sun at frame zenith, while a value of 180 degrees represents Sun at frame nadir. Range of 0 to 180 degrees.",
+          "special_constants": []
+        },
+        {
+          "name": "ROVER_POSITION_X",
+          "unit": "meter",
+          "description": "Rover position relative to landing site. It is the X-component of the rover position relative to landing site, expressed with respect to M2020_TOPO frame (+X is along the local north direction; +Z is along the outward normal at the landing site; +Y completes the right hand frame; the origin of this frame is located at the landing site)",
+          "special_constants": []
+        },
+        {
+          "name": "ROVER_POSITION_Y",
+          "unit": "meter",
+          "description": "Rover position relative to landing site. It is the y-component of the rover position relative to landing site, expressed with respect to M2020_TOPO frame (+X is along the local north direction; +Z is along the outward normal at the landing site; +Y completes the right hand frame; the origin of this frame is located at the landing site)",
+          "special_constants": []
+        },
+        {
+          "name": "ROVER_POSITION_Z",
+          "unit": "meter",
+          "description": "Rover position relative to landing site. It is the z-component of the rover position relative to landing site, expressed with respect to M2020_TOPO frame (+X is along the local north direction; +Z is along the outward normal at the landing site; +Y completes the right hand frame; the origin of this frame is located at the landing site)",
+          "special_constants": []
+        },
+        {
+          "name": "ROVER_VELOCITY",
+          "unit": "meter/hour",
+          "description": "Rover velocity",
+          "special_constants": []
+        },
+        {
+          "name": "ROVER_PITCH",
+          "unit": "degree",
+          "description": "Rover pitch, or counterclockwise rotation angle about the +Y-axis of the M2020_LOCAL_LEVEL frame. M2020_LOCAL_LEVEL frame is defined as follows: +X is along the local north direction; +Z is along the downward normal at the landing site; +Y completes the right hand frame; the origin of this frame is located between the rover middle wheels and moves with the rover",
+          "special_constants": []
+        },
+        {
+          "name": "ROVER_YAW",
+          "unit": "degree",
+          "description": "Rover yaw, or counterclockwise rotation angle about the +Z-axis of the M2020_LOCAL_LEVEL frame. M2020_LOCAL_LEVEL frame is defined as follows: +X is along the local north direction; +Z is along the downward normal at the landing site; +Y completes the right hand frame; the origin of this frame is located between the rover middle wheels and moves with the rover",
+          "special_constants": []
+        },
+        {
+          "name": "ROVER_ROLL",
+          "unit": "degree",
+          "description": "Rover roll, or counterclockwise rotation angle about the +X-axis of the M2020_LOCAL_LEVEL frame. M2020_LOCAL_LEVEL frame is defined as follows: +X is along the local north direction; +Z is along the downward normal at the landing site; +Y completes the right hand frame; the origin of this frame is located between the rover middle wheels and moves with the rover",
+          "special_constants": []
+        },
+        {
+          "name": "MASTHEAD_AZIMUTH",
+          "unit": "degree",
+          "description": "Masthead azimuth angle. Range of -180 to 180 degrees. An azimuth angle of 1 degree represents rover looking backward, an azimuth angle of 91 degrees represents rover looking to the left, an azimuth angle of -179 degrees represents rover looking forward, and an azimuth angle of -89 degrees represents rover looking to the right",
+          "special_constants": []
+        },
+        {
+          "name": "MASTHEAD_ELEVATION",
+          "unit": "degree",
+          "description": "Masthead elevation angle. Range of 0 to 360 degrees. An elevation angle of 1 degree represents rover looking down, an elevation angle of 91 degrees represents rover looking forward and an elevation angle of 181 degrees represents rover looking at the zenith",
+          "special_constants": []
+        }
+      ],
+      "sampling_sclk_seconds": {
+        "dominant_step": 0.5,
+        "largest_gap": 26620.0,
+        "interval_counts": [
+          {
+            "seconds": 0.5,
+            "count": 54226
+          },
+          {
+            "seconds": 1.0,
+            "count": 3
+          },
+          {
+            "seconds": 23.5,
+            "count": 5
+          },
+          {
+            "seconds": 3393.0,
+            "count": 1
+          },
+          {
+            "seconds": 3404.0,
+            "count": 1
+          },
+          {
+            "seconds": 3420.0,
+            "count": 1
+          },
+          {
+            "seconds": 3429.0,
+            "count": 1
+          },
+          {
+            "seconds": 3430.0,
+            "count": 1
+          },
+          {
+            "seconds": 14443.0,
+            "count": 1
+          },
+          {
+            "seconds": 26620.0,
+            "count": 1
+          }
+        ]
+      },
+      "label_url": "https://pds-atmospheres.nmsu.edu/PDS/data/PDS4/Mars2020/mars2020_meda/data_derived_env/sol_0000_0089/sol_0015/WE__0015___________DER_ANCILLARY___________P04.xml"
+    },
+    "method": "Native sensor series remain separate. Plotted bins are unweighted means of accepted native samples in 300 LMST-clock-second intervals. No interpolation; empty bins are null. Sample means/ranges are not full-sol or time-weighted climate estimates. UTC bounds are from labels; LMST is from actual rows, not an invented UTC conversion.",
+    "location": {
+      "description": "Perseverance, Jezero Crater. Same-sol SPICE-derived ancillary coordinates relative to the landing site in M2020_TOPO: +X north, +Z outward normal; +Y completes the right-handed frame (west). Ranges describe the rover positions observed in this sol, not an areal weather footprint.",
+      "axes": [
+        {
+          "field": "ROVER_POSITION_X",
+          "minimum": -4.96,
+          "maximum": 30.07
+        },
+        {
+          "field": "ROVER_POSITION_Y",
+          "minimum": -8.33,
+          "maximum": -3.43
+        },
+        {
+          "field": "ROVER_POSITION_Z",
+          "minimum": 0.57,
+          "maximum": 0.68
+        }
+      ],
+      "sclk_range": [
+        668225784.5,
+        668311157.0
+      ],
+      "limit": "Landing-site-relative metres, not longitude/latitude or DEM projected metres. No geodetic registration or per-sample position join is claimed; no map pin or weather surface is drawn."
+    },
+    "caveats": [
+      "ATS and pressure labels contain no per-row quality flags; finite-only screening is not scientific quality certification.",
+      "Pressure uncertainty label lists kelvin, which is inconsistent with pressure units; this field is excluded rather than silently corrected.",
+      "Wind, humidity and local dust opacity were not imported. No DER_WIND product appears in this sol listing."
+    ]
+  },
+  "temperature": [
+    {
+      "field": "ATS_LOCAL_TEMP1",
+      "unit": "kelvin",
+      "description": "Local air temperature near the unit mounted on the RSM at 50\u00ba",
+      "accepted": 54121,
+      "rejected": 0,
+      "minimum": 190.58,
+      "maximum": 252.15,
+      "sample_mean": 225.15239426470316,
+      "first_lmst_seconds": 0.323,
+      "last_lmst_seconds": 83088.79,
+      "sclk_range": [
+        668225784.5,
+        668311156.5
+      ],
+      "max_accepted_gap_sclk_seconds": 26654.5,
+      "quality": "No per-row quality flag in this product label. Empty/nonfinite/special constants excluded; finite does not mean quality-certified."
+    },
+    {
+      "field": "ATS_LOCAL_TEMP2",
+      "unit": "kelvin",
+      "description": "Local air temperature near the unit mounted on the RSM at 155\u00ba",
+      "accepted": 54121,
+      "rejected": 0,
+      "minimum": 192.84,
+      "maximum": 260.6,
+      "sample_mean": 228.64421185861312,
+      "first_lmst_seconds": 0.323,
+      "last_lmst_seconds": 83088.79,
+      "sclk_range": [
+        668225784.5,
+        668311156.5
+      ],
+      "max_accepted_gap_sclk_seconds": 26654.5,
+      "quality": "No per-row quality flag in this product label. Empty/nonfinite/special constants excluded; finite does not mean quality-certified."
+    },
+    {
+      "field": "ATS_LOCAL_TEMP3",
+      "unit": "kelvin",
+      "description": "Local air temperature near the unit mounted on the RSM at 290\u00ba",
+      "accepted": 54121,
+      "rejected": 0,
+      "minimum": 192.23,
+      "maximum": 257.85,
+      "sample_mean": 228.11667190184957,
+      "first_lmst_seconds": 0.323,
+      "last_lmst_seconds": 83088.79,
+      "sclk_range": [
+        668225784.5,
+        668311156.5
+      ],
+      "max_accepted_gap_sclk_seconds": 26654.5,
+      "quality": "No per-row quality flag in this product label. Empty/nonfinite/special constants excluded; finite does not mean quality-certified."
+    },
+    {
+      "field": "ATS_LOCAL_TEMP4",
+      "unit": "kelvin",
+      "description": "Local air temperature near the unit mounted on the RFB at Port side/Pilot",
+      "accepted": 54121,
+      "rejected": 0,
+      "minimum": 197.5,
+      "maximum": 256.27,
+      "sample_mean": 230.9910661295985,
+      "first_lmst_seconds": 0.323,
+      "last_lmst_seconds": 83088.79,
+      "sclk_range": [
+        668225784.5,
+        668311156.5
+      ],
+      "max_accepted_gap_sclk_seconds": 26654.5,
+      "quality": "No per-row quality flag in this product label. Empty/nonfinite/special constants excluded; finite does not mean quality-certified."
+    },
+    {
+      "field": "ATS_LOCAL_TEMP5",
+      "unit": "kelvin",
+      "description": "Local air temperature near the unit mounted on the RFB at Starboard/Co-pilot",
+      "accepted": 54121,
+      "rejected": 0,
+      "minimum": 194.22,
+      "maximum": 253.39,
+      "sample_mean": 228.37185916742115,
+      "first_lmst_seconds": 0.323,
+      "last_lmst_seconds": 83088.79,
+      "sclk_range": [
+        668225784.5,
+        668311156.5
+      ],
+      "max_accepted_gap_sclk_seconds": 26654.5,
+      "quality": "No per-row quality flag in this product label. Empty/nonfinite/special constants excluded; finite does not mean quality-certified."
+    }
+  ],
+  "pressure": {
+    "field": "PRESSURE",
+    "unit": "pascal",
+    "description": "Pressure",
+    "accepted": 26818,
+    "rejected": 0,
+    "minimum": 721.69,
+    "maximum": 741.33,
+    "sample_mean": 731.1589693489447,
+    "first_lmst_seconds": 0.81,
+    "last_lmst_seconds": 83059.106,
+    "sclk_range": [
+      668225785.0,
+      668311126.0
+    ],
+    "max_accepted_gap_sclk_seconds": 26689.0,
+    "quality": "No per-row quality flag in this product label. Empty/nonfinite/special constants excluded; finite does not mean quality-certified."
+  },
+  "dust": {
+    "kind": "HISTORICAL REGIONAL REPORT \u00b7 NOT A FORECAST",
+    "date_label": "Observed 17\u201323 January 2022 \u00b7 released 26 January 2022",
+    "summary": "MSSS reported lingering high-altitude dust after a regional storm subsided, with further local storms near polar caps and Syria\u2013Sinai. No afternoon dust-storm activity was reported at the three active NASA surface sites during that week.",
+    "limit": "Global/regional historical narrative, not a geolocated Jezero opacity measurement, storm polygon or present forecast. This week is not contemporaneous with the MEDA sol shown.",
+    "source": "Malin & Cantor (2022) \u00b7 MSSS-606 \u00b7 NASA/JPL-Caltech/MSSS",
+    "url": "https://www.msss.com/msss_images/2022/01/26/",
+    "sha256": "4cc23ecd7b911bf04ef20a68c97b6cedfc1dc18a10ff1ce98d3b9fa2687cbfd9",
+    "validation": "Cached dated HTML report verified against title/week/release identifier. Source describes intrinsic 1\u20132 km nadir imagery, lower-resolution public movie, off-nadir blur and data gaps. No image pixels or numerical dust raster imported."
+  },
+  "radiation": {
+    "kind": "GALE REFERENCE ONLY \u00b7 NOT JEZERO",
+    "date_label": "MSL RAD surface sol 1 \u00b7 label start 2012-220T02:25:43 (7 August 2012 UTC)",
+    "summary": "Verified PDS3 metadata identifies Curiosity RAD calibrated/decompressed ionizing-radiation observations at Gale Crater. Its detector B/E dose sections use microgray per hour.",
+    "reference": "Numeric dose unavailable: the science-file transfer did not complete. No dose, astronaut effective dose or exposure budget is calculated. MEDA optical radiation is a different measurement.",
+    "limit": "Gale radiation is not measured Jezero radiation. No Jezero dose map or exposure calculation is available.",
+    "url": "https://pds-ppi.igpp.ucla.edu/data/MSL-M-RAD-3-RDR-V1.0/DATA/SOL_00000_00089/RAD_RDR_2012_220_02_25_0001_V00.LBL",
+    "source": "PDS PPI \u00b7 MSL-M-RAD-3-RDR-V1.0 \u00b7 product V00",
+    "sha256": "6eb5e69243b26f845ebeda9575048ac92a72a6f2ae084431170452b4a328c25c",
+    "validation": "Detached label, archive README and errata acquired. Label stop time is UNK. No numeric science import; partial transfers remain excluded. Detector absorbed dose is not human effective dose."
+  }
+}

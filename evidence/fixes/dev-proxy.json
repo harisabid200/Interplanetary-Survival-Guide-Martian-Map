@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "base_url": "http://127.0.0.1:5175",
+  "health_and_region_json": true,
+  "real_route_post_json": true,
+  "distance_m": 3507.3037939000537,
+  "terrain_distance_m": 3964.302128277314,
+  "note": "Fresh dev server; existing user-owned 5173 process left running and requires restart."
+}

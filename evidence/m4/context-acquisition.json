@@ -1,0 +1,39 @@
+{
+  "sources": [
+    {
+      "url": "https://www.msss.com/msss_images/2022/01/26/",
+      "path": "data/raw/environment/marci-2022-01-26.html",
+      "bytes": 7507,
+      "sha256": "4cc23ecd7b911bf04ef20a68c97b6cedfc1dc18a10ff1ce98d3b9fa2687cbfd9",
+      "download_completed_utc": "2026-11-14T07:25:49.083091+00:00"
+    },
+    {
+      "url": "https://pds-ppi.igpp.ucla.edu/data/MSL-M-RAD-3-RDR-V1.0/AAREADME.TXT",
+      "path": "data/raw/environment/rad-readme.txt",
+      "bytes": 11753,
+      "sha256": "1fea5073924df190dc879d19ffd2c3e4eb44739b454e3fcd5cde2cbaab3c2022",
+      "download_completed_utc": "2026-11-14T07:25:52.156411+00:00"
+    },
+    {
+      "url": "https://pds-ppi.igpp.ucla.edu/data/MSL-M-RAD-3-RDR-V1.0/ERRATA.TXT",
+      "path": "data/raw/environment/rad-errata.txt",
+      "bytes": 31440,
+      "sha256": "c30d3e6f47e0c7459a464305da61284ce450e5cb8a09715d137192a698e4b824",
+      "download_completed_utc": "2026-11-14T07:25:54.108620+00:00"
+    },
+    {
+      "url": "https://pds-ppi.igpp.ucla.edu/data/MSL-M-RAD-3-RDR-V1.0/DATA/SOL_00000_00089/",
+      "path": "data/raw/environment/rad-early-sols.html",
+      "bytes": 26732,
+      "sha256": "70b138f03bc5a76f4a2a0e0559bf107b326fbfc74271f8c8f9dc8a6274fc1247",
+      "download_completed_utc": "2026-11-14T07:36:05.305181+00:00"
+    },
+    {
+      "url": "https://pds-ppi.igpp.ucla.edu/data/MSL-M-RAD-3-RDR-V1.0/DATA/SOL_00000_00089/RAD_RDR_2012_220_02_25_0001_V00.LBL",
+      "path": "data/raw/environment/rad-sol-0001.lbl",
+      "bytes": 128320,
+      "sha256": "6eb5e69243b26f845ebeda9575048ac92a72a6f2ae084431170452b4a328c25c",
+      "download_completed_utc": "2026-11-14T07:26:00.557069+00:00"
+    }
+  ]
+}

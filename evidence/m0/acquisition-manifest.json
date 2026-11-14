@@ -1,0 +1,69 @@
+{
+  "generated_utc": "2026-11-14T04:43:06.188796+00:00",
+  "timestamp_note": "File modification times record local download completion; existing files are never overwritten",
+  "sources": [
+    {
+      "url": "https://astrogeology.usgs.gov/search/map/mars_2020_science_investigation_ctx_dem_mosaic",
+      "path": "evidence/m0/ctx-catalog.html",
+      "bytes": 25503,
+      "sha256": "446ffecba655000c695378fa3ab32a5f8aac5183a2d95b12a4d8b72a2ad47e99",
+      "local_download_completed_utc": "2026-11-14T04:36:46.750113+00:00"
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/apidoc/trekAPI.html?body=mars",
+      "path": "evidence/m0/trek-api.html",
+      "bytes": 4312,
+      "sha256": "7ff5aea6018ea8e4184e12c84ad456c05033dc01d3794b8c07eac1026aa1d190",
+      "local_download_completed_utc": "2026-11-14T04:36:44.339095+00:00"
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/apidoc/js/trekApi.js",
+      "path": "evidence/m0/trekApi.js",
+      "bytes": 5952,
+      "sha256": "038b6ab9e3fc3ffded6c18e69a3fdba2b792708b5efc7a1b4b4f5500cf4a173a",
+      "local_download_completed_utc": "2026-11-14T04:37:27.851658+00:00"
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/apidoc/config/config.json",
+      "path": "evidence/m0/trek-config.json",
+      "bytes": 10233,
+      "sha256": "0bcadd7ccfd21216d21486c0a630efaff444c8fe02bb51db58b88e44c9fd4079",
+      "local_download_completed_utc": "2026-11-14T04:38:07.277112+00:00"
+    },
+    {
+      "url": "https://astrogeology.usgs.gov/ckan/dataset/f8ef46b8-d512-4c46-b825-fe9633c38e1c/resource/5691ea08-1db4-4018-a341-e415e716add7/download/m20_jezerocrater_ctxdem_20m.xml",
+      "path": "evidence/m0/ctx-dem-label.xml",
+      "bytes": 8786,
+      "sha256": "ddf03b3de30ffee3d04baea2c8ebdf4558b5490a84989440c7447658c2f62732",
+      "local_download_completed_utc": "2026-11-14T04:37:29.149000+00:00"
+    },
+    {
+      "url": "https://planetarymaps.usgs.gov/mosaic/mars2020_trn/CTX/ScienceInvestigationMaps_JPL/M20_JezeroCrater_CTXDEM_20m.tif",
+      "path": "data/raw/M20_JezeroCrater_CTXDEM_20m.tif",
+      "bytes": 90345300,
+      "sha256": "ba7f706ea1b5d63a562f28a7dcf7a7f3c79bce7f048e6974b57e8a33c30d1ba2",
+      "local_download_completed_utc": "2026-11-14T04:37:27.084013+00:00"
+    },
+    {
+      "url": "https://trek.nasa.gov/mars/TrekServices/ws/index/eq/searchItems?start=0&rows=2147483647&facetKeys=itemType%7CproductCat2%7CserviceTypes%7CthumbnailURLDir&facetValues=product%7C-%28DEM%20ConfidenceRaw%20Slope%29%7CMosaic%7C%5B%2A%20TO%20%2A%5D",
+      "path": "evidence/m0/trek-layers.json",
+      "bytes": 336642,
+      "sha256": "b98d3d3db56d29bed481c7e3594deca4e81d43d4bfdda6faf66a47a6f716d324",
+      "local_download_completed_utc": "2026-11-14T04:39:26.441043+00:00"
+    },
+    {
+      "url": "https://trek.nasa.gov/mars/TrekServices/ws/index/getLayerServices?uuid=32003f69-a6f6-4441-bb46-4c46689c42eb",
+      "path": "evidence/m0/trek-ctx-service.json",
+      "bytes": 700,
+      "sha256": "daf0c431458a0ab01b8ee855087745188e44e69b1386f4ea3c7eaafda944eef6",
+      "local_download_completed_utc": "2026-11-14T04:40:33.620375+00:00"
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0/WMTSCapabilities.xml",
+      "path": "evidence/m0/wmts-capabilities.xml",
+      "bytes": 8810,
+      "sha256": "bb58f640da78bcc404a9109f613f2b3f0e3e683ff6625e8f48dcb23e602813b8",
+      "local_download_completed_utc": "2026-11-14T04:40:51.397730+00:00"
+    }
+  ]
+}
