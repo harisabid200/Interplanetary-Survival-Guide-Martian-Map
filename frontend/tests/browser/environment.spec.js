@@ -7,7 +7,7 @@ test('actual MEDA series, detector selection, pressure, provenance and independe
   await page.setViewportSize({width:1600,height:1000});
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
   await page.goto('/');
-  await expect(page.getByRole('button',{name:'Compare routes →',exact:true})).toBeEnabled();
+  await expect(page.getByRole('button',{name:/Compare routes/})).toBeEnabled();
   const request=page.waitForResponse(response=>response.url().endsWith('/api/environment'));
   await page.getByLabel('Temperature & weather context',{exact:true}).check();
   expect((await request).status()).toBe(200);
@@ -48,7 +48,7 @@ test('environment failure and retry preserve actual route planning',async({page}
   await expect(page.getByRole('button',{name:'Retry environmental data'})).toBeVisible();
   await expect(page.getByLabel('Air-temperature detector')).toHaveCount(0);
   await page.getByRole('button',{name:'Load verification pair',exact:true}).click();
-  await page.getByRole('button',{name:'Compare routes →',exact:true}).click();
+  await page.getByRole('button',{name:/Compare routes/}).click();
   await expect(page.getByTestId('distance-distance')).toHaveText('3,507.3 m');
   await page.unroute('**/api/environment');
   await page.getByRole('button',{name:'Retry environmental data'}).click();
@@ -61,6 +61,6 @@ test('mobile historical panel fits viewport and labels scope',async({page})=>{
   await page.getByLabel('Temperature & weather context',{exact:true}).check();
   await expect(page.getByLabel('Air-temperature detector')).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBe(390);
-  await expect(page.getByText('Spatial layer unavailable · historical context only',{exact:true})).toBeVisible();
+  await expect(page.getByText(/Spatial layer unavailable.*historical context only/)).toBeVisible();
   await page.screenshot({path:`../evidence/${evidenceStage}/environment-mobile.png`,fullPage:true});
 });

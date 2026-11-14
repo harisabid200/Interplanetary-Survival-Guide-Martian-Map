@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "status": "source-derived",
+  "source": "Sun & Stack (2020), USGS SIM 3464, GeoUnits_v1",
+  "source_url": "https://pubs.usgs.gov/sim/3464/sim3464_database.zip",
+  "source_archive_sha256": "a88bd53a5573743cc4a20036c10e585106d08a433ad2f34af269e9cea1529f87",
+  "source_feature_count": 1304,
+  "pilot_intersecting_feature_count": 19,
+  "region_intersecting_feature_count": 19,
+  "feature_collection_sha256": "36a8ce6a3afbe8f363d008fe4755398f3faa89bfb801137530715e64115853fd",
+  "feature_collection_bytes": 1995967,
+  "source_crs": "Mars 2000 sphere, Mars Transverse Mercator; central meridian 77.5 E; metres; R=3396190 m",
+  "output_crs": "MARS:JEZERO",
+  "pilot_bounds_m": [
+    4350139.999999998,
+    1089280.0000000028,
+    4357639.999999998,
+    1096780.0000000028
+  ],
+  "region_bounds_m": [
+    4350139.999999998,
+    1089280.0000000028,
+    4357639.999999998,
+    1096780.0000000028
+  ],
+  "map_scale": "1:75,000",
+  "positional_limit": "USGS README reports random 100\u2013200 m offsets versus the controlled CTX surface-operations mosaic; no auto-shift applied.",
+  "interpretation_limit": "Published regional geologic interpretation; unit polygons do not establish mineral concentration, accessible water, or present-day resources.",
+  "display_style": "Categorical colors distinguish mapped unit symbols only; they do not represent measurements or hazard scores.",
+  "source_license": "USGS public domain",
+  "region_manifest_sha256": "398e5bfc3db222c6fa277c2c770add0b886e719590f89a1c9702ef833a10e896"
+}

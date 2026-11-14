@@ -1,0 +1,43 @@
+import {test,expect} from '@playwright/test';
+import {readFileSync,mkdirSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
+
+const manifest=JSON.parse(readFileSync(new URL('../../public/data/crism/manifest.json',import.meta.url)));
+const valid=readFileSync(new URL('../../public/data/crism/valid.u8',import.meta.url));
+const output=new URL('../../../evidence/m5/',import.meta.url);
+mkdirSync(output,{recursive:true});
+
+test('real CRISM D2300 layer renders only observed coverage and samples the source-derived index',async({page})=>{
+  expect(manifest.status).toBe('source-derived');
+  expect(manifest.product_id).toBe('frt000047a3_07_if166j_mtr3');
+  expect(manifest.valid_pixels).toBe(28095);
+  expect(manifest.valid_fraction).toBeCloseTo(.44952,5);
+  const errors=[];page.on('pageerror',error=>errors.push(error.message));
+  await page.setViewportSize({width:1600,height:1000});
+  await page.goto('/');
+  const toggle=page.getByRole('checkbox',{name:'CRISM D2300 spectral index context',exact:true});
+  const before=await page.locator('#terrain-map').screenshot();
+  const imageResponse=page.waitForResponse(response=>response.url().endsWith('/data/crism/d2300.png'));
+  await toggle.check();
+  expect((await imageResponse).status()).toBe(200);
+  await expect(page.getByText('CRISM D2300 · DIMENSIONLESS SPECTRAL INDEX',{exact:true})).toBeVisible();
+  await expect(page.getByText(/no threshold or mineral classification/i)).toBeVisible();
+  const mapBox=await page.locator('#terrain-map').boundingBox();
+  const row=112,col=122,index=row*manifest.width+col;
+  expect(valid[index]).toBe(1);
+  const x=manifest.affine[2]+(col+.5)*manifest.affine[0];
+  const y=manifest.affine[5]+(row+.5)*manifest.affine[4];
+  const resolution=Math.max(5000/(mapBox.width-90),5000/(mapBox.height-145));
+  const clickX=mapBox.x+(mapBox.width-5000/resolution)/2+(x-manifest.bounds_m[0])/resolution;
+  const clickY=mapBox.y+85+(manifest.bounds_m[3]-y)/resolution;
+  await page.mouse.click(clickX,clickY);
+  await expect(page.getByTestId('crism-readout')).toContainText('Dimensionless 2.3');
+  await expect(page.getByTestId('crism-value')).toHaveText(/^-?\d+\.\d{5}$/);
+  await expect(page.getByTestId('crism-readout')).toContainText('not a mineral identification');
+  const after=await page.locator('#terrain-map').screenshot();
+  expect(after.equals(before)).toBe(false);
+  await page.screenshot({path:fileURLToPath(new URL('crism-desktop.png',output))});
+  await toggle.uncheck();
+  await expect(page.getByTestId('crism-readout')).toHaveCount(0);
+  expect(errors).toEqual([]);
+});

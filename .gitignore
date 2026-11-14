@@ -11,3 +11,5 @@ frontend/public/data/
 frontend/test-results/
 frontend/playwright-report/
 .npm-cache/
+.tmp/
+pytest-cache-files-*/

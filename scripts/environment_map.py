@@ -1,4 +1,4 @@
-"""Fetch/verify a real Jezero thermal-property raster; preserve native pixels."""
+"""Fetch/verify a real Jezero thermal-property raster; preserve native pixels across selectable regions."""
 import argparse
 import json
 import math
@@ -29,14 +29,19 @@ BREAKS=[200,300,400,500]
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--fetch',action='store_true')
+    parser.add_argument('--region',type=Path,default=ROOT/'data/processed/jezero-m1/manifest.json')
+    parser.add_argument('--output',type=Path,default=OUT)
+    parser.add_argument('--public',type=Path,default=PUBLIC)
+    parser.add_argument('--evidence',type=Path,default=EVIDENCE)
     args=parser.parse_args()
-    EVIDENCE.mkdir(parents=True,exist_ok=True)
+    output=args.output.resolve(); public=args.public.resolve(); evidence=args.evidence.resolve()
+    output.mkdir(parents=True,exist_ok=True);public.mkdir(parents=True,exist_ok=True);evidence.mkdir(parents=True,exist_ok=True)
     if args.fetch:
         record=download(URL,RAW)
-        (EVIDENCE/'acquisition.json').write_text(json.dumps(record,indent=2)+'\n',encoding='utf-8')
+        (evidence/'acquisition.json').write_text(json.dumps(record,indent=2)+'\n',encoding='utf-8')
     if digest(RAW)!=SHA or digest(RAW,'md5')!='53fec7c990a90629e98c871a7a0da474':
         raise ValueError('Published raster checksum mismatch; no fallback')
-    region=json.loads((ROOT/'data/processed/jezero-m1/manifest.json').read_text())
+    region=json.loads(args.region.resolve().read_text())
     target=CRS.from_wkt(region['crs']['wkt'])
     with rasterio.open(RAW) as ds:
         source=CRS(ds.crs)
@@ -68,10 +73,9 @@ def main():
         for i,color in enumerate(COLORS):
             select=valid&(np.digitize(z,BREAKS)==i)
             rgba[select]=[*color,255]
-        OUT.mkdir(parents=True,exist_ok=True);PUBLIC.mkdir(parents=True,exist_ok=True)
-        np.where(valid,z,np.nan).astype('<f4').tofile(OUT/'thermal.f32')
-        valid.astype('uint8').tofile(OUT/'valid.u8')
-        Image.fromarray(rgba).save(OUT/'thermal.png')
+        np.where(valid,z,np.nan).astype('<f4').tofile(output/'thermal.f32')
+        valid.astype('uint8').tofile(output/'valid.u8')
+        Image.fromarray(rgba).save(output/'thermal.png')
         controls=[]
         for row,col in [(0,0),(z.shape[0]//2,z.shape[1]//2),(z.shape[0]-1,z.shape[1]-1)]:
             x,y=affine*(col+.5,row+.5)
@@ -85,18 +89,18 @@ def main():
             source_shape=list(ds.shape),width=z.shape[1],height=z.shape[0],affine=list(affine)[:6],
             crs=dict(radius_m=3396190,standard_parallel_deg=0,central_meridian_deg=0),
             bounds_source_m=bounds,bounds_map_m=target_bounds,clip_bounds_map_m=region['bounds_m'],
-            terrain_manifest_sha256=digest(ROOT/'data/processed/jezero-m1/manifest.json'),
+            terrain_manifest_sha256=digest(args.region.resolve()),
             valid_pixels=int(valid.sum()),total_pixels=int(valid.size),range=[float(z[valid].min()),float(z[valid].max())],
             legend=dict(breaks=BREAKS,colors=COLORS,labels=['<200','200–300','300–400','400–500','≥500']),
             method='Native source crop; no value interpolation, resampling or artificial 20 m detail. Image extent uses verified same-sphere equirectangular transform and is clipped visually to the pilot.',
             limits='Thermal inertia describes resistance to heating/cooling. It is not air/surface temperature, live weather, dust storm probability or radiation. Mosaic blending, thermal-model assumptions and albedo influence apply; source reports inter-image offsets up to approximately 20 thermal-inertia units, not a complete uncertainty bound.',
             controls=controls,
-            outputs={name:dict(bytes=(OUT/name).stat().st_size,sha256=digest(OUT/name)) for name in ['thermal.f32','valid.u8','thermal.png']})
+            outputs={name:dict(bytes=(output/name).stat().st_size,sha256=digest(output/name)) for name in ['thermal.f32','valid.u8','thermal.png']})
     payload=json.dumps(manifest,indent=2,allow_nan=False)+'\n'
-    (OUT/'manifest.json').write_text(payload,encoding='utf-8')
-    for path in OUT.iterdir():
-        if path.is_file():shutil.copyfile(path,PUBLIC/path.name)
-    (EVIDENCE/'inspection.json').write_text(payload,encoding='utf-8')
+    (output/'manifest.json').write_text(payload,encoding='utf-8')
+    for path in output.iterdir():
+        if path.is_file():shutil.copyfile(path,public/path.name)
+    (evidence/'inspection.json').write_text(payload,encoding='utf-8')
     print(json.dumps({key:manifest[key] for key in ['width','height','valid_pixels','range','bounds_map_m']},indent=2))
 
 

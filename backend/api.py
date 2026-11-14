@@ -27,6 +27,7 @@ class RouteRequest(BaseModel):
     max_cell_slope_deg: Annotated[Number, Field(ge=0, le=90)] | None = None
     primary_objective: Literal['distance', 'terrain'] = 'distance'
     region_manifest_sha256: Annotated[str, Field(pattern=r'^[a-f0-9]{64}$')]
+    region_id: Annotated[str, Field(pattern=r'^[a-z0-9-]{1,40}$')] = 'jezero-m1'
 
 
 class BodyLimit:
@@ -54,15 +55,22 @@ class BodyLimit:
         await self.app(scope, replay, send)
 
 
-def create_app(region_dir=DEFAULT_REGION, grid_factory=None, environment_dir=ROOT/'data/processed/environment'):
+def create_app(region_dir=DEFAULT_REGION, grid_factory=None, environment_dir=ROOT/'data/processed/environment', additional_region_dirs=None):
     region_dir = Path(region_dir)
+    region_dirs = {'jezero-m1': region_dir, **(additional_region_dirs or {})}
     @asynccontextmanager
     async def lifespan(app):
         app.state.grid = None
         app.state.region = None
+        app.state.regions = {}
         try:
-            app.state.grid = grid_factory() if grid_factory else TerrainGrid.load(region_dir)
-            app.state.region = json.loads((region_dir/'manifest.json').read_text(encoding='utf-8'))
+            for region_id, directory in region_dirs.items():
+                grid = grid_factory() if grid_factory and region_id == 'jezero-m1' else TerrainGrid.load(directory)
+                manifest = json.loads((directory/'manifest.json').read_text(encoding='utf-8'))
+                app.state.regions[region_id] = {'grid': grid, 'manifest': manifest}
+            default = app.state.regions.get('jezero-m1')
+            if default:
+                app.state.grid, app.state.region = default['grid'], default['manifest']
         except (OSError, ValueError, KeyError, RuntimeError):
             logging.exception('Routing dataset could not be loaded; terrain frontend remains available')
         app.state.environment = None
@@ -102,10 +110,13 @@ def create_app(region_dir=DEFAULT_REGION, grid_factory=None, environment_dir=ROO
         return JSONResponse({'status': 'ready' if ready else 'data_unavailable'}, status_code=200 if ready else 503)
 
     @app.get('/api/region')
-    def region():
-        if app.state.grid is None or app.state.region is None:
+    def region(request: Request):
+        region_id = request.query_params.get('region_id', 'jezero-m1')
+        selected = ({'grid': app.state.grid, 'manifest': app.state.region} if app.state.grid is not None and app.state.region is not None else None) if region_id == 'jezero-m1' else app.state.regions.get(region_id)
+        if selected is None:
             return JSONResponse({'code': 'data_unavailable', 'message': 'Run and verify the M1 preprocessing pipeline'}, status_code=503)
-        return {'region': app.state.region, 'region_manifest_sha256': app.state.grid.provenance['region_manifest_sha256'],
+        grid, manifest = selected['grid'], selected['manifest']
+        return {'region_id': region_id, 'region': manifest, 'region_manifest_sha256': grid.provenance['region_manifest_sha256'],
                 'routing_available': True, 'model': 'marswalk-grid-astar-v1',
                 'availability': {'terrain': 'validated', 'imagery': 'validated', 'temperature_weather': 'historical_MEDA_local' if app.state.environment else 'unavailable_M4_data',
                                  'dust_storms': 'historical_MARCI_report_only' if app.state.environment else 'unavailable_M4_data', 'radiation': 'Gale_reference_only_metadata' if app.state.environment else 'Gale_reference_only_unavailable',
@@ -120,9 +131,10 @@ def create_app(region_dir=DEFAULT_REGION, grid_factory=None, environment_dir=ROO
 
     @app.post('/api/routes')
     def routes(body: RouteRequest):
-        grid = app.state.grid
-        if grid is None or app.state.region is None:
+        selected = ({'grid': app.state.grid, 'manifest': app.state.region} if app.state.grid is not None and app.state.region is not None else None) if body.region_id == 'jezero-m1' else app.state.regions.get(body.region_id)
+        if selected is None:
             return JSONResponse({'code': 'data_unavailable', 'message': 'Verified terrain is unavailable'}, status_code=503)
+        grid = selected['grid']
         if body.region_manifest_sha256 != grid.provenance['region_manifest_sha256']:
             return JSONResponse({'code': 'dataset_mismatch', 'message': 'Map and routing datasets differ. Regenerate data and reload.'}, status_code=409)
         if not app.state.route_lock.acquire(blocking=False):
@@ -144,4 +156,5 @@ def create_app(region_dir=DEFAULT_REGION, grid_factory=None, environment_dir=ROO
     return app
 
 
-app = create_app()
+_expanded_region = ROOT/'data/processed/jezero-expanded-7p5km'
+app = create_app(additional_region_dirs={'expanded-7p5km': _expanded_region} if _expanded_region.is_dir() else None)

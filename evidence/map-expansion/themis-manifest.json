@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "quantity": "thermal_inertia",
+  "unit": "J m\u207b\u00b2 K\u207b\u00b9 s\u207b\u00bd",
+  "title": "Surface thermal response",
+  "source_title": "THEMIS-derived Thermal Inertia of Jezero Crater, Mars",
+  "source_url": "https://doi.org/10.5281/zenodo.4931348",
+  "authors": "Edwards & Buz",
+  "license": "CC BY 4.0",
+  "published": "2021-06-11",
+  "observation_time": "Multi-image nighttime mosaic; individual acquisition dates are not supplied in the GeoTIFF. Not current conditions.",
+  "kind": "Published derived thermal property; not temperature or atmospheric weather",
+  "source_sha256": "84401e7717d43ae80cbd80213b91bd141ee48197eb8648293197447c43c2829c",
+  "source_crs_wkt": "PROJCRS[\"SimpleCylindrical Mars\",BASEGEOGCRS[\"GCS_Mars\",DATUM[\"D_Mars\",ELLIPSOID[\"Mars\",3396190,0,LENGTHUNIT[\"metre\",1,ID[\"EPSG\",9001]]]],PRIMEM[\"Reference_Meridian\",0,ANGLEUNIT[\"degree\",0.0174532925199433,ID[\"EPSG\",9122]]]],CONVERSION[\"unnamed\",METHOD[\"Equidistant Cylindrical (Spherical)\",ID[\"EPSG\",1029]],PARAMETER[\"Latitude of 1st standard parallel\",0,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8823]],PARAMETER[\"Longitude of natural origin\",0,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8802]],PARAMETER[\"False easting\",0,LENGTHUNIT[\"metre\",1],ID[\"EPSG\",8806]],PARAMETER[\"False northing\",0,LENGTHUNIT[\"metre\",1],ID[\"EPSG\",8807]]],CS[Cartesian,2],AXIS[\"easting\",east,ORDER[1],LENGTHUNIT[\"metre\",1,ID[\"EPSG\",9001]]],AXIS[\"northing\",north,ORDER[2],LENGTHUNIT[\"metre\",1,ID[\"EPSG\",9001]]]]",
+  "source_pixel_size_m": 100,
+  "source_shape": [
+    890,
+    890
+  ],
+  "width": 80,
+  "height": 76,
+  "affine": [
+    100.0,
+    0.0,
+    4586200.0,
+    0.0,
+    -100.0,
+    1096800.0
+  ],
+  "crs": {
+    "radius_m": 3396190,
+    "standard_parallel_deg": 0,
+    "central_meridian_deg": 0
+  },
+  "bounds_source_m": [
+    4586200.0,
+    1089200.0,
+    4594200.0,
+    1096800.0
+  ],
+  "bounds_map_m": [
+    4350057.1221077405,
+    1089200.0,
+    4357645.203084772,
+    1096800.0
+  ],
+  "clip_bounds_map_m": [
+    4350139.999999998,
+    1089280.0000000028,
+    4357639.999999998,
+    1096780.0000000028
+  ],
+  "terrain_manifest_sha256": "398e5bfc3db222c6fa277c2c770add0b886e719590f89a1c9702ef833a10e896",
+  "valid_pixels": 6080,
+  "total_pixels": 6080,
+  "range": [
+    137.53514099121094,
+    304.59918212890625
+  ],
+  "legend": {
+    "breaks": [
+      200,
+      300,
+      400,
+      500
+    ],
+    "colors": [
+      [
+        63,
+        101,
+        169
+      ],
+      [
+        95,
+        169,
+        185
+      ],
+      [
+        178,
+        197,
+        165
+      ],
+      [
+        224,
+        179,
+        110
+      ],
+      [
+        195,
+        105,
+        78
+      ]
+    ],
+    "labels": [
+      "<200",
+      "200\u2013300",
+      "300\u2013400",
+      "400\u2013500",
+      "\u2265500"
+    ]
+  },
+  "method": "Native source crop; no value interpolation, resampling or artificial 20 m detail. Image extent uses verified same-sphere equirectangular transform and is clipped visually to the pilot.",
+  "limits": "Thermal inertia describes resistance to heating/cooling. It is not air/surface temperature, live weather, dust storm probability or radiation. Mosaic blending, thermal-model assumptions and albedo influence apply; source reports inter-image offsets up to approximately 20 thermal-inertia units, not a complete uncertainty bound.",
+  "controls": [
+    {
+      "row": 0,
+      "col": 0,
+      "source_xy_m": [
+        4586250.0,
+        1096750.0
+      ],
+      "map_xy_m": [
+        4350104.547613847,
+        1096750.0
+      ],
+      "value": 266.7270202636719
+    },
+    {
+      "row": 38,
+      "col": 40,
+      "source_xy_m": [
+        4590250.0,
+        1092950.0
+      ],
+      "map_xy_m": [
+        4353898.588102362,
+        1092950.0
+      ],
+      "value": 229.38133239746094
+    },
+    {
+      "row": 75,
+      "col": 79,
+      "source_xy_m": [
+        4594150.0,
+        1089250.0
+      ],
+      "map_xy_m": [
+        4357597.777578666,
+        1089249.9999999998
+      ],
+      "value": 181.8830108642578
+    }
+  ],
+  "outputs": {
+    "thermal.f32": {
+      "bytes": 24320,
+      "sha256": "a45ebd63435a9d0f4a6966e12f07fb66e8478d1800157c73255d787bf3fa39ba"
+    },
+    "valid.u8": {
+      "bytes": 6080,
+      "sha256": "068ccea9a4acb833febd59b8ab43ee175f83e9dc2b2d9d75480e15ed2aa7aceb"
+    },
+    "thermal.png": {
+      "bytes": 1303,
+      "sha256": "654550d6d0f15976f8b653798fa2b311ae4bed4760f2dd0394aaf879f1fadaa2"
+    }
+  }
+}

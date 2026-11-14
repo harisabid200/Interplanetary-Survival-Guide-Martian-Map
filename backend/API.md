@@ -8,7 +8,7 @@ Production: `npm.cmd run build --prefix frontend`, then the API also serves `fro
 200 `{"status":"ready"}` when verified routing grid/manifest loaded; 503 `{"status":"data_unavailable"}` otherwise. A missing/unreadable dataset is logged locally; no fabricated fallback grid. Cached frontend terrain can remain available independently.
 
 ## GET /api/region
-Returns `region` (existing scientific M1 manifest), `region_manifest_sha256`, `routing_available`, M2 model identifier and an `availability` registry. CTX imagery/terrain are validated. M4 availability distinguishes `historical_MEDA_local`, `historical_MARCI_report_only`, `Gale_reference_only_metadata` from unavailable environmental artifacts; M5 sources remain planned. This endpoint itself returns no environmental measurements.
+Accepts optional `region_id=jezero-m1` (default) or `region_id=expanded-7p5km`. Returns the selected `region` manifest, its `region_manifest_sha256`, selected `region_id`, `routing_available`, M2 model identifier and an `availability` registry. The expanded crop is from the same verified CTX source at native 20 m sampling. SIM 3464, CRISM and THEMIS are served from region-specific source-derived products; their bounds, valid fractions and scientific limitations remain attached to each product. This endpoint itself returns no environmental measurements.
 
 The frontend hashes its actual local manifest and each elevation/slope/mask buffer with SHA256. It must match the backend manifest hash before planning. Numeric byte-length/hash failure stops terrain loading. Dataset identity errors must not be silently repaired by mixing products.
 
@@ -22,7 +22,7 @@ HTTP 200 returns `schema_version:1`, `kind:historical_environment_context`, `art
 Missing, unreadable or checksum-invalid artifacts return **503**, code `environment_unavailable`, with a reproducible preprocessing/restart instruction and no fabricated fallback measurements. Environmental failure does not disable valid terrain/routing; `/api/health` continues to describe routing readiness. Existing Host and response-security guards apply. Synthetic flag/missing-data fixtures are tests only.
 
 ## POST /api/routes
-`Content-Type: application/json`. Coordinates ordered **positive-east longitude, planetocentric latitude**, degrees. Example using the hash from `/api/region`:
+`Content-Type: application/json`. Coordinates ordered **positive-east longitude, planetocentric latitude**, degrees. `region_id` is optional and defaults to `jezero-m1`; for expanded coverage send `expanded-7p5km` and the matching hash from `GET /api/region?region_id=expanded-7p5km`:
 
 ```json
 {

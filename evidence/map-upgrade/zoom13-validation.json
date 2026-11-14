@@ -1,0 +1,599 @@
+{
+  "schema_version": 1,
+  "status": "source-derived",
+  "publisher": "NASA/JPL Mars Trek; source product USGS Astrogeology",
+  "layer": "JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0",
+  "citation": "Fergason et al. (2020), Mars 2020 Terrain Relative Navigation Flight Product Generation, doi:10.5066/P906QQT8; NASA Mars Trek layer JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0",
+  "license": "No license field in retrieved WMTS/catalog response; retain NASA/USGS attribution and verify source use terms before submission",
+  "matrix_id": "13",
+  "source_mars_equatorial_pixel_m": 5.087588097665367,
+  "tile_size_px": [
+    256,
+    256
+  ],
+  "mosaic_size_px": [
+    2048,
+    2048
+  ],
+  "tile_coverage_lonlat": [
+    77.34375,
+    18.369140625,
+    77.51953125,
+    18.544921875
+  ],
+  "image_bounds_m": [
+    4348470.631337284,
+    1088825.254309951,
+    4358353.519135778,
+    1099244.6347339698
+  ],
+  "region_manifest_sha256": "92a388c7bba2bd9612b17a78fdf4e3aa681a704d6e6aa95bd9eb059840d49134",
+  "output": {
+    "path": "imagery-detail.png",
+    "bytes": 2187858,
+    "sha256": "a4268d21c98c70b3b480fd95cbef44826c310994727a5836a245cbd4a57b6d06"
+  },
+  "tile_count": 64,
+  "tiles": [
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3252/11712.png",
+      "path": "data/raw/ctx_13_3252_11712.png",
+      "bytes": 34177,
+      "sha256": "5437aea0310fb9dc22455d5e0d92cef8ff3ece1f7da5599c8e213b70ffabb9db",
+      "row": 3252,
+      "column": 11712
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3252/11713.png",
+      "path": "data/raw/ctx_13_3252_11713.png",
+      "bytes": 34491,
+      "sha256": "cb0a1c948fada94d633b29a30c3dc5dc53a5c5bfc8cda5a908f3be9b66165cb0",
+      "row": 3252,
+      "column": 11713
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3252/11714.png",
+      "path": "data/raw/ctx_13_3252_11714.png",
+      "bytes": 32400,
+      "sha256": "afb0053794ccac6fee9349020238667a56cf278b848880b692ad08810b513914",
+      "row": 3252,
+      "column": 11714
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3252/11715.png",
+      "path": "data/raw/ctx_13_3252_11715.png",
+      "bytes": 32179,
+      "sha256": "de2e864759314c0a64b2e94653adefb95e53d51895a2e671d56d689ea694e513",
+      "row": 3252,
+      "column": 11715
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3252/11716.png",
+      "path": "data/raw/ctx_13_3252_11716.png",
+      "bytes": 26795,
+      "sha256": "6134b84e231859717fda749d8591b4c88feb6b91610a295eee5dfd079f33351e",
+      "row": 3252,
+      "column": 11716
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3252/11717.png",
+      "path": "data/raw/ctx_13_3252_11717.png",
+      "bytes": 33378,
+      "sha256": "7611a6e3869c11e680fc4fc196b3bb0295e5a0e1d55e2801c67baffef04f54e2",
+      "row": 3252,
+      "column": 11717
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3252/11718.png",
+      "path": "data/raw/ctx_13_3252_11718.png",
+      "bytes": 32789,
+      "sha256": "f61e6f7db58d5811e5277f08ca5a60ea450e4a455b588069eb4261dd501a9db8",
+      "row": 3252,
+      "column": 11718
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3252/11719.png",
+      "path": "data/raw/ctx_13_3252_11719.png",
+      "bytes": 32128,
+      "sha256": "16632e281f5d97cbffc4d951e17599dbe1b0cc27295cd4d7b4c80436d3f00c5b",
+      "row": 3252,
+      "column": 11719
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3253/11712.png",
+      "path": "data/raw/ctx_13_3253_11712.png",
+      "bytes": 34686,
+      "sha256": "0435881943779e7b9d914eb572de33d181cbdd1d2398d0e3f6aba7f98ad4deaa",
+      "row": 3253,
+      "column": 11712
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3253/11713.png",
+      "path": "data/raw/ctx_13_3253_11713.png",
+      "bytes": 33229,
+      "sha256": "16fc38d01913202d121353cec73bb145341555696cc4abafe737a673545744dd",
+      "row": 3253,
+      "column": 11713
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3253/11714.png",
+      "path": "data/raw/ctx_13_3253_11714.png",
+      "bytes": 32023,
+      "sha256": "b0842294a304a786b2f26f8af511b81ef28991052ba9a142ac7aa12ea1280940",
+      "row": 3253,
+      "column": 11714
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3253/11715.png",
+      "path": "data/raw/ctx_13_3253_11715.png",
+      "bytes": 32879,
+      "sha256": "d891b100006edc7381863fb802aef96c8de69e9f1a943a8fddb8295a2120ff14",
+      "row": 3253,
+      "column": 11715
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3253/11716.png",
+      "path": "data/raw/ctx_13_3253_11716.png",
+      "bytes": 29248,
+      "sha256": "81480be24a41a2679d936acde7d2943227ceaf5b167e268e2d36fc765da3fcb8",
+      "row": 3253,
+      "column": 11716
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3253/11717.png",
+      "path": "data/raw/ctx_13_3253_11717.png",
+      "bytes": 30199,
+      "sha256": "558ae7d5eac59363a5a05d1f64b9301ab66622b2e77b25c5b3ae5dea84eca158",
+      "row": 3253,
+      "column": 11717
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3253/11718.png",
+      "path": "data/raw/ctx_13_3253_11718.png",
+      "bytes": 31837,
+      "sha256": "4ee3929fb8c746683163900e7974353495240e0fc8f1ee3eb0afc4e70cd54def",
+      "row": 3253,
+      "column": 11718
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3253/11719.png",
+      "path": "data/raw/ctx_13_3253_11719.png",
+      "bytes": 31147,
+      "sha256": "64399704f63f05c042127e1265d5ef5142779a4cdda9f2785eaa2de3fb5a9b25",
+      "row": 3253,
+      "column": 11719
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3254/11712.png",
+      "path": "data/raw/ctx_13_3254_11712.png",
+      "bytes": 34246,
+      "sha256": "2fe95ab8f0342bdf9ebcce859234bf14691ac63c93dc83fc8b6dc608397b90d0",
+      "row": 3254,
+      "column": 11712
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3254/11713.png",
+      "path": "data/raw/ctx_13_3254_11713.png",
+      "bytes": 33351,
+      "sha256": "d6387410fe7d1da77da4137fbffa5074e8dbb054ebd8788f147a80a152f06b1f",
+      "row": 3254,
+      "column": 11713
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3254/11714.png",
+      "path": "data/raw/ctx_13_3254_11714.png",
+      "bytes": 31845,
+      "sha256": "2fb4dcc3060574af95f0439f92b04c1a4a8ac29a8228097618abf231398b69a5",
+      "row": 3254,
+      "column": 11714
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3254/11715.png",
+      "path": "data/raw/ctx_13_3254_11715.png",
+      "bytes": 31958,
+      "sha256": "27d5cd1ede8372d2765cfbee8b1e20341911310dd52e43ce89e7f059cf048716",
+      "row": 3254,
+      "column": 11715
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3254/11716.png",
+      "path": "data/raw/ctx_13_3254_11716.png",
+      "bytes": 27503,
+      "sha256": "afffcd5a91c3116d64ec8b87ff5a63ad69f10bf64c6468f6880582b402636179",
+      "row": 3254,
+      "column": 11716
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3254/11717.png",
+      "path": "data/raw/ctx_13_3254_11717.png",
+      "bytes": 27026,
+      "sha256": "4f153254f11a5accd8704e462056b7f83e91a171d15442df3bafc8271379b96b",
+      "row": 3254,
+      "column": 11717
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3254/11718.png",
+      "path": "data/raw/ctx_13_3254_11718.png",
+      "bytes": 27717,
+      "sha256": "48e51f96494e3ee1b6519b015f751741e3c3a6c6b079283f6e64e3d6194a7c1a",
+      "row": 3254,
+      "column": 11718
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3254/11719.png",
+      "path": "data/raw/ctx_13_3254_11719.png",
+      "bytes": 28797,
+      "sha256": "c4567c61eb2a846077be9e87fb4581b4019300de99605e854fb2959f21189e06",
+      "row": 3254,
+      "column": 11719
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3255/11712.png",
+      "path": "data/raw/ctx_13_3255_11712.png",
+      "bytes": 32182,
+      "sha256": "d68cd77c0968d57810225c6d71158c26d770ec4c35de23dc676aabd41d76f09d",
+      "row": 3255,
+      "column": 11712
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3255/11713.png",
+      "path": "data/raw/ctx_13_3255_11713.png",
+      "bytes": 34719,
+      "sha256": "eeb59f4600f95d0966de8fbca5a10a2d410a5c73fc98efa7dfc1764f4ac7f8c7",
+      "row": 3255,
+      "column": 11713
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3255/11714.png",
+      "path": "data/raw/ctx_13_3255_11714.png",
+      "bytes": 33981,
+      "sha256": "c0c1b7997689d1ee37c56c7d83fa73ab903c85187433e9dcd5ba5b06ff55f21b",
+      "row": 3255,
+      "column": 11714
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3255/11715.png",
+      "path": "data/raw/ctx_13_3255_11715.png",
+      "bytes": 32258,
+      "sha256": "1ed92c32e55aaddbd7b6274e60d5acb1bd4dd7bc3e85e1afca0b8a00a45b5b1f",
+      "row": 3255,
+      "column": 11715
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3255/11716.png",
+      "path": "data/raw/ctx_13_3255_11716.png",
+      "bytes": 26949,
+      "sha256": "69a12b4c7781bc5c8382da9d2d1f2647bddbe1c66e41d5154fe2eb91c5547b07",
+      "row": 3255,
+      "column": 11716
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3255/11717.png",
+      "path": "data/raw/ctx_13_3255_11717.png",
+      "bytes": 26981,
+      "sha256": "65340922b826ccc7cfe459e828e60dec90a11fbad52bf456bc7e78ac0a8925d6",
+      "row": 3255,
+      "column": 11717
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3255/11718.png",
+      "path": "data/raw/ctx_13_3255_11718.png",
+      "bytes": 27612,
+      "sha256": "9a6f35f9369b726949ed9280e1d291a2d6879a2026d7ee9a1c3fc9be5d908bac",
+      "row": 3255,
+      "column": 11718
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3255/11719.png",
+      "path": "data/raw/ctx_13_3255_11719.png",
+      "bytes": 29183,
+      "sha256": "49beb95441a5f2b7aadd52af5fd5c0011b473df9f1856064f0a5d6801793be8e",
+      "row": 3255,
+      "column": 11719
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3256/11712.png",
+      "path": "data/raw/ctx_13_3256_11712.png",
+      "bytes": 33499,
+      "sha256": "9d8a6cde7f46676f820d47e2391f68bd7fdb2a820513084b0ba748aef6c51ed3",
+      "row": 3256,
+      "column": 11712
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3256/11713.png",
+      "path": "data/raw/ctx_13_3256_11713.png",
+      "bytes": 33867,
+      "sha256": "49f9e5beac28079be5c922fb2b46b737088dc2c989023de4404abd59d2ef23bd",
+      "row": 3256,
+      "column": 11713
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3256/11714.png",
+      "path": "data/raw/ctx_13_3256_11714.png",
+      "bytes": 32859,
+      "sha256": "17149298c3575429cde26bb159c194903946154edb15e84bbb1bb2419155df6e",
+      "row": 3256,
+      "column": 11714
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3256/11715.png",
+      "path": "data/raw/ctx_13_3256_11715.png",
+      "bytes": 29235,
+      "sha256": "19ff0afdb6a029d0f0037cbec05af0a23872684463904daf8362d938f49a88ed",
+      "row": 3256,
+      "column": 11715
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3256/11716.png",
+      "path": "data/raw/ctx_13_3256_11716.png",
+      "bytes": 31194,
+      "sha256": "849ff59c6334ac7e1bfbcd841976fe8ca6e75286d0af8817a2da891e99b6a9e4",
+      "row": 3256,
+      "column": 11716
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3256/11717.png",
+      "path": "data/raw/ctx_13_3256_11717.png",
+      "bytes": 31155,
+      "sha256": "b4e1eae11e63c02219d4c40d84f9bca5567e83a6bc1745b83d87fc41ec2ea721",
+      "row": 3256,
+      "column": 11717
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3256/11718.png",
+      "path": "data/raw/ctx_13_3256_11718.png",
+      "bytes": 30202,
+      "sha256": "b48cf20fd3ed042fea2795bf4f8353bba4284113c9e6c3bbf7ec22ec940f5f2f",
+      "row": 3256,
+      "column": 11718
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3256/11719.png",
+      "path": "data/raw/ctx_13_3256_11719.png",
+      "bytes": 30201,
+      "sha256": "bd95d43b1e8ecd24ede776632002a8817a00ec269acc0c067a8a77913a3a5a02",
+      "row": 3256,
+      "column": 11719
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3257/11712.png",
+      "path": "data/raw/ctx_13_3257_11712.png",
+      "bytes": 36012,
+      "sha256": "de59e459866913e32a814f3507ae3f6abbf010292b0b9f1ce40e77f85d7f5901",
+      "row": 3257,
+      "column": 11712
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3257/11713.png",
+      "path": "data/raw/ctx_13_3257_11713.png",
+      "bytes": 33963,
+      "sha256": "967655fc9d8b90b8d89719fe3bdb52137fd3dff15491d761fdb2c56084486780",
+      "row": 3257,
+      "column": 11713
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3257/11714.png",
+      "path": "data/raw/ctx_13_3257_11714.png",
+      "bytes": 28150,
+      "sha256": "4a74ce5f6249b51498b363a7a249af27761335f0b61297f3aa06357596ca491a",
+      "row": 3257,
+      "column": 11714
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3257/11715.png",
+      "path": "data/raw/ctx_13_3257_11715.png",
+      "bytes": 31000,
+      "sha256": "a7e2b502cdddc907aaa0c65c0b86c6c76c05563cd633a582648023d5cddd4f18",
+      "row": 3257,
+      "column": 11715
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3257/11716.png",
+      "path": "data/raw/ctx_13_3257_11716.png",
+      "bytes": 28058,
+      "sha256": "24a623810c3bb2cf7955de60af87d19800cf071f170943613190c4b85d6c1066",
+      "row": 3257,
+      "column": 11716
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3257/11717.png",
+      "path": "data/raw/ctx_13_3257_11717.png",
+      "bytes": 31723,
+      "sha256": "bc59781a3411de0843eda8b8fe6bb817b7bc89b436e3e09314574210c2f88f13",
+      "row": 3257,
+      "column": 11717
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3257/11718.png",
+      "path": "data/raw/ctx_13_3257_11718.png",
+      "bytes": 28129,
+      "sha256": "ecafc49aa38e895e49bc6240f81dd23fb302624d7bd67a62ef69bb8ae76978b4",
+      "row": 3257,
+      "column": 11718
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3257/11719.png",
+      "path": "data/raw/ctx_13_3257_11719.png",
+      "bytes": 28384,
+      "sha256": "6398afcbc64206d28c67c373fc1cfb84e164b3dc6cad1f446d9bbd3125678863",
+      "row": 3257,
+      "column": 11719
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3258/11712.png",
+      "path": "data/raw/ctx_13_3258_11712.png",
+      "bytes": 36024,
+      "sha256": "cae31cbcc06f564763f06319d0b1f02ccb170dd442d53a7f561473bb757692d9",
+      "row": 3258,
+      "column": 11712
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3258/11713.png",
+      "path": "data/raw/ctx_13_3258_11713.png",
+      "bytes": 35928,
+      "sha256": "f79a0594302f18dbfb0716f0466accf00b1a3339b27a42275b9549363ff72448",
+      "row": 3258,
+      "column": 11713
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3258/11714.png",
+      "path": "data/raw/ctx_13_3258_11714.png",
+      "bytes": 33590,
+      "sha256": "3ba50cf6d380000dcb91191fd04ccfdb9af6dea01610a9d08af8927fe670db39",
+      "row": 3258,
+      "column": 11714
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3258/11715.png",
+      "path": "data/raw/ctx_13_3258_11715.png",
+      "bytes": 27290,
+      "sha256": "027675184e8eb18ae4a0988474166dcb987346336a37433c23fb4cb25802e3af",
+      "row": 3258,
+      "column": 11715
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3258/11716.png",
+      "path": "data/raw/ctx_13_3258_11716.png",
+      "bytes": 26644,
+      "sha256": "34a1c57253c99362e28517be201de56d2be8752a85357b3058f0f3ba39b0aa52",
+      "row": 3258,
+      "column": 11716
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3258/11717.png",
+      "path": "data/raw/ctx_13_3258_11717.png",
+      "bytes": 30305,
+      "sha256": "e76f5097cdf1a454e212a76e833182809d659c3361446acb1092ba964603ea5f",
+      "row": 3258,
+      "column": 11717
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3258/11718.png",
+      "path": "data/raw/ctx_13_3258_11718.png",
+      "bytes": 28350,
+      "sha256": "888fe76295884f97f480843f9b93ecc9afc46bce04b9da7fdcb1cf42fdb2cdaf",
+      "row": 3258,
+      "column": 11718
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3258/11719.png",
+      "path": "data/raw/ctx_13_3258_11719.png",
+      "bytes": 29076,
+      "sha256": "4929de343f1bfe0d3dcce844a983d1df57cf41c35904d0be55fc646018b35ff2",
+      "row": 3258,
+      "column": 11719
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3259/11712.png",
+      "path": "data/raw/ctx_13_3259_11712.png",
+      "bytes": 36674,
+      "sha256": "d2538289ee51074d061706c36a34612cbf6c46b95e4b2c895027ecff010dc348",
+      "row": 3259,
+      "column": 11712
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3259/11713.png",
+      "path": "data/raw/ctx_13_3259_11713.png",
+      "bytes": 35813,
+      "sha256": "45b9afd0b2f2062f5b663059aa7aed448711b39fc400a4a0a8b39081a0ee88f1",
+      "row": 3259,
+      "column": 11713
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3259/11714.png",
+      "path": "data/raw/ctx_13_3259_11714.png",
+      "bytes": 33582,
+      "sha256": "aaee20f2eeec0a58b71a1e7c9157129cf8728016d078882c96c0d9740443eae7",
+      "row": 3259,
+      "column": 11714
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3259/11715.png",
+      "path": "data/raw/ctx_13_3259_11715.png",
+      "bytes": 28567,
+      "sha256": "12e554eb8f0bb2694d4bb85e3d76768e94fc207a6e69bd255f19b7d300200004",
+      "row": 3259,
+      "column": 11715
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3259/11716.png",
+      "path": "data/raw/ctx_13_3259_11716.png",
+      "bytes": 29131,
+      "sha256": "ec19268c061dee86f84323febe7a20a41b3b55d70b652451ba856748526e03a6",
+      "row": 3259,
+      "column": 11716
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3259/11717.png",
+      "path": "data/raw/ctx_13_3259_11717.png",
+      "bytes": 30753,
+      "sha256": "74b52076d6876151a3e0c13e1567ed8af5851e11318eb23d4dc474c5cd44491e",
+      "row": 3259,
+      "column": 11717
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3259/11718.png",
+      "path": "data/raw/ctx_13_3259_11718.png",
+      "bytes": 30687,
+      "sha256": "a8f942a97b92606aaab855adde7061b907f414dbe7db6ef119754799d6965f31",
+      "row": 3259,
+      "column": 11718
+    },
+    {
+      "url": "https://trek.nasa.gov/tiles/Mars/EQ/JEZ_ctx_B_soc_008_orthoMosaic_6m_Eqc_latTs0_lon0/1.0.0//default/default028mm/13/3259/11719.png",
+      "path": "data/raw/ctx_13_3259_11719.png",
+      "bytes": 31211,
+      "sha256": "afe428ec3686e350ae2509d1169baf4a00765045fa5b4ae2db7592e0a27dd586",
+      "row": 3259,
+      "column": 11719
+    }
+  ],
+  "terrain_control_point_coverage": [
+    {
+      "row": 125,
+      "column": 125,
+      "pixel": [
+        1123,
+        1221
+      ],
+      "alpha": 255
+    },
+    {
+      "row": 1,
+      "column": 1,
+      "pixel": [
+        609,
+        734
+      ],
+      "alpha": 255
+    },
+    {
+      "row": 249,
+      "column": 249,
+      "pixel": [
+        1636,
+        1708
+      ],
+      "alpha": 255
+    },
+    {
+      "row": 1,
+      "column": 249,
+      "pixel": [
+        1636,
+        734
+      ],
+      "alpha": 255
+    },
+    {
+      "row": 249,
+      "column": 1,
+      "pixel": [
+        609,
+        1708
+      ],
+      "alpha": 255
+    }
+  ],
+  "limits": "Actual CTX orbital imagery, not numeric elevation or guaranteed surface colour. Effective information is limited by the source mosaic; raster pixel spacing does not establish obstacle-scale accuracy."
+}

@@ -1,0 +1,36 @@
+import {test,expect} from '@playwright/test';
+import {readFileSync,mkdirSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
+const products=JSON.parse(readFileSync(new URL('../../public/data/geology/manifest.json',import.meta.url)));
+const geojson=JSON.parse(readFileSync(new URL('../../public/data/geology/sim3464-units.geojson',import.meta.url)));
+const output=new URL('../../../evidence/m5/',import.meta.url);
+mkdirSync(output,{recursive:true});
+
+test('verified SIM 3464 unit overlay loads, renders and identifies the actual pilot-centre polygon',async({page})=>{
+  expect(products.status).toBe('source-derived');
+  expect(products.pilot_intersecting_feature_count).toBe(9);
+  expect(geojson.features).toHaveLength(9);
+  await page.setViewportSize({width:1600,height:1000});
+  const errors=[];page.on('pageerror',error=>errors.push(error.message));
+  await page.goto('/');
+  const toggle=page.getByRole('checkbox',{name:'Geological features context',exact:true});
+  const before=await page.locator('#terrain-map').screenshot();
+  const layerResponse=page.waitForResponse(response=>response.url().endsWith('/data/geology/sim3464-units.geojson'));
+  await toggle.check();
+  expect((await layerResponse).status()).toBe(200);
+  await expect(page.getByText('USGS GEOLOGIC UNIT INTERPRETATION',{exact:true})).toBeVisible();
+  await expect(page.getByText(/Nue Upper etched unit/)).toBeVisible();
+  await expect(page.getByText('<5°',{exact:true})).toHaveCount(0);
+  const mapBox=await page.locator('#terrain-map').boundingBox();
+  expect(mapBox).not.toBeNull();
+  await page.mouse.click(mapBox.x+mapBox.width/2,mapBox.y+mapBox.height/2);
+  await expect(page.getByTestId('geology-readout')).toContainText('Lower etched unit');
+  await expect(page.getByTestId('geology-readout')).toContainText('Nle');
+  await expect(page.getByTestId('geology-readout')).toContainText('100–200 m random offsets');
+  const after=await page.locator('#terrain-map').screenshot();
+  expect(after.equals(before)).toBe(false);
+  await page.screenshot({path:fileURLToPath(new URL('geology-desktop.png',output))});
+  await toggle.uncheck();
+  await expect(page.getByTestId('geology-readout')).toHaveCount(0);
+  expect(errors).toEqual([]);
+});

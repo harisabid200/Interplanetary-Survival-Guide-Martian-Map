@@ -6,7 +6,7 @@ const region=JSON.parse(readFileSync(new URL('../../public/data/manifest.json',i
 
 async function ready(page) {
   await page.goto('/');
-  await expect(page.getByRole('button',{name:'Compare routes →',exact:true})).toBeEnabled();
+  await expect(page.getByRole('button',{name:/Compare routes/})).toBeEnabled();
 }
 async function fillEndpoints(page,start,end) {
   for (const [name,value] of [['Starting location longitude',start[0]],['Starting location latitude',start[1]],['Destination longitude',end[0]],['Destination latitude',end[1]]]) await page.getByRole('spinbutton',{name,exact:true}).fill(String(value));
@@ -19,7 +19,7 @@ test('actual browser → API → M2 comparison, profiles, route controls and sou
   await page.getByRole('button',{name:'Load verification pair',exact:true}).click();
   await page.getByLabel('Exploration objective').selectOption('terrain');
   const responsePromise=page.waitForResponse(response=>response.url().endsWith('/api/routes')&&response.request().method()==='POST');
-  await page.getByRole('button',{name:'Compare routes →',exact:true}).click();
+  await page.getByRole('button',{name:/Compare routes/}).click();
   const response=await responsePromise;
   expect(response.status()).toBe(200);
   const result=await response.json();
@@ -28,8 +28,8 @@ test('actual browser → API → M2 comparison, profiles, route controls and sou
   writeFileSync(new URL(`../../../evidence/${evidenceStage}/http-route-response.json`,import.meta.url),JSON.stringify(result,null,2)+'\n');
   await expect(page.getByTestId('distance-distance')).toHaveText('3,507.3 m');
   await expect(page.getByTestId('terrain-distance')).toHaveText('3,964.3 m');
-  await expect(page.getByTestId('distance-slope')).toHaveText('13.30°');
-  await expect(page.getByTestId('terrain-slope')).toHaveText('8.69°');
+  await expect(page.getByTestId('distance-slope')).toHaveText(/^13\.30/);
+  await expect(page.getByTestId('terrain-slope')).toHaveText(/^8\.69/);
   await expect(page.getByRole('img',{name:'Actual route elevation profiles in metres versus horizontal Mars distance'})).toBeVisible();
   await expect(page.getByTestId('map-route-status')).toContainText('2 calculated route layers');
   await page.getByRole('checkbox',{name:'distance route layer',exact:true}).uncheck();
@@ -61,12 +61,12 @@ test('map picks populate real endpoints and changing inputs clears stale geometr
   await page.getByRole('button',{name:'Pick destination on map',exact:false}).click();
   await page.mouse.click(box.x+box.width*.6,box.y+box.height*.4);
   await expect(page.getByRole('spinbutton',{name:'Destination longitude',exact:true})).not.toHaveValue('');
-  await page.getByRole('button',{name:'Compare routes →',exact:true}).click();
+  await page.getByRole('button',{name:/Compare routes/}).click();
   await expect(page.getByTestId('distance-distance')).toBeVisible();
   await page.getByRole('spinbutton',{name:'Destination longitude',exact:true}).fill('77');
   await expect(page.getByTestId('map-route-status')).toHaveCount(0);
   await expect(page.getByTestId('distance-distance')).toHaveCount(0);
-  await page.getByRole('button',{name:'Compare routes →',exact:true}).click();
+  await page.getByRole('button',{name:/Compare routes/}).click();
   await expect(page.getByRole('alert')).toContainText('outside valid');
 });
 
@@ -74,7 +74,7 @@ test('actual same-cell request has zero travel and coincident objective paths',a
   await ready(page);
   const point=region.control_points[0].lonlat;
   await fillEndpoints(page,point,point);
-  await page.getByRole('button',{name:'Compare routes →',exact:true}).click();
+  await page.getByRole('button',{name:/Compare routes/}).click();
   await expect(page.getByTestId('distance-distance')).toHaveText('0.0 m');
   await expect(page.getByText(/Start and destination share one cell/)).toBeVisible();
 });
@@ -89,29 +89,29 @@ test('actual disconnected low-gradient cells return no path without a drawn rout
   await fillEndpoints(page,ll(indices[0]),ll(indices.at(-1)));
   await page.getByText('Terrain assumptions',{exact:true}).click();
   await page.getByLabel('Cell-slope limit',{exact:true}).fill('0.1');
-  await page.getByRole('button',{name:'Compare routes →',exact:true}).click();
+  await page.getByRole('button',{name:/Compare routes/}).click();
   await expect(page.getByRole('heading',{name:'No connected route',exact:true})).toBeVisible();
   await expect(page.getByTestId('map-route-status')).toHaveCount(0);
   await expect(page.getByTestId('distance-distance')).toHaveCount(0);
 });
 
 test('API unavailable preserves terrain inspector and can reconnect',async({page})=>{
-  await page.route('**/api/region',route=>route.fulfill({status:503,contentType:'application/json',body:'{"code":"test_api_unavailable"}'}));
+  await page.route('**/api/region*',route=>route.fulfill({status:503,contentType:'application/json',body:'{"code":"test_api_unavailable"}'}));
   await page.goto('/');
   await expect(page.getByRole('button',{name:'Reconnect routing',exact:true})).toBeVisible();
-  await expect(page.getByRole('button',{name:'Compare routes →',exact:true})).toBeDisabled();
+  await expect(page.getByRole('button',{name:/Compare routes/})).toBeDisabled();
   await page.getByRole('button',{name:'Sample map center',exact:false}).click();
   await expect(page.getByTestId('elevation')).toBeVisible();
-  await page.unroute('**/api/region');
+  await page.unroute('**/api/region*');
   await page.getByRole('button',{name:'Reconnect routing',exact:true}).click();
-  await expect(page.getByRole('button',{name:'Compare routes →',exact:true})).toBeEnabled();
+  await expect(page.getByRole('button',{name:/Compare routes/})).toBeEnabled();
 });
 
 test('dataset mismatch response shows error and no invented route',async({page})=>{
   await ready(page);
   await page.getByRole('button',{name:'Load verification pair',exact:true}).click();
   await page.route('**/api/routes',route=>route.fulfill({status:409,contentType:'application/json',body:'{"code":"dataset_mismatch","message":"Map and routing datasets differ. Reload verified data."}'}));
-  await page.getByRole('button',{name:'Compare routes →',exact:true}).click();
+  await page.getByRole('button',{name:/Compare routes/}).click();
   await expect(page.getByRole('alert')).toContainText('datasets differ');
   await expect(page.getByTestId('map-route-status')).toHaveCount(0);
 });
@@ -120,7 +120,7 @@ test('mobile actual comparison and independent source contexts fit viewport',asy
   await page.setViewportSize({width:390,height:844});
   await ready(page);
   await page.getByRole('button',{name:'Load verification pair',exact:true}).click();
-  await page.getByRole('button',{name:'Compare routes →',exact:true}).click();
+  await page.getByRole('button',{name:/Compare routes/}).click();
   await expect(page.getByTestId('terrain-distance')).toHaveText('3,964.3 m');
   await page.getByRole('checkbox',{name:'Geological features context',exact:true}).check();
   await expect(page.getByRole('heading',{name:'Geological features',exact:true})).toBeVisible();
@@ -143,7 +143,7 @@ test('editing endpoints during an actual in-flight request never restores stale 
     try {await route.fulfill({response});} catch { /* The edited request is intentionally aborted. */ }
     notifySettled();
   });
-  await page.getByRole('button',{name:'Compare routes →',exact:true}).click();
+  await page.getByRole('button',{name:/Compare routes/}).click();
   await fetched;
   await page.getByRole('spinbutton',{name:'Destination longitude',exact:true}).fill('77.43');
   release(); await settled;

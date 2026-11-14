@@ -1,8 +1,8 @@
 import {projectionFunctions,cellAt} from './coordinates.js';
 
 const hash=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
-export async function loadThermal(terrainHash) {
-  const base='/data/environment-map/';
+export async function loadThermal(terrainHash,dataPrefix='') {
+  const base=`/data/${dataPrefix}environment-map/`;
   const response=await fetch(base+'manifest.json');
   if (!response.ok) throw new Error('Thermal map unavailable. Run scripts/environment_map.py after downloading its verified source.');
   const meta=await response.json();

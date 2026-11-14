@@ -28,7 +28,7 @@ test('real thermal colour overlay, native point value, opacity and unchanged rou
   await page.getByText('What these colours mean',{exact:true}).click();
   await expect(page.getByText(/individual acquisition dates are not supplied/)).toBeVisible();
   await page.getByRole('button',{name:'Load verification pair',exact:true}).click();
-  await page.getByRole('button',{name:'Compare routes →',exact:true}).click();
+  await page.getByRole('button',{name:/Compare routes/}).click();
   await expect(page.getByTestId('distance-distance')).toHaveText('3,507.3 m');
   await expect(page.getByTestId('terrain-distance')).toHaveText('3,964.3 m');
   await checkbox.scrollIntoViewIfNeeded();
@@ -44,7 +44,7 @@ test('missing thermal dataset disables only its overlay',async({page})=>{
   await page.goto('/');
   await expect(page.getByLabel('Surface thermal response map',{exact:true})).toBeDisabled();
   await expect(page.getByText(/Thermal map unavailable. Run scripts/)).toBeVisible();
-  await expect(page.getByRole('button',{name:'Compare routes →',exact:true})).toBeEnabled();
+  await expect(page.getByRole('button',{name:/Compare routes/})).toBeEnabled();
   await page.getByRole('button',{name:'Sample map center',exact:false}).click();
   await expect(page.getByTestId('elevation')).toBeVisible();
 });

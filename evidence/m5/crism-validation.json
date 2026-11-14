@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "status": "source-derived",
+  "product_id": "frt000047a3_07_if166j_mtr3",
+  "summary_product_id": "FRT000047A3_07_SR166J_MTR3",
+  "band_index_1based": 40,
+  "quantity": "D2300 spectral summary parameter",
+  "unit": "dimensionless band-math index",
+  "interpretation": "2.3 micrometre spectral drop parameter; a spectral-shape indicator used in hydrated-mineral/clay studies, not a mineral identification by itself.",
+  "source_description": "MTRDR SR is the CRISM team's noise-mitigated/refined spectral summary product; processing may interpolate flagged outlier pixels.",
+  "source_url": "https://pds-geosciences.wustl.edu/mro/mro-m-crism-5-rdr-mptargeted-v1/mrocr_4001/mtrdr/2007/2007_057/frt000047a3/",
+  "ode_product_url": "https://ode.rsl.wustl.edu/mars/indexproductpage.aspx?product_id=frt000047a3_07_if166j_mtr3&product_idGeo=47360732",
+  "ode_label_url": "https://pds-geosciences.wustl.edu/mro/mro-m-crism-5-rdr-mptargeted-v1/mrocr_4001/mtrdr/2007/2007_057/frt000047a3/frt000047a3_07_if166j_mtr3.xml",
+  "observation_time_utc": [
+    "2007-02-26T04:34:15.930Z",
+    "2007-02-26T04:36:23.656Z"
+  ],
+  "observation_id": "16#000047A3#",
+  "orbit": "2743",
+  "source_pixel_size_m": 18,
+  "source_shape_lines_samples": [
+    808,
+    847
+  ],
+  "source_image_bytes": 164250240,
+  "source_image_sha256": "10eb37e4dd8f2f95a6c3ebdfda5a0b066bd02c33bb2d1e03558c024f3b16ec2d",
+  "source_label_sha256": "10ac486d769f8fdc82ed08fb88f42e37dd1f4cb29a0b6db57a39a7e6cb7ac3c9",
+  "source_header_sha256": "dfb912294226519e500701bd5e215e15dc5b747212c25d4bef2287f4d39a61e4",
+  "source_crs_wkt": "PROJCRS[\"MRO Mars Equirectangular [IAU 2000] [15.00N; 0.00E]\",BASEGEOGCRS[\"GCS_Mars_2000_IAU_IAG_custom_sphere_lat15\",DATUM[\"D_Mars_2000_IAU_IAG_custom_sphere_lat15\",ELLIPSOID[\"Mars_2000_IAU_IAG_custom_sphere_lat15\",3394839.81331631,0,LENGTHUNIT[\"metre\",1,ID[\"EPSG\",9001]]]],PRIMEM[\"Reference_Meridian\",0,ANGLEUNIT[\"Degree\",0.0174532925199433]]],CONVERSION[\"unnamed\",METHOD[\"Equidistant Cylindrical (Spherical)\",ID[\"EPSG\",1029]],PARAMETER[\"Latitude of 1st standard parallel\",15,ANGLEUNIT[\"Degree\",0.0174532925199433],ID[\"EPSG\",8823]],PARAMETER[\"Longitude of natural origin\",0,ANGLEUNIT[\"Degree\",0.0174532925199433],ID[\"EPSG\",8802]],PARAMETER[\"False easting\",0,LENGTHUNIT[\"metre\",1],ID[\"EPSG\",8806]],PARAMETER[\"False northing\",0,LENGTHUNIT[\"metre\",1],ID[\"EPSG\",8807]]],CS[Cartesian,2],AXIS[\"easting\",east,ORDER[1],LENGTHUNIT[\"metre\",1,ID[\"EPSG\",9001]]],AXIS[\"northing\",north,ORDER[2],LENGTHUNIT[\"metre\",1,ID[\"EPSG\",9001]]]]",
+  "source_crs": {
+    "sphere_radius_m": 3394839.813316312,
+    "projection": "equirectangular",
+    "standard_parallel_deg": 15,
+    "central_meridian_deg": 0,
+    "coordinates": "metres; planetocentric latitude; positive-east longitude"
+  },
+  "ode_footprint_lonlat_wkt": "POLYGON ((77.642 18.4471, 77.579 18.4465, 77.5158 18.4459, 77.4527 18.4444, 77.3897 18.4429, 77.3982 18.513, 77.4024 18.5523, 77.3943 18.5851, 77.3758 18.6416, 77.4342 18.652, 77.4926 18.6642, 77.5509 18.6763, 77.6085 18.6881, 77.5984 18.617, 77.5991 18.5739, 77.6128 18.5266, 77.642 18.4471))",
+  "pilot_intersection_area_map_m2": 11358784.735351562,
+  "pilot_area_map_m2": 25000000.0,
+  "pilot_area_intersection_fraction": 0.4543513894140625,
+  "footprint_area_geojson_sha256": "6b1c68e003a69dad89ec8ee434464fb3891d6d2bd614f4dcaebceffc3a802349",
+  "crs": {
+    "code": "MARS:JEZERO",
+    "wkt": "PROJCRS[\"Jezero_Crater_Projection\",BASEGEOGCRS[\"GCS_Mars_2000_Sphere\",DATUM[\"Mars_2000_(Sphere)\",ELLIPSOID[\"Mars_2000_Sphere\",3396190,0,LENGTHUNIT[\"metre\",1,ID[\"EPSG\",9001]]]],PRIMEM[\"Reference_Meridian\",0,ANGLEUNIT[\"degree\",0.0174532925199433,ID[\"EPSG\",9122]]]],CONVERSION[\"unnamed\",METHOD[\"Equidistant Cylindrical (Spherical)\",ID[\"EPSG\",1029]],PARAMETER[\"Latitude of 1st standard parallel\",18.4663,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8823]],PARAMETER[\"Longitude of natural origin\",0,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8802]],PARAMETER[\"False easting\",0,LENGTHUNIT[\"metre\",1],ID[\"EPSG\",8806]],PARAMETER[\"False northing\",0,LENGTHUNIT[\"metre\",1],ID[\"EPSG\",8807]]],CS[Cartesian,2],AXIS[\"easting\",east,ORDER[1],LENGTHUNIT[\"metre\",1,ID[\"EPSG\",9001]]],AXIS[\"northing\",north,ORDER[2],LENGTHUNIT[\"metre\",1,ID[\"EPSG\",9001]]]]",
+    "radius_m": 3396190.0,
+    "standard_parallel_deg": 18.4663,
+    "central_meridian_deg": 0,
+    "axis_order": "easting,northing in metres; geographic positive-east longitude,planetocentric latitude in degrees"
+  },
+  "width": 250,
+  "height": 250,
+  "affine": [
+    20.0,
+    0.0,
+    4351379.999999998,
+    0.0,
+    -20.0,
+    1095540.0000000028
+  ],
+  "bounds_m": [
+    4351379.999999998,
+    1090540.0000000028,
+    4356379.999999998,
+    1095540.0000000028
+  ],
+  "terrain_manifest_sha256": "92a388c7bba2bd9612b17a78fdf4e3aa681a704d6e6aa95bd9eb059840d49134",
+  "resampling": "nearest-neighbour from native 18 m summary parameter to the 20 m app grid; nodata preserved",
+  "valid_pixels": 28095,
+  "total_pixels": 62500,
+  "valid_fraction": 0.44952,
+  "range": [
+    -0.00684692757204175,
+    0.019614756107330322
+  ],
+  "median": 0.005265351850539446,
+  "p95": 0.011912445537745953,
+  "positive_value_fraction": 0.983769353977576,
+  "display_stretch": [
+    -0.01,
+    0.02
+  ],
+  "display_colors_negative_neutral_positive": [
+    [
+      77,
+      132,
+      170
+    ],
+    [
+      182,
+      183,
+      163
+    ],
+    [
+      229,
+      145,
+      88
+    ]
+  ],
+  "limits": "Parameter values are spectral indices, not concentration or categorical mineral detections. Positive values do not independently confirm a mineral; noise, spectral overlap, atmospheric/residual effects, surface mixtures, and SR outlier interpolation matter. No mineral threshold or safety/resource scoring is applied. Coverage is only the actual ODE footprint intersection; remaining pilot cells stay nodata.",
+  "outputs": {
+    "d2300.f32": {
+      "bytes": 250000,
+      "sha256": "079a75d2f0a77a631061515c0eefd281e6faada38234c3ae0a2b18e8ffcd084e"
+    },
+    "valid.u8": {
+      "bytes": 62500,
+      "sha256": "85160e8d4083f20b339a92fb358c0f80c20bb4a34abbaf92b032fc53c5d8e895"
+    },
+    "d2300.png": {
+      "bytes": 31417,
+      "sha256": "dd454fae02444231f9d99be1f58f1f0a743648b6a4843a40152785f559a71475"
+    },
+    "footprint.geojson": {
+      "bytes": 400,
+      "sha256": "6b1c68e003a69dad89ec8ee434464fb3891d6d2bd614f4dcaebceffc3a802349"
+    }
+  }
+}

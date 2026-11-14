@@ -1,6 +1,6 @@
 # MARSWALK · Jezero mission control
 
-NASA Space Apps 2026 planning prototype with three core modules: Environmental, Scientific and Mission Intelligence. M0–M4 are implemented: verified CTX imagery/DEM/slope, unchanged deterministic routing, mission-control UI/API, actual historical MEDA temperature/pressure series and rover-relative position context, dated MARCI report and Gale-only RAD metadata reference. Scientific spatial imports remain M5. No live weather, numeric RAD dose, measured Jezero ionizing radiation, water resources or travel-safety claims.
+NASA Space Apps 2026 planning prototype with core Environmental, Scientific and Mission Intelligence. M0-M5 include verified geology and a partial-coverage CRISM D2300 spectral-index overlay; source-backed science destinations remain pending. CTX imagery/DEM/slope, deterministic routing, mission-control UI/API, historical MEDA series, dated MARCI context, Gale-only RAD reference and THEMIS thermal-inertia map are available. CRISM is an observed spectral parameter, not mineral identification or resource mapping. No live weather, numeric RAD dose, measured Jezero ionizing radiation, water resources or travel-safety claims.
 
 ## Run locally (PowerShell)
 
@@ -10,26 +10,36 @@ The current workspace has the acquired data, installed packages and built fronte
 .\.venv\Scripts\python.exe -m backend.server
 ```
 
-Open http://127.0.0.1:8000. Pick start/destination on the real map or enter Mars coordinates, choose distance/terrain priority, then **Compare routes**. **Load verification pair** reproduces the audited M2 example (test selections, not designated science sites). Inspect both paths, source elevation profiles, costs, assumptions and provenance. Inputs changing clear stale results. Sample map center supports keyboard inspection. Enable **Temperature & weather** for actual MEDA sol 15 observations, detector selection, pressure, dates, quality and provenance; independently toggle MARCI dust context and Gale radiation reference. Scientific sources remain availability panels pending M5. No unsupported environmental overlay is painted. Cached data work without NASA network access; routing and environmental panels need the local API. Restart an already-running backend after updating code or preprocessing.
+Open http://127.0.0.1:8000. The initial map view shows about 7.5 by 7.5 km of real NASA/JPL Mars Trek / USGS CTX imagery. The default Terrain coverage is the original 5 by 5 km DEM and route region. Use the Terrain coverage selector in the left sidebar to choose Expanded 7.5 by 7.5 km; the dashed boundary then encloses a second verified native 20 m DEM, slope and route grid. Expanded mode also loads source-derived SIM 3464 geology (19 intersecting polygons), CRISM D2300 (38.4% valid grid cells; remaining cells stay transparent), and THEMIS thermal inertia (native 100 m pixels covering the expanded terrain). Their units, footprint and limits remain shown in the UI. Imagery beyond the dashed boundary is imagery only. Fit terrain / Wider view changes the viewport, not data coverage. The basemap is a 2048 by 2048 mosaic from 64 zoom-13 tiles (about 5.09 m tile spacing at the equator; nominal source imagery about 6 m); this visual detail and expanded crop do not improve native DEM resolution. Slope shading starts off. Pick start/destination on the map or enter Mars coordinates, choose distance/terrain priority, then Compare routes. Load verification pair reproduces test selections, not designated science sites. CRISM D2300 is a dimensionless observed parameter with valid pixels over about 45% of the 5 km pilot, not mineral identification, concentration, resource, water or safety. Geological features shows USGS SIM 3464 units at 1:75,000 with disclosed 100-200 m random registration offsets. Temperature and weather opens historical MEDA sol 15 observations; MARCI dust context and the Gale-only radiation reference remain separate panels. No unsupported environmental overlay is painted. Restart an already-running backend after updating code or preprocessing.
 
 Fresh setup from repository root requires Python 3.13, uv, Node 22.12+ (tested 22.21.0), npm, curl.exe and internet access:
 
 ```powershell
 uv venv --python 3.13 .venv
+uv pip install --python .venv/Scripts/python.exe -r requirements-data.lock.txt
 uv pip install --python .venv/Scripts/python.exe -r requirements-api.lock.txt
 .\.venv\Scripts\python.exe scripts/fetch_m0.py
 .\.venv\Scripts\python.exe scripts/inspect_dem.py
 .\.venv\Scripts\python.exe scripts/inspect_imagery.py --fetch
 .\.venv\Scripts\python.exe scripts/preprocess.py
+.\.venv\Scripts\python.exe scripts/preprocess_expanded.py
+.\.venv\Scripts\python.exe scripts/build_detail_basemap.py --fetch
 .\.venv\Scripts\python.exe scripts/fetch_environment.py --sol 15
 .\.venv\Scripts\python.exe scripts/preprocess_environment.py
 .\.venv\Scripts\python.exe scripts/environment_map.py --fetch
+.\.venv\Scripts\python.exe scripts/fetch_sim3464.py
+.\.venv\Scripts\python.exe scripts/build_geology.py
+.\.venv\Scripts\python.exe scripts/fetch_crism_candidate.py
+.\.venv\Scripts\python.exe scripts/build_crism_overlay.py
+.\.venv\Scripts\python.exe scripts/build_geology.py --region data/processed/jezero-expanded-7p5km/manifest.json --output frontend/public/data/expanded/geology --processed data/processed/jezero-expanded-7p5km/geology --evidence evidence/map-expansion/geology
+.\.venv\Scripts\python.exe scripts/build_crism_overlay.py --region data/processed/jezero-expanded-7p5km/manifest.json --output data/processed/jezero-expanded-7p5km/crism --public frontend/public/data/expanded/crism
+.\.venv\Scripts\python.exe scripts/environment_map.py --region data/processed/jezero-expanded-7p5km/manifest.json --output data/processed/jezero-expanded-7p5km/environment-map --public frontend/public/data/expanded/environment-map --evidence evidence/map-expansion/environment-map
 npm.cmd ci --prefix frontend
 npm.cmd run build --prefix frontend
 .\.venv\Scripts\python.exe -m backend.server
 ```
 
-Raw source assets are ignored and never overwritten by these scripts. Inspect existing `.part` files after an interrupted download before retrying. A changed source checksum stops processing. Generated products live in ignored `data/processed/jezero-m1/` and are copied into ignored `frontend/public/data/` for the static app. Do not hand-edit generated files. M0 sources and exact URLs are in [the acquisition report](evidence/m0/README.md).
+Raw source assets are ignored and never overwritten by these scripts. Inspect existing `.part` files after an interrupted download before retrying. A changed source checksum stops processing. Generated products live in ignored `data/processed/jezero-m1/` and `data/processed/jezero-expanded-7p5km/`, copied into matching paths under ignored `frontend/public/data/` for the static app. Do not hand-edit generated files. M0 sources and exact URLs are in [the acquisition report](evidence/m0/README.md).
 
 Development with live reload: run `.\.venv\Scripts\python.exe -m backend.server` in one terminal and `npm.cmd run dev --prefix frontend` in another; open http://127.0.0.1:5173. Vite proxies `/api` to the loopback backend. Rebuild after frontend edits for the combined server. If the API is unavailable, the standalone Vite terrain inspector remains usable and planning shows a reconnect/error state. For terrain/CLI-only setup, the original `requirements-data.lock.txt` remains unchanged; the API has its own pinned lock file.
 
@@ -51,7 +61,7 @@ Remove-Item Env:MARSWALK_API_PORT
 Remove-Item Env:MARSWALK_EVIDENCE_STAGE
 ```
 
-The current suite contains 60 Python tests, 9 JS tests and 20 Chrome cases. The latest full browser run passed 19 cases, followed by a passing four-case overlay run including the newly added mobile case. Commands above start an isolated API on 8001 and preview on 4173, then stop both; an existing application on 8000 is preserved. These test ports must be free. Chrome must already be installed. Current screenshots and actual TCP route responses go to `evidence/environment-map/`; M0?M4 artifacts stay untouched. `verify_m4.py` independently audits real routes, confirms unchanged M2 engine/M1 identity and previous evidence, and rebuilds the environmental artifact deterministically. Clear the test environment variables afterward so normal development continues to proxy to 8000. Original milestone verification scripts remain available; they regenerate their own milestone evidence when deliberately rerun. Synthetic fixtures remain confined to tests.
+The suite contains 60 Python tests, 9 JS tests and 24 Chrome cases including the M1 map, mission routing, environmental panels, SIM 3464, CRISM and detailed-basemap scenarios. Current expansion checks: all 60 Python tests, all 9 JS tests, all 24 Chrome tests, expanded API route/hash smoke, source-overlay footprint audit and production build passed. Commands above use isolated test ports; an existing application on 8000 is preserved. These test ports must be free. Chrome must already be installed. Current screenshots/evidence are in `evidence/map-upgrade/`, `evidence/map-expansion/` and `evidence/m5/`; prior M0–M4 evidence remains preserved. `verify_m4.py` independently audits real routes, confirms unchanged M2 engine/M1 identity and previous evidence, and rebuilds the environmental artifact deterministically. Clear the test environment variables afterward so normal development continues to proxy to 8000. Original milestone verification scripts remain available; they regenerate their own milestone evidence when deliberately rerun. Synthetic fixtures remain confined to tests.
 
 ## Run real terrain routes (M2)
 
@@ -77,7 +87,7 @@ Imagery comes from the M0 capabilities-derived CTX tiles, stitched without resam
 
 See [M1 evidence](evidence/m1/README.md) for actual results and limits, [STATUS.md](STATUS.md) for milestones, and the generated manifest for source IDs, checksums, method and output hashes. Georeferencing checks are numerical consistency checks, not survey positional accuracy. Twenty-metre sampling cannot resolve astronaut-scale holes or certify travel.
 
-Expanded scope, source details and earlier implementation results remain in [M3 evidence](evidence/m3/README.md) and [DATA_SOURCES.md](DATA_SOURCES.md). [M4 evidence](evidence/m4/README.md) documents actual MEDA import, 7.4-hour observation gaps, absent per-row quality flags, excluded pressure-uncertainty label anomaly, native landing-site-relative positions, dated MARCI context and unavailable numeric RAD dose. Exact original documents remain in `docs/history/pre-expansion/`. Next is M5 scientific intelligence, then M6 budgets/recommendations and M7 validation/submission. Gale RAD is never measured Jezero radiation; ancient-water evidence never implies drinking water or extractable ice.
+Expanded scope, source details and earlier implementation results remain in [M3 evidence](evidence/m3/README.md) and [DATA_SOURCES.md](DATA_SOURCES.md). [M4 evidence](evidence/m4/README.md) documents actual MEDA import, 7.4-hour observation gaps, absent per-row quality flags, excluded pressure-uncertainty label anomaly, native landing-site-relative positions, dated MARCI context and unavailable numeric RAD dose. [M5 evidence](evidence/m5/README.md) documents USGS SIM 3464 and CRISM D2300 acquisition, footprint validation, transformations and overlay behavior. Exact original documents remain in `docs/history/pre-expansion/`. Next source science destinations with verified coordinates and meanings, then continue M6 budgets/recommendations and M7 validation/submission. Gale RAD is never measured Jezero radiation; ancient-water evidence never implies drinking water or extractable ice.
 
 ## Environmental colour overlay
 Enable **Environmental map ? Surface thermal response** to colour the actual map using verified THEMIS-derived thermal inertia. Adjust Overlay opacity, then click the map or Sample map center to inspect the native source value. Lower thermal inertia responds faster to heating/cooling; higher resists temperature changes. These are 100 m source pixels, not 20 m environmental detail. The legend and source panel explicitly distinguish this property from temperature, storms and radiation, whose geographic distributions remain unavailable. Historical MEDA/MARCI/RAD context panels still work separately. [Source and checks](evidence/environment-map/README.md), [screenshot](evidence/environment-map/thermal-desktop.png). Production frontend is built; refresh 8000 or 5173 (backend/API requirements unchanged).

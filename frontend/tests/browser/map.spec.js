@@ -23,7 +23,7 @@ test('real map renders, five reference cells match, layers work, outside coverag
   }
   await page.getByRole('button',{name:'Inspect verification sample 1',exact:true}).click();
   await page.getByRole('checkbox',{name:'Terrain slope',exact:true}).uncheck();
-  await expect(page.getByText('SLOPE OVERLAY HIDDEN')).toBeVisible();
+  await expect(page.getByText('NASA / USGS CTX ORBITAL IMAGERY',{exact:true})).toBeVisible();
   await expect(page.getByRole('slider',{name:'Overlay opacity'})).toBeDisabled();
   await page.screenshot({path:`../evidence/${evidenceStage}/regression-desktop-imagery.png`});
   await page.getByRole('checkbox',{name:'Terrain slope',exact:true}).check();
@@ -39,14 +39,15 @@ test('real map renders, five reference cells match, layers work, outside coverag
   // Awaiting the outside-state also lets OL's deferred singleclick complete.
   await page.mouse.click(box.x+box.width/2,box.y+box.height/2);
   await expect(page.getByTestId('elevation')).toBeVisible();
-  await page.getByRole('button',{name:'Fit pilot',exact:false}).click();
+  await page.getByRole('button',{name:'Fit terrain',exact:false}).click();
+  await expect(page.getByText(/5.*km native DEM/)).toBeVisible();
   await page.getByRole('button',{name:'Sample map center',exact:false}).click();
   await expect(page.getByTestId('elevation')).toBeVisible();
   await page.getByRole('button',{name:'Inspect verification sample 1',exact:true}).click();
   await page.locator('#terrain-map').focus();
   await page.keyboard.press('ArrowRight');
   await expect(page.locator('#terrain-map')).toBeFocused();
-  await page.getByRole('button',{name:'Fit pilot',exact:false}).click();
+  await page.getByRole('button',{name:'Wider view',exact:false}).click();
   await page.screenshot({path:`../evidence/${evidenceStage}/regression-desktop-slope.png`});
   await page.getByText('Sources & processing').click();
   await expect(page.getByRole('link',{name:'Full manifest, checksums & method'})).toBeVisible();
@@ -73,9 +74,9 @@ test('missing manifest fails visibly and never shows invented values', async ({p
 });
 
 test('missing imagery has a visible error with numeric data retained', async ({page}) => {
-  await page.route('**/data/imagery.png', route => route.fulfill({status:404,body:'Missing'}));
+  await page.route('**/data/imagery-detail.png', route => route.fulfill({status:404,body:'Missing'}));
   await page.goto('/');
-  await expect(page.getByRole('alert')).toContainText('Imagery unavailable');
+  await expect(page.getByRole('alert')).toContainText('High-detail CTX basemap rejected; using validated M1 imagery');
   await page.getByRole('button',{name:'Sample map center',exact:false}).click();
   await expect(page.getByTestId('elevation')).toBeVisible();
 });

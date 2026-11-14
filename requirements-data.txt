@@ -1,3 +1,4 @@
 rasterio==1.4.4
 pyproj==3.7.2
 Pillow==12.2.0
+fiona==1.10.1

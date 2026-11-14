@@ -1,0 +1,48 @@
+{
+  "status": "verified",
+  "region_id": "expanded-7p5km",
+  "region_manifest_sha256": "398e5bfc3db222c6fa277c2c770add0b886e719590f89a1c9702ef833a10e896",
+  "geology": {
+    "source_archive_sha256": "a88bd53a5573743cc4a20036c10e585106d08a433ad2f34af269e9cea1529f87",
+    "source_feature_count": 1304,
+    "intersecting_polygons": 19,
+    "geojson_sha256": "36a8ce6a3afbe8f363d008fe4755398f3faa89bfb801137530715e64115853fd",
+    "registration_uncertainty": "100-200 m; USGS reported random offset; no shift applied"
+  },
+  "crism": {
+    "product_id": "frt000047a3_07_if166j_mtr3",
+    "source_image_sha256": "10eb37e4dd8f2f95a6c3ebdfda5a0b066bd02c33bb2d1e03558c024f3b16ec2d",
+    "footprint_intersection_m2": 22312980.489257812,
+    "region_area_m2": 56250000.0,
+    "area_intersection_fraction": 0.39667520869791667,
+    "valid_grid_cells": 54063,
+    "total_grid_cells": 140625,
+    "valid_fraction": 0.384448,
+    "interpretation": "D2300 spectral parameter only; not mineral concentration or resource detection"
+  },
+  "themis": {
+    "source_sha256": "84401e7717d43ae80cbd80213b91bd141ee48197eb8648293197447c43c2829c",
+    "quantity": "thermal_inertia",
+    "source_pixel_size_m": 100,
+    "native_grid_shape_width_height": [
+      80,
+      76
+    ],
+    "valid_pixels": 6080,
+    "total_pixels": 6080,
+    "bounds_map_m": [
+      4350057.1221077405,
+      1089200.0,
+      4357645.203084772,
+      1096800.0
+    ],
+    "contains_expanded_terrain_bounds": true,
+    "interpretation": "Published thermal inertia; not temperature, weather, dust or radiation"
+  },
+  "limitations": [
+    "CTX imagery remains visual context, not numeric terrain.",
+    "CRISM cells without a valid observed value remain nodata/transparent.",
+    "Geology retains its source registration uncertainty and qualitative map meaning.",
+    "THEMIS is a published derived thermal property at native 100 m source spacing."
+  ]
+}
