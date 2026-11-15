@@ -65,7 +65,7 @@
 | M3 Mission control / routing integration | Complete: actual map/API/M2 route flow, comparison/profile UI, availability panels and regressions passed |
 | M4 Environmental intelligence | Complete for supported historical context: verified MEDA ATS/pressure/relative-position import, dated MARCI report, Gale RAD metadata reference, independent controls/API and regressions; no environmental spatial surfaces or numeric dose |
 | M5 Scientific intelligence | Complete: actual SIM 3464 unit polygons, CRISM D2300 parameter overlay, cited ancient-lakeshore context and 11 mapped points across two regions |
-| M6 Recommendations / budgets | Implemented: separate outbound/return budget arithmetic and deterministic terrain-screened SIM 3464 stop candidates; validation in progress |
+| M6 Recommendations / budgets | Complete: separate outbound/return budget arithmetic and deterministic terrain-screened SIM 3464 stop candidates; Python, JS and all 27 browser regressions passed |
 | M7 Validation / submission | Planned; official rules verification pending |
 
 ## Blockers / unknowns
