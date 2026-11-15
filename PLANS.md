@@ -44,6 +44,8 @@ Candidate screening uses only actual SIM 3464 mapped point records and the verif
 ## M7 — validation, polish and submission
 Fresh setup, offline scientific cache, API/browser regression and accessibility/mobile checks; provenance/license/source review, screenshots/video and backup demo. Demonstrate environmental/scientific/mission modules while honestly identifying planned/unavailable capabilities. Recheck official challenge wording, resources and eligibility with trusted access/organizers before submission. CTX/MARCI/CRISM/HiRISE are instruments on MRO, not independent missions; MEDA is Mars 2020, RAD is MSL/Gale context. Only count scientifically meaningful sources under actual rules. Preserve all milestone evidence and document unresolved requirements.
 
+M7 execution (2026-11-15): final UI polish and integrated browser/build checks are complete; official 2026 dates/terms are reviewed and a demo/submission checklist is prepared in `evidence/m7/README.md`. The deadline is listed as Nov. 15 at 11:59 PM local time. Team registration, selected challenge, exact portal fields, image reuse/attribution terms and hosted demo recording are still outstanding team/submission items; do not mark the submission gate complete until verified.
+
 ## Suggested ownership (if parallel)
 - Data: scripts/, data manifest, projection and crop.
 - Frontend: frontend/ map, controls, layers, route UI.
