@@ -1,0 +1,993 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#170f12">
+<title>MARS // Field Operations</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root { color-scheme: dark; --ink:#f6e9df; --muted:#bd9c91; --line:rgba(255,218,198,.2); --panel:rgba(22,14,17,.78); --hot:#ff805d; --cyan:#70ebdd; --gold:#ffd28b; }
+  * { box-sizing:border-box; }
+  html,body { width:100%; height:100%; margin:0; overflow:hidden; background:#170f12; color:var(--ink); font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+  #scene { position:fixed; inset:0; display:block; width:100%; height:100%; }
+  .grain { position:fixed; inset:0; pointer-events:none; opacity:.10; z-index:2; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E"); mix-blend-mode:soft-light; }
+  #hud { display:none; position:fixed; inset:0; z-index:3; pointer-events:none; }
+  body.state-game #hud { display:block; }
+  .topbar { position:absolute; top:20px; left:24px; display:flex; align-items:center; gap:14px; text-shadow:0 2px 8px #160c0d; }
+  .brand-mark { width:34px; height:34px; border:1px solid rgba(255,255,255,.62); border-radius:50%; display:grid; place-items:center; color:var(--hot); font-size:18px; box-shadow:0 0 20px #ff734522,inset 0 0 12px #ff734522; }
+  .brand { font-size:12px; font-weight:700; letter-spacing:.23em; }
+  .brand small { display:block; color:var(--muted); font-size:9px; letter-spacing:.18em; margin-top:4px; font-weight:400; }
+  .top-right { position:absolute; top:20px; right:24px; display:flex; align-items:center; gap:10px; }
+  .pill { border:1px solid var(--line); background:rgba(18,12,14,.56); padding:9px 12px; color:#e8cfc2; font-size:10px; letter-spacing:.1em; backdrop-filter:blur(8px); }
+  .pill b { color:var(--cyan); font-weight:500; }
+  .panel { border:1px solid var(--line); background:linear-gradient(135deg,rgba(35,21,23,.84),rgba(19,14,18,.73)); backdrop-filter:blur(12px); box-shadow:0 14px 40px #130a0c44; }
+  #telemetry { position:absolute; top:78px; right:24px; width:278px; padding:17px 17px 14px; border-radius:3px; }
+  .panel-head { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line); padding-bottom:11px; margin-bottom:13px; }
+  .eyebrow { color:var(--muted); font-size:9px; letter-spacing:.16em; }
+  .live { display:flex; align-items:center; gap:6px; color:#9ee1ac; font-size:9px; letter-spacing:.1em; }
+  .live i { display:block; width:6px; height:6px; border-radius:50%; background:#7ef19b; box-shadow:0 0 10px #72ff95; }
+  .coord { color:#f0dfd5; font-size:10px; line-height:1.65; margin-bottom:13px; }
+  .coord span { color:var(--muted); }
+  .readout { display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; min-height:28px; font-size:10px; border-top:1px solid rgba(255,230,215,.08); }
+  .readout:first-of-type { border-top:0; }
+  .readout label { color:#bdaba4; letter-spacing:.025em; }
+  .value { color:#fff2e8; font-size:12px; text-align:right; white-space:nowrap; }
+  .unit { color:#ae8e83; font-size:9px; margin-left:4px; }
+  .meter { grid-column:1/-1; height:3px; background:#ffffff18; margin-top:-7px; margin-bottom:3px; overflow:hidden; }
+  .meter i { display:block; height:100%; width:50%; background:linear-gradient(90deg,#73e2ca,#f3ce8c,#ff775e); box-shadow:0 0 8px #ff886666; transition:width .3s; }
+  #radValue.safe { color:#93e7a9; } #radValue.caution { color:#ffd47d; } #radValue.danger { color:#ff715c; text-shadow:0 0 12px #ff3b3b77; }
+  #radWarn { display:none; color:#ff7667; letter-spacing:.17em; font-size:9px; padding:9px 0 2px; animation:blink .75s steps(2,end) infinite; }
+  #radWarn.show { display:block; }
+  @keyframes blink { 50% { opacity:.24; } }
+  #mission { position:absolute; right:24px; bottom:22px; width:278px; padding:13px 15px; border-left:2px solid var(--cyan); }
+  .mission-title { color:var(--cyan); font-size:9px; letter-spacing:.18em; margin-bottom:8px; }
+  .mission-main { display:flex; justify-content:space-between; align-items:center; font-size:12px; }
+  #distance { color:#fff0e3; font-size:15px; }
+  .bearing-wrap { display:flex; align-items:center; gap:9px; color:#cbb2a7; font-size:9px; margin-top:9px; }
+  #bearingArrow { display:inline-block; color:var(--cyan); font-size:17px; transform-origin:center; text-shadow:0 0 10px #73fff0; }
+  .mission-foot { margin-top:10px; color:#957e77; font-size:8px; letter-spacing:.1em; }
+  #mapFrame { position:absolute; left:22px; bottom:22px; width:226px; height:226px; border-radius:50%; padding:5px; background:linear-gradient(145deg,#f2b59899,#5b3a3b99); box-shadow:0 10px 35px #170b0ccc,0 0 25px #ff926122; }
+  #minimap { width:100%; height:100%; display:block; border-radius:50%; background:#694737; }
+  .map-title { position:absolute; left:50%; top:-18px; transform:translateX(-50%); max-width:315px; overflow:hidden; text-overflow:ellipsis; color:#f5d8c9; font-size:8px; letter-spacing:.19em; white-space:nowrap; text-shadow:0 2px 7px #13090b; }
+  .map-credit { position:absolute; left:15px; top:25px; z-index:1; padding:3px 5px; color:#f8e5d8; background:#140d0bc9; font-size:6px; letter-spacing:.06em; }
+  #mapMode { position:absolute; left:50%; bottom:12px; transform:translateX(-50%); font-size:8px; letter-spacing:.13em; color:#eee0d5; background:#160f12b9; padding:5px 8px; border:1px solid #ffffff24; border-radius:2px; white-space:nowrap; }
+  .map-north { position:absolute; top:9px; left:50%; transform:translateX(-50%); font-size:8px; color:#fff; text-shadow:0 1px 5px #000; }
+  #fullMap { position:fixed; inset:0; z-index:5; display:none; place-items:center; background:rgba(10,7,10,.88); backdrop-filter:blur(8px); pointer-events:auto; }
+  #fullMap.open { display:grid; }
+  .full-map-card { width:min(82vh,78vw); aspect-ratio:1; position:relative; border:1px solid #efb49b77; padding:12px; background:#201415; box-shadow:0 20px 90px #000a; }
+  #largeMap { width:100%; height:100%; display:block; }
+  .full-map-title { position:absolute; left:22px; top:20px; color:#fae3d6; letter-spacing:.2em; font-size:11px; text-shadow:0 2px 6px #000; }
+  .full-map-close { position:absolute; right:22px; top:20px; color:#d9bdb0; font-size:9px; letter-spacing:.15em; }
+  #storm { position:absolute; top:88px; left:50%; transform:translateX(-50%) translateY(-10px); opacity:0; transition:opacity .5s,transform .5s; padding:12px 18px; background:#331b1aee; border:1px solid #ff876a88; color:#ffc6a1; letter-spacing:.08em; font-size:10px; box-shadow:0 10px 35px #0007; }
+  #storm.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  #crosshair { position:absolute; left:50%; top:50%; width:12px; height:12px; transform:translate(-50%,-50%); opacity:.62; }
+  #crosshair:before,#crosshair:after { content:""; position:absolute; background:#f5e2d5; box-shadow:0 0 5px #000; }
+  #crosshair:before { width:1px; height:10px; left:5px; top:1px; } #crosshair:after { height:1px; width:10px; top:5px; left:1px; }
+  #helmetOverlay { display:none; position:absolute; inset:12px 15px 14px; border:1px solid rgba(128,246,232,.28); border-radius:34px 34px 84px 84px / 30px 30px 74px 74px; box-shadow:inset 0 0 95px rgba(62,202,190,.07),inset 0 0 230px rgba(9,17,23,.23); }
+  #helmetOverlay:before { content:""; position:absolute; inset:12px; border:1px solid rgba(220,255,250,.08); border-radius:inherit; }
+  #helmetOverlay:after { content:""; position:absolute; inset:0; border-radius:inherit; background:linear-gradient(135deg,rgba(202,255,250,.055),transparent 23%,transparent 75%,rgba(105,214,205,.035)); }
+  .visor-label,.visor-status,.visor-bottom { position:absolute; color:#a9eee2; text-shadow:0 0 12px #5ef1dc55; font-size:8px; letter-spacing:.16em; }
+  .visor-label { top:18px; left:24px; } .visor-status { top:18px; right:24px; color:#b5e4be; }
+  .visor-bottom { bottom:20px; left:50%; transform:translateX(-50%); text-align:center; color:#9acdc4; font-size:7px; white-space:nowrap; }
+  #hud.helmet #helmetOverlay { display:block; }
+  #hud.helmet #telemetry,#hud.helmet #mission { background:rgba(10,28,31,.39); border-color:rgba(125,247,231,.35); box-shadow:0 0 30px rgba(36,226,204,.08),inset 0 0 24px rgba(73,220,209,.035); backdrop-filter:blur(5px); }
+  #hud.helmet #telemetry { border-radius:13px 2px 13px 2px; }
+  #hud.helmet #mission { border-left-color:#84fff0; border-radius:2px 10px 2px 10px; }
+  #hud.helmet #crosshair { width:19px; height:19px; border:1px solid rgba(135,255,239,.55); border-radius:50%; opacity:.78; }
+  #hud.helmet #crosshair:before { height:7px; left:8px; top:5px; background:#d8fff6; }
+  #hud.helmet #crosshair:after { width:7px; top:8px; left:5px; background:#d8fff6; }
+  #start { display:none; }
+  .start-card { text-align:center; width:min(570px,90vw); padding:35px 30px 31px; background:linear-gradient(145deg,rgba(38,24,24,.91),rgba(17,13,17,.9)); border:1px solid rgba(255,206,183,.24); box-shadow:0 24px 90px #0009; }
+  .start-emblem { margin:0 auto 18px; height:50px; width:50px; border:1px solid #f2a78a88; border-radius:50%; display:grid; place-items:center; color:#ff9e78; font-size:21px; box-shadow:0 0 28px #ff795222,inset 0 0 20px #ff795222; }
+  .start-kicker { color:#d89f87; letter-spacing:.25em; font-size:9px; }
+  h1 { margin:10px 0 8px; font-size:clamp(26px,5vw,43px); letter-spacing:.18em; font-weight:500; }
+  .start-sub { color:#c0a79d; font-size:10px; letter-spacing:.06em; margin-bottom:25px; }
+  .start-button { display:inline-block; padding:12px 21px; background:#e47657; color:#190f11; font-weight:700; font-size:10px; letter-spacing:.18em; box-shadow:0 0 25px #e4765733; }
+  .key-list { margin-top:24px; color:#a99086; font-size:9px; line-height:2; letter-spacing:.035em; }
+  .key-list b { color:#efdbd0; font-weight:500; border:1px solid #ffffff2c; background:#ffffff0a; padding:2px 5px; margin:0 2px; }
+  #lockHint { position:absolute; bottom:25px; left:50%; transform:translateX(-50%); font-size:9px; color:#d1b5a9; letter-spacing:.11em; opacity:0; transition:opacity .25s; }
+  #lockHint.show { opacity:1; }
+  /* MAP SCREEN */
+  #missionMapScreen { position:fixed; inset:0; z-index:10; display:grid; grid-template-columns:minmax(0,1fr) 386px; background:#170f12; }
+  body.state-game #missionMapScreen { display:none; }
+  #missionMapScreen.depart { animation:mapDepart 4.5s ease-in forwards; }
+  @keyframes mapDepart { 0%{opacity:1;transform:scale(1);filter:blur(0)} 65%{opacity:.65;transform:scale(1.08);filter:blur(1px)} 100%{opacity:0;transform:scale(1.2);filter:blur(6px)} }
+  .map-stage { position:relative; min-width:0; overflow:hidden; background:#5d352e; }
+  #marsMap,#fallbackMapCanvas { position:absolute; inset:0; width:100%; height:100%; background:#6e3e31; }
+  #fallbackMapCanvas { display:none; z-index:1; cursor:grab; }
+  #fallbackMapCanvas.dragging { cursor:grabbing; }
+  #mapVeil { position:absolute; inset:0; z-index:2; pointer-events:none; background:linear-gradient(180deg,rgba(17,11,14,.57),transparent 18%,transparent 77%,rgba(14,9,11,.62)); }
+  .map-topline { position:absolute; top:19px; left:22px; z-index:4; display:flex; gap:12px; align-items:center; pointer-events:none; }
+  .map-title-badge { padding:10px 12px; border:1px solid #f4c5a446; background:#170e10c9; color:#f8e4d8; font-size:10px; letter-spacing:.2em; box-shadow:0 8px 25px #0005; }
+  .map-title-badge b { color:#ff9a78; font-size:11px; }
+  .map-status { padding:8px 10px; background:#170e10b8; color:#d7b8aa; font-size:8px; letter-spacing:.12em; }
+  .layer-switch { position:absolute; z-index:4; top:78px; left:22px; display:flex; gap:5px; }
+  .layer-switch button,.map-action { border:1px solid #f6d2bd44; color:#dfc5b9; background:#1a1012df; padding:9px 11px; font:9px ui-monospace,monospace; letter-spacing:.07em; cursor:pointer; }
+  .layer-switch button.active { color:#1b1010; background:#f4a17e; border-color:#ffd7bd; }
+  .layer-switch button:hover,.map-action:hover { border-color:#ffd0b7; }
+  .map-coordinates { position:absolute; z-index:4; left:22px; bottom:17px; padding:8px 10px; color:#e8d5cb; background:#160d10cc; border:1px solid #f6d2bd33; font-size:9px; letter-spacing:.07em; pointer-events:none; }
+  .map-help { position:absolute; z-index:4; right:20px; bottom:17px; color:#e8d5cb; padding:8px 10px; background:#160d10b8; font-size:8px; letter-spacing:.08em; pointer-events:none; }
+  #mapFallbackNotice { position:absolute; z-index:4; top:126px; left:22px; display:none; max-width:330px; color:#ffe0c2; background:#49251fe8; border:1px solid #ffba9177; padding:9px 12px; font-size:9px; line-height:1.55; }
+  #mapFallbackNotice.show { display:block; }
+  .insight-panel { position:relative; z-index:5; overflow:auto; padding:25px 21px 18px; background:linear-gradient(160deg,#221619,#140f12 75%); border-left:1px solid #f2b79a3c; box-shadow:-20px 0 60px #10080a55; }
+  .map-brand { display:flex; align-items:center; gap:11px; padding-bottom:17px; border-bottom:1px solid #f5c9b233; }
+  .map-brand .brand-mark { flex:none; }
+  .map-brand-title { font-size:11px; letter-spacing:.18em; }
+  .map-brand-title small { display:block; margin-top:5px; color:#bd9c91; font-size:8px; letter-spacing:.13em; }
+  .panel-kicker { margin-top:18px; color:#dd9878; font-size:8px; letter-spacing:.2em; }
+  #selectedName { margin:8px 0 3px; font-size:20px; line-height:1.25; font-weight:500; letter-spacing:0; color:#fff0e5; }
+  #selectedCoords { color:#bc9f94; font-size:9px; letter-spacing:.04em; line-height:1.6; }
+  .feature-line { margin-top:10px; color:#d5b8aa; font-size:9px; line-height:1.55; }
+  .feature-line b { color:#f0d8c9; font-weight:500; }
+  .profile-row { display:flex; align-items:center; justify-content:space-between; margin:16px 0 12px; color:#bfa69c; font-size:9px; }
+  #profileSelect { width:155px; padding:8px 9px; border:1px solid #e9b59a55; background:#241719; color:#f4dfd2; font:10px ui-monospace,monospace; }
+  .score-card { display:grid; grid-template-columns:56px 1fr; align-items:center; gap:11px; padding:12px; background:#ffffff08; border:1px solid #f6d0b826; }
+  #scoreRing { width:52px; height:52px; display:grid; place-items:center; border:2px solid #7ce6d3; border-radius:50%; color:#a5f2dd; font-size:17px; box-shadow:0 0 20px #77edcf1e; }
+  .score-caption { color:#e7d5ca; font-size:9px; letter-spacing:.09em; }
+  #scoreReason { margin-top:5px; color:#af9489; font-size:8px; line-height:1.5; }
+  #insightMetrics { margin-top:13px; display:grid; gap:10px; }
+  .insight-metric { display:grid; grid-template-columns:1fr auto; align-items:center; gap:5px 10px; font-size:9px; color:#cfb9af; }
+  .insight-metric strong { color:#f4e2d7; font-size:9px; font-weight:500; }
+  .insight-bar { grid-column:1/-1; height:4px; background:#ffffff13; overflow:hidden; }
+  .insight-bar i { display:block; height:100%; background:linear-gradient(90deg,#78dec7,#ffd187,#ff735c); box-shadow:0 0 8px #f28c62aa; }
+  .hazards { margin-top:14px; padding:10px 11px; background:#301d1c; border-left:2px solid #f08c69; }
+  .hazards-title { color:#f2a17e; font-size:8px; letter-spacing:.16em; }
+  #hazardList { margin:7px 0 0; padding-left:15px; color:#d2b5a5; font-size:8px; line-height:1.7; }
+  .illustrative-note { margin-top:12px; color:#8f7771; font-size:7px; line-height:1.5; }
+  #recommendBtn { width:100%; margin-top:15px; color:#f4d9c8; background:#2d2020; border:1px solid #e7ae8b66; padding:11px; font:9px ui-monospace,monospace; letter-spacing:.1em; cursor:pointer; }
+  #recommendBtn:hover { background:#49302b; }
+  #recommendStatus { min-height:14px; margin-top:7px; color:#e3bb8e; font-size:8px; }
+  #landBtn { width:100%; margin-top:7px; padding:14px; border:0; color:#211210; background:linear-gradient(100deg,#f3b085,#ff805d); font:bold 10px ui-monospace,monospace; letter-spacing:.2em; cursor:pointer; box-shadow:0 8px 30px #ef765533; }
+  #landBtn:disabled { color:#765c54; background:#483431; box-shadow:none; cursor:not-allowed; }
+  .map-disclaimer { margin-top:10px; color:#836d67; font-size:7px; line-height:1.45; text-align:center; }
+  .leaflet-container { background:#6d4034; font-family:ui-monospace,monospace; }
+  .leaflet-control-attribution { font-size:7px!important; background:#1a1010b9!important; color:#cdb5a7!important; }
+  .leaflet-control-attribution a { color:#f0a482!important; }
+  #marsMap.thermal-tint .leaflet-tile-pane { filter:hue-rotate(38deg) saturate(1.45) contrast(1.08); }
+  .feature-pin { display:flex; align-items:center; gap:5px; white-space:nowrap; color:#fff0e7; font:8px ui-monospace,monospace; text-shadow:0 1px 4px #160b0a,0 0 7px #000; }
+  .feature-pin i { display:block; width:8px; height:8px; border:1px solid #fff1dd; border-radius:50%; background:#ff956c; box-shadow:0 0 11px #ffa27e; }
+  .grid-label { color:#f8e3d4; font:8px ui-monospace,monospace; text-shadow:0 1px 4px #190c0b,0 0 4px #000; text-align:center; }
+  .cell-selected { animation:cellPulse 1.2s ease-in-out infinite alternate; }
+  @keyframes cellPulse { from { stroke-opacity:.6; stroke-width:2; } to { stroke-opacity:1; stroke-width:4; } }
+  #landingSequence,#pauseScreen { position:fixed; inset:0; z-index:12; display:none; place-items:center; text-align:center; background:radial-gradient(ellipse at 50% 55%,#9c5941aa,#180e11f5 70%); }
+  #landingSequence.show,#pauseScreen.show { display:grid; }
+  #landingSequence.show { animation:descent 4.55s ease-in forwards; }
+  @keyframes descent { 0%{opacity:0;transform:scale(1.18);filter:blur(8px)} 16%{opacity:1;filter:blur(0)} 70%{transform:scale(1)} 100%{opacity:0;transform:scale(.93)} }
+  .sequence-card,.pause-card { min-width:min(400px,88vw); padding:28px; background:#1d1416e8; border:1px solid #f6b99c55; box-shadow:0 20px 90px #0009; }
+  .sequence-label { color:#f6a17d; font-size:9px; letter-spacing:.25em; }
+  #descentStep { margin-top:14px; font-size:19px; letter-spacing:.15em; }
+  #descentCount { margin-top:9px; color:#c5a69a; font-size:10px; }
+  .pause-card h2 { margin:5px 0 8px; font-size:18px; letter-spacing:.18em; }
+  .pause-card p { color:#ae958c; font-size:9px; line-height:1.6; }
+  .pause-card button { margin:7px 4px 0; padding:11px 14px; border:1px solid #f0b39477; background:#2a1b1c; color:#f4ddd0; font:9px ui-monospace,monospace; letter-spacing:.1em; cursor:pointer; }
+  @media(max-width:900px){#missionMapScreen{grid-template-columns:minmax(0,1fr) 325px}.insight-panel{padding:18px 15px}.map-status{display:none}}
+  @media(max-width:650px){#missionMapScreen{grid-template-columns:1fr;grid-template-rows:46vh 54vh}.insight-panel{padding:13px 16px;overflow:auto;border-left:0;border-top:1px solid #f2b79a3c}.map-brand{padding-bottom:8px}.panel-kicker{margin-top:9px}#selectedName{font-size:16px}.profile-row{margin:9px 0}.score-card{padding:8px}#insightMetrics{grid-template-columns:1fr 1fr;gap:7px}.insight-metric{font-size:8px}.hazards{margin-top:8px;padding:7px}.illustrative-note{margin-top:7px}.layer-switch{top:59px;left:12px}.layer-switch button{padding:7px;font-size:7px}.map-topline{top:10px;left:12px}.map-coordinates{left:10px;bottom:9px}.map-help{display:none}}
+  @media (max-width:700px) {
+    #telemetry { top:69px; right:10px; width:214px; padding:12px; } .topbar { left:12px; top:14px; } .top-right { right:10px; top:14px; } .pill { padding:8px; font-size:8px; }
+    #mapFrame { left:12px; bottom:12px; width:174px; height:174px; } #mission { right:10px; bottom:12px; width:214px; padding:10px; }
+    .readout { min-height:25px; font-size:9px; } .value { font-size:11px; }
+  }
+</style>
+</head>
+<body>
+<canvas id="scene" aria-label="Three-dimensional Mars exploration scene"></canvas>
+<div class="grain"></div>
+<!-- MAP SCREEN: NASA Trek globe map, selectable grid cells, and site insights. -->
+<main id="missionMapScreen">
+  <div class="map-stage">
+    <div id="marsMap" aria-label="Equirectangular Mars map"></div>
+    <canvas id="fallbackMapCanvas"></canvas>
+    <div id="mapVeil"></div>
+    <div class="map-topline"><div class="map-title-badge"><b>ARES</b> // MISSION MAP</div><div class="map-status" id="mapSourceStatus">CONNECTING TO MARS TREK WMTS…</div></div>
+    <div class="layer-switch" role="group" aria-label="Map layer"><button class="active" data-layer="visible">VISIBLE IMAGE</button><button data-layer="elevation">ELEVATION</button><button data-layer="thermal">THERMAL-STYLE TINT · ILLUSTRATIVE</button></div>
+    <div id="mapFallbackNotice"></div>
+    <div class="map-coordinates" id="cursorCoords">CURSOR // LAT 0.00° · LON 0.00°</div>
+    <div class="map-help">DRAG TO PAN · SCROLL TO ZOOM · CLICK A GRID CELL</div>
+  </div>
+  <aside class="insight-panel">
+    <div class="map-brand"><div class="brand-mark">M</div><div class="map-brand-title">MARS FIELD OPS<small>LANDING SITE RECONNAISSANCE</small></div></div>
+    <div class="panel-kicker">SELECTED GRID CELL</div>
+    <h1 id="selectedName">Choose a landing cell</h1>
+    <div id="selectedCoords">Click the map grid or a named feature pin to inspect this region.</div>
+    <div class="feature-line" id="nearestFeature">Nearest feature <b>—</b></div>
+    <div class="profile-row"><label for="profileSelect">MISSION PROFILE</label><select id="profileSelect"><option value="science">Science</option><option value="settlement">Settlement</option><option value="safety">Safety-first</option></select></div>
+    <div class="score-card"><div id="scoreRing">—</div><div><div class="score-caption">LANDING SUITABILITY</div><div id="scoreReason">Select a cell to calculate the site score.</div></div></div>
+    <div id="insightMetrics"></div>
+    <div class="hazards"><div class="hazards-title">HAZARDS / FIELD NOTES</div><ul id="hazardList"><li>Awaiting site selection.</li></ul></div>
+    <div class="illustrative-note">Illustrative data. Real NASA layers can replace this (THEMIS, CRISM, MOLA, RAD).</div>
+    <button id="recommendBtn">✦ RECOMMEND BEST SITES</button><div id="recommendStatus"></div>
+    <button id="landBtn" disabled>LAND HERE</button>
+    <div class="map-disclaimer">SURFACE LAYERS ARE REMOTE IMAGERY · SITE INSIGHTS ARE SIMULATED</div>
+  </aside>
+</main>
+<div id="hud">
+  <div class="topbar"><div class="brand-mark">M</div><div class="brand">MARS FIELD OPS<small>EXPLORATION SUIT // MK-IV</small></div></div>
+  <div id="locationLabel" class="pill" style="position:absolute;left:50%;top:18px;transform:translateX(-50%);max-width:40vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">LOCATION: —</div>
+  <div class="top-right"><div class="pill">MISSION <b>ARES-07</b></div><div class="pill" id="clock">SOL 18 · 09:41</div></div>
+  <section id="telemetry" class="panel">
+    <div class="panel-head"><span class="eyebrow" id="telemetryTitle">ENVIRONMENTAL TELEMETRY</span><span class="live"><i></i>LIVE</span></div>
+    <div class="coord"><span>SECTOR</span> <b id="sector">LANDING SITE</b><br><span>POSITION</span> <b id="coords">000.0 / 000.0</b></div>
+    <div class="readout"><label>Ambient temperature</label><div class="value"><span id="temp">−61.0</span><span class="unit">°C</span></div></div>
+    <div class="readout"><label>Radiation exposure</label><div class="value"><span id="radValue">0.28</span><span class="unit">mSv/day</span></div></div>
+    <div id="radWarn">⚠ RADIATION HIGH · LIMIT EXPOSURE</div>
+    <div class="readout"><label>Water / ice potential</label><div class="value"><span id="water">18</span><span class="unit">%</span></div><div class="meter"><i id="waterMeter"></i></div></div>
+    <div class="readout"><label>Mineral density</label><div class="value"><span id="minerals">12</span><span class="unit">%</span></div><div class="meter"><i id="mineralMeter"></i></div></div>
+    <div class="readout"><label>Suspended dust</label><div class="value"><span id="dust">22</span><span class="unit">%</span></div><div class="meter"><i id="dustMeter"></i></div></div>
+    <div class="readout"><label>O₂ reserve</label><div class="value"><span id="oxygen">100</span><span class="unit">%</span></div><div class="meter"><i id="oxygenMeter"></i></div></div>
+    <div class="readout"><label>Suit battery</label><div class="value"><span id="battery">100</span><span class="unit">%</span></div><div class="meter"><i id="batteryMeter"></i></div></div>
+  </section>
+  <section id="mission" class="panel">
+    <div class="mission-title">ACTIVE WAYPOINT · ICE DEPOSIT</div>
+    <div class="mission-main"><span>Range to target</span><span id="distance">1,240 m</span></div>
+    <div class="bearing-wrap"><span id="bearingArrow">▲</span><span>BEARING <b id="bearing">000°</b></span></div>
+    <div class="mission-foot">FOLLOW THE CYAN BEAM TO INVESTIGATE</div>
+  </section>
+  <div id="mapFrame"><div class="map-title" id="minimapTitle">GRID A1 // MARS</div><div class="map-credit" id="mapCredit">LOCAL TERRAIN</div><div class="map-north">N</div><canvas id="minimap" width="256" height="256"></canvas><div id="mapMode">GRID SIMULATED · M TO ROTATE</div></div>
+  <div id="storm">⚠ DUST STORM IN 40 MIN · RETURN TO LANDING SITE</div>
+  <div id="helmetOverlay"><div class="visor-label">EVA VISOR // ENVIRONMENT FEED</div><div class="visor-status">SUIT LINK <b>●</b></div><div class="visor-bottom">OUTSIDE SENSOR ARRAY · LIVE SUIT TELEMETRY · SIMULATED MISSION GRID</div></div>
+  <div id="crosshair"></div>
+  <div id="lockHint">MOUSE FREE · CLICK TO RESUME</div>
+</div>
+<div id="fullMap"><div class="full-map-card"><div class="full-map-title">MARS // SURFACE RECONNAISSANCE</div><div class="full-map-close">TAB TO CLOSE · M TO ROTATE</div><canvas id="largeMap" width="900" height="900"></canvas></div></div>
+<!-- LANDING: short map-to-surface descent sequence. -->
+<div id="landingSequence"><div class="sequence-card"><div class="sequence-label">MARS ENTRY CORRIDOR</div><div id="descentStep">ENTRY</div><div id="descentCount">AUTONOMOUS DESCENT IN 5</div></div></div>
+<div id="pauseScreen"><div class="pause-card"><div class="sequence-label">SUIT LINK PAUSED</div><h2>MISSION ON HOLD</h2><p>Mouse control released. Resume exploration or return to the mission map.</p><button id="resumeBtn">RESUME SUIT LINK</button><button id="returnMapBtn">RETURN TO MAP</button></div></div>
+<div id="webglError" style="display:none;position:fixed;z-index:20;inset:0;background:#170f12;color:#f6e9df;padding:12vw;font:14px/1.7 monospace">This demo needs WebGL and an internet connection to load the pinned Three.js library. Open it in a recent Chrome or Edge browser.</div>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+(() => {
+  'use strict';
+  // All world, control, and HUD tuning lives here for quick hackathon edits.
+  const CONFIG = {
+    // NASA Trek WMTS REST templates below were checked against the current Trek API docs.
+    // Re-check the layer's live WMTSCapabilities.xml if NASA changes its catalog, matrix names, or image extension.
+    MAP_TILE_URL: 'https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0/default/default028mm/{z}/{y}/{x}.jpg',
+    MAP_ELEVATION_TILE_URL: 'https://trek.nasa.gov/tiles/Mars/EQ/Mars_MGS_MOLA_ClrShade_merge_global_463m/1.0.0/default/default028mm/{z}/{y}/{x}.jpg',
+    MAP_FALLBACK_IMAGE: 'mars_map.jpg',
+    map: { minZoom: 0, maxZoom: 6, lowZoomCellDegrees: 10, highZoomCellDegrees: 5, fineGridAtZoom: 3, fallbackZoom: 1 },
+    world: { size: 2000, segments: 190, fogNear: 330, fogFar: 1740, mapResolution: 256 },
+    terrain: { noiseScale: 105, noiseAmplitude: 23, detailScale: 34, detailAmplitude: 5.8, ridgeHeight: 21, craterCenter: [65, 85], craterRadius: 185, craterDepth: 17, flatRadius: 250, shape: 'Flat plain' },
+    controls: { walkSpeed: 6.0, runSpeed: 10.2, acceleration: 8.2, jumpVelocity: 6.3, gravity: 3.71, mouseSensitivity: 0.00225, slopePenalty: 1.7, boundary: 970 },
+    camera: { followDistance: 8.5, followHeight: 3.1, firstPersonHeight: 2.47, followSmoothing: 8, minPitch: -0.72, maxPitch: 0.62 },
+    player: { start: [0, 0], oxygenDrain: 0.018, batteryDrain: 0.014, runDrain: 0.045 },
+    zones: [
+      { name: 'Landing Site', x: -500, z: -465, radius: 260, color: '#69dfcd', terrain: '#b76848', profile: { temp: -62, rad: 0.28, water: 19, minerals: 14, dust: 24 } },
+      { name: 'Mineral Ridge', x: 365, z: -225, radius: 310, color: '#ffd17c', terrain: '#bc7350', profile: { temp: -48, rad: 0.76, water: 34, minerals: 91, dust: 38 } },
+      { name: 'Dust Basin', x: -325, z: 430, radius: 340, color: '#ff776a', terrain: '#c3795d', profile: { temp: -76, rad: 1.48, water: 49, minerals: 23, dust: 93 } }
+    ],
+    destination: { name: 'Ice Deposit', x: 665, z: 590, color: '#79fff1', radius: 210, water: 96 },
+    hud: { baseline: { temp: -61, rad: 0.43, water: 24, minerals: 22, dust: 31 }, blendFloor: 0.35, smoothing: 1.9, stormAfterSeconds: 90, stormDurationSeconds: 13 },
+    rocks: { count: 1350, capacity: 2300, seed: 42042, minScale: 0.45, maxScale: 1.55 },
+    colors: { sky: 0xd28b75, fog: 0xd28b75, terrainLow: 0x8f402f, terrainHigh: 0xd28a60 }
+  };
+
+  const $ = id => document.getElementById(id);
+  let appState = 'map'; // The only lifecycle state: map -> landing -> game.
+  let gameAvailable=true;
+  let selectedCell = null;
+  const CELL_LOOKUP = new Map();
+  const PROFILES = {
+    science: { label: 'Science', minerals: .27, water: .23, radiation: .10, dust: .10, roughness: .12, temperature: .08, safety: .10 },
+    settlement: { label: 'Settlement', minerals: .21, water: .28, radiation: .12, dust: .11, roughness: .12, temperature: .08, safety: .08 },
+    safety: { label: 'Safety-first', minerals: .06, water: .10, radiation: .27, dust: .19, roughness: .22, temperature: .08, safety: .08 }
+  };
+  const FEATURES = [
+    { id:'jezero', name:'Jezero Crater', lat:18.4, lon:77.7 },
+    { id:'gale', name:'Gale Crater', lat:-5.4, lon:137.8 },
+    { id:'olympus', name:'Olympus Mons', lat:18.65, lon:-133.8 },
+    { id:'valles', name:'Valles Marineris', lat:-13.9, lon:-59.2 },
+    { id:'hellas', name:'Hellas Basin', lat:-42.4, lon:70.5 },
+    { id:'elysium', name:'Elysium Planitia', lat:3.0, lon:154.7 }
+  ];
+  let currentGridStep = 10, leafletMap = null, gridLayer = null, selectedCellLayer = null, recommendationLayer = null;
+  let leafletCursorHandler=null,leafletOutHandler=null;
+  let baseLayers = {}, activeBaseLayer = null, fallbackOverlay = null, mapTileState = { loads:0, errors:0, fallbackStarted:false, timer:0 };
+  let fallbackView = { lat:0, lon:0, zoom:1 }, fallbackDragging = null, fallbackHovered = null, recommendedCells = [];
+  let localFallbackImage=null;
+
+  // INSIGHTS: deterministic cell IDs keep illustrative survey values stable across visits.
+  function stringSeed(text) { let h=2166136261; for(let i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619);} return h>>>0; }
+  function seededRandom(seed) { let a=seed>>>0; return ()=>{a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;}; }
+  function columnName(index) { let n=index+1,s=''; while(n>0){const r=(n-1)%26;s=String.fromCharCode(65+r)+s;n=Math.floor((n-1)/26);}return s; }
+  function gridStepForZoom(zoom) { return zoom>=CONFIG.map.fineGridAtZoom?CONFIG.map.highZoomCellDegrees:CONFIG.map.lowZoomCellDegrees; }
+  function makeCellMeta(lat,lon,step,featureId=null) {
+    lat=Math.max(-89.999,Math.min(89.999,lat));
+    lon=((lon+180)%360+360)%360-180;
+    const col=Math.max(0,Math.min(Math.ceil(360/step)-1,Math.floor((lon+180)/step)));
+    const row=Math.max(0,Math.min(Math.ceil(180/step)-1,Math.floor((lat+90)/step)));
+    const centerLat=-90+(row+.5)*step,centerLon=-180+(col+.5)*step;
+    const nearest=FEATURES.map(f=>({f,d:Math.hypot(lat-f.lat,((lon-f.lon+540)%360)-180)*Math.cos(lat*Math.PI/180)})).sort((a,b)=>a.d-b.d)[0];
+    if(!featureId&&nearest&&nearest.d<step*.48)featureId=nearest.f.id;
+    const feature=FEATURES.find(f=>f.id===featureId);
+    const label=`${columnName(col)}${row+1}`;
+    const cell={id:`${step}:${col}:${row}`,label,step,col,row,lat:feature?feature.lat:centerLat,lon:feature?feature.lon:centerLon,featureId:feature?feature.id:null,name:feature?feature.name:`Grid ${label}`};
+    CELL_LOOKUP.set(cell.id,cell);return cell;
+  }
+  // All simulated insight values are generated here so real THEMIS/CRISM/MOLA/RAD data can replace it later.
+  function getCellInsights(cellId) {
+    const cell=CELL_LOOKUP.get(cellId)||selectedCell||{id:cellId,label:'A1',lat:0,lon:0,name:`Grid ${cellId}`};
+    const lat=cell.lat,absLat=Math.abs(lat),rng=seededRandom(stringSeed(cell.id));
+    const presets={
+      jezero:{terrain:'Flat plain',minerals:57,water:64,radiation:34,dust:31,roughness:28,temperature:-56,hazards:['delta deposits can hide soft ground','localized rocky outcrops']},
+      gale:{terrain:'Crater rim',minerals:68,water:42,radiation:39,dust:44,roughness:61,temperature:-58,hazards:['steep crater slopes','rocky ejecta around the rim']},
+      olympus:{terrain:'Mountainous',minerals:61,water:33,radiation:48,dust:56,roughness:89,temperature:-64,hazards:['very steep slopes','thin, uneven volcanic terrain']},
+      valles:{terrain:'Canyon',minerals:76,water:39,radiation:43,dust:51,roughness:87,temperature:-57,hazards:['cliff edges and steep slopes','rockfall exposure']},
+      hellas:{terrain:'Basin',minerals:49,water:71,radiation:31,dust:67,roughness:43,temperature:-69,hazards:['frequent dust storms','low-lying basin terrain']},
+      elysium:{terrain:'Flat plain',minerals:53,water:48,radiation:36,dust:38,roughness:26,temperature:-54,hazards:['scattered rocks','seasonal dust activity']}
+    };
+    const preset=presets[cell.featureId];
+    if(preset)return { ...preset,cellName:cell.name,nearestFeature:cell.name };
+    const pole=absLat/90,terrainDraw=rng();
+    const terrain=terrainDraw<.13?'Crater rim':terrainDraw<.28?'Rocky field':terrainDraw<.40?'Mountainous':terrainDraw<.53?'Canyon':terrainDraw<.67?'Dune field':terrainDraw<.80?'Basin':'Flat plain';
+    const roughBoost={ 'Flat plain':-12,'Rocky field':14,'Mountainous':27,'Crater rim':15,'Canyon':24,'Dune field':-2,'Basin':-8 }[terrain];
+    const insights={terrain,minerals:Math.round(18+rng()*64),water:Math.round(Math.min(96,8+rng()*43+pole*47)),radiation:Math.round(20+rng()*47),dust:Math.round(12+rng()*66),roughness:Math.round(Math.max(5,Math.min(98,15+rng()*54+roughBoost))),temperature:Math.round(-48-pole*34+rng()*14),cellName:cell.name,nearestFeature:null};
+    const hazards=[];
+    if(insights.roughness>70)hazards.push('steep slopes and uneven footing');
+    if(insights.dust>65)hazards.push('frequent dust storms');
+    if(insights.radiation>62)hazards.push('elevated radiation exposure');
+    if(insights.water<22)hazards.push('low accessible water-ice potential');
+    if(terrain==='Canyon')hazards.push('cliff edges and rockfall exposure');
+    if(!hazards.length)hazards.push('scattered rocks; verify the approach corridor');
+    insights.hazards=hazards;
+    const nearest=FEATURES.map(f=>({f,d:Math.hypot(lat-f.lat,((cell.lon-f.lon+540)%360)-180)*Math.cos(lat*Math.PI/180)})).sort((a,b)=>a.d-b.d)[0];
+    insights.nearestFeature=nearest&&nearest.d<55?nearest.f.name:'No named feature nearby';
+    return insights;
+  }
+  function computeSuitability(insights,profileId) {
+    const w=PROFILES[profileId]||PROFILES.science;
+    const comfort=Math.max(0,100-Math.abs(insights.temperature+55)*1.8);
+    const safety=(100-insights.radiation)*.5+(100-insights.dust)*.3+(100-insights.roughness)*.2;
+    return Math.round(insights.minerals*w.minerals+insights.water*w.water+(100-insights.radiation)*w.radiation+(100-insights.dust)*w.dust+(100-insights.roughness)*w.roughness+comfort*w.temperature+safety*w.safety);
+  }
+  function suitabilityReason(v) {
+    const strength=v.water>=65?'strong ice potential':v.minerals>=68?'rich mineral signature':v.roughness<35?'a broad, gentle landing plain':v.dust<30?'low dust activity':'balanced surface conditions';
+    const concern=v.roughness>=70?'steep, uneven terrain':v.dust>=65?'dust-storm exposure':v.radiation>=65?'elevated radiation':'limited local resources';
+    return `${strength}; watch for ${concern}.`;
+  }
+  function formatCoord(n) { return `${Math.abs(n).toFixed(2)}°${n<0?'S':'N'}`; }
+  function formatLon(n) { return `${Math.abs(n).toFixed(2)}°${n<0?'W':'E'}`; }
+  function scoreMetrics(cell,insights) {
+    const score=computeSuitability(insights,$('profileSelect').value);
+    $('selectedName').textContent=cell.name;
+    $('selectedCoords').textContent=`CELL ${cell.label} // ${formatCoord(cell.lat)} · ${formatLon(cell.lon)} · ${cell.step}° GRID`;
+    $('nearestFeature').innerHTML=`Nearest feature <b>${insights.nearestFeature}</b>`;
+    $('scoreRing').textContent=score;
+    $('scoreRing').style.borderColor=score>72?'#7ce6d3':score>52?'#ffd187':'#ff806b';
+    $('scoreRing').style.color=score>72?'#a5f2dd':score>52?'#ffe1a4':'#ff9a82';
+    $('scoreReason').textContent=suitabilityReason(insights);
+    const tempGauge=Math.max(0,Math.min(100,(insights.temperature+105)/75*100));
+    const rows=[['Minerals richness',insights.minerals,`${insights.minerals}%`],['Water-ice likelihood',insights.water,`${insights.water}%`],['Radiation level',insights.radiation,`${insights.radiation}%`],['Dust-storm risk',insights.dust,`${insights.dust}%`],['Terrain roughness',insights.roughness,`${insights.roughness}%`],['Temperature',tempGauge,`${insights.temperature} °C`]];
+    $('insightMetrics').innerHTML=rows.map(([name,value,label])=>`<div class="insight-metric"><span>${name}</span><strong>${label}</strong><div class="insight-bar"><i style="width:${value}%"></i></div></div>`).join('');
+    $('hazardList').innerHTML=insights.hazards.map(h=>`<li>${h}</li>`).join('');
+    $('landBtn').disabled=!gameAvailable;
+    return score;
+  }
+  function chooseCell(cell) {
+    selectedCell=cell;const insights=getCellInsights(cell.id);selectedCell.insights=insights;scoreMetrics(cell,insights);
+    $('recommendStatus').textContent='';
+    if(leafletMap){
+      if(selectedCellLayer)leafletMap.removeLayer(selectedCellLayer);
+      selectedCellLayer=L.rectangle([[cell.row*cell.step-90,cell.col*cell.step-180],[(cell.row+1)*cell.step-90,(cell.col+1)*cell.step-180]],{color:'#efffbd',weight:3,fillColor:'#f4c781',fillOpacity:.11,className:'cell-selected',interactive:false}).addTo(leafletMap);
+    }
+    if(!window.L)drawFallbackMap();
+  }
+  function proceduralMarsCanvas() {
+    const c=document.createElement('canvas');c.width=1000;c.height=500;const ctx=c.getContext('2d');
+    const g=ctx.createLinearGradient(0,0,0,500);g.addColorStop(0,'#763d34');g.addColorStop(.45,'#a75840');g.addColorStop(1,'#d18a65');ctx.fillStyle=g;ctx.fillRect(0,0,1000,500);
+    for(let i=0;i<210;i++){const x=(i*173.7)%1000,y=(i*79.3)%500,r=6+(i*37%48);ctx.beginPath();ctx.ellipse(x,y,r*1.7,r,.1,0,Math.PI*2);ctx.fillStyle=i%3?'rgba(76,37,34,.11)':'rgba(244,171,117,.1)';ctx.fill();ctx.strokeStyle='rgba(54,30,29,.15)';ctx.lineWidth=1;ctx.stroke();}
+    for(let i=0;i<23;i++){const x=(i*137+52)%1000,y=(i*91+21)%500,r=14+(i*19%40);ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle='rgba(49,27,27,.18)';ctx.fill();ctx.beginPath();ctx.arc(x,y,r*.82,0,Math.PI*2);ctx.strokeStyle='rgba(238,169,122,.3)';ctx.lineWidth=3;ctx.stroke();}
+    return c;
+  }
+  const proceduralMapImage=proceduralMarsCanvas();
+  function setMapStatus(message) { $('mapSourceStatus').textContent=message; }
+  function setLayerButtons(name) { document.querySelectorAll('.layer-switch button').forEach(b=>b.classList.toggle('active',b.dataset.layer===name)); }
+  function startTileFallback(reason) {
+    if(!window.L||!leafletMap||mapTileState.fallbackStarted)return;
+    mapTileState.fallbackStarted=true;clearTimeout(mapTileState.timer);
+    if(activeBaseLayer&&leafletMap.hasLayer(activeBaseLayer))leafletMap.removeLayer(activeBaseLayer);
+    if(fallbackOverlay&&leafletMap.hasLayer(fallbackOverlay))leafletMap.removeLayer(fallbackOverlay);
+    $('mapFallbackNotice').classList.add('show');
+    $('mapFallbackNotice').textContent=`NASA tiles did not load (${reason}). Trying local mars_map.jpg, then a generated Mars placeholder.`;
+    setMapStatus('NASA TILE SERVICE UNAVAILABLE · FALLBACK');
+    const local=new Image();
+    local.onload=()=>{
+      fallbackOverlay=L.imageOverlay(CONFIG.MAP_FALLBACK_IMAGE,[[-90,-180],[90,180]],{opacity:.96,interactive:false}).addTo(leafletMap);
+      setMapStatus('OFFLINE IMAGE · mars_map.jpg');$('mapFallbackNotice').textContent='Using local mars_map.jpg. Site insights remain illustrative.';
+    };
+    local.onerror=()=>{
+      fallbackOverlay=L.imageOverlay(proceduralMapImage.toDataURL('image/png'),[[-90,-180],[90,180]],{opacity:.96,interactive:false}).addTo(leafletMap);
+      setMapStatus('PROCEDURAL MARS PLACEHOLDER');$('mapFallbackNotice').textContent='NASA tiles and mars_map.jpg were unavailable. Showing a generated Mars map placeholder.';
+    };
+    local.src=CONFIG.MAP_FALLBACK_IMAGE;
+  }
+  function installLeafletLayer(name) {
+    if(!leafletMap)return;
+    if(activeBaseLayer&&leafletMap.hasLayer(activeBaseLayer))leafletMap.removeLayer(activeBaseLayer);
+    if(fallbackOverlay&&leafletMap.hasLayer(fallbackOverlay))leafletMap.removeLayer(fallbackOverlay);
+    fallbackOverlay=null;mapTileState={loads:0,errors:0,fallbackStarted:false,timer:0};
+    activeBaseLayer=baseLayers[name];
+    setLayerButtons(name);$('marsMap').classList.toggle('thermal-tint',name==='thermal');
+    activeBaseLayer.addTo(leafletMap);setMapStatus(name==='elevation'?'LOADING MOLA COLOR HILLSHADE…':name==='thermal'?'ILLUSTRATIVE THERMAL-STYLE TINT':'LOADING VIKING GLOBAL MOSAIC…');
+    $('mapFallbackNotice').classList.remove('show');
+    mapTileState.timer=setTimeout(()=>{if(mapTileState.loads===0&&mapTileState.errors>0)startTileFallback(`${mapTileState.errors} tile errors`);},3600);
+  }
+  function mapCellBounds(cell) { return [[cell.row*cell.step-90,cell.col*cell.step-180],[(cell.row+1)*cell.step-90,(cell.col+1)*cell.step-180]]; }
+  function drawLeafletGrid() {
+    if(!leafletMap||!gridLayer)return;
+    gridLayer.clearLayers();currentGridStep=gridStepForZoom(leafletMap.getZoom());
+    const step=currentGridStep,cols=360/step,rows=180/step,showLabels=step===10;
+    for(let row=0;row<rows;row++)for(let col=0;col<cols;col++){
+      const cell=makeCellMeta(-90+(row+.5)*step,-180+(col+.5)*step,step);
+      const rect=L.rectangle(mapCellBounds(cell),{color:'#ffe1c4',weight:1,opacity:.31,fill:false,interactive:true});
+      rect.on('mouseover',()=>{rect.setStyle({color:'#fff4d6',weight:2,opacity:.9,fillColor:'#ffc889',fillOpacity:.12});});
+      rect.on('mouseout',()=>{rect.setStyle({color:'#ffe1c4',weight:1,opacity:.31,fillOpacity:0});});
+      rect.on('click',e=>{L.DomEvent.stopPropagation(e);chooseCell(cell);});
+      gridLayer.addLayer(rect);
+      if(showLabels){const marker=L.marker([cell.lat,cell.lon],{interactive:false,icon:L.divIcon({className:'grid-label',html:cell.label,iconSize:[26,12],iconAnchor:[13,6]})});gridLayer.addLayer(marker);}
+    }
+    if(selectedCell){
+      selectedCell=makeCellMeta(selectedCell.lat,selectedCell.lon,step,selectedCell.featureId);selectedCell.insights=getCellInsights(selectedCell.id);scoreMetrics(selectedCell,selectedCell.insights);
+      if(selectedCellLayer)leafletMap.removeLayer(selectedCellLayer);
+      selectedCellLayer=L.rectangle(mapCellBounds(selectedCell),{color:'#efffbd',weight:3,fillColor:'#f4c781',fillOpacity:.11,className:'cell-selected',interactive:false}).addTo(leafletMap);
+    }
+  }
+  function enableLeafletInteractions(enabled) {
+    $('marsMap').style.pointerEvents=enabled?'auto':'none';$('fallbackMapCanvas').style.pointerEvents=enabled?'auto':'none';
+    if(!leafletMap)return;
+    const fn=enabled?'enable':'disable';
+    ['dragging','scrollWheelZoom','doubleClickZoom','boxZoom','keyboard','touchZoom'].forEach(k=>{if(leafletMap[k]&&leafletMap[k][fn])leafletMap[k][fn]();});
+    if(leafletCursorHandler){leafletMap.off('mousemove',leafletCursorHandler);if(enabled)leafletMap.on('mousemove',leafletCursorHandler);}
+    if(leafletOutHandler){leafletMap.off('mouseout',leafletOutHandler);if(enabled)leafletMap.on('mouseout',leafletOutHandler);}
+  }
+  function initializeLeafletMap() {
+    const mapRoot=$('marsMap');
+    if(!window.L){mapRoot.style.display='none';$('fallbackMapCanvas').style.display='block';$('mapFallbackNotice').classList.add('show');$('mapFallbackNotice').textContent='Leaflet could not load. Trying mars_map.jpg, with a generated map if the file is missing.';setMapStatus('BUILT-IN EQUIRECTANGULAR FALLBACK');const img=new Image();img.onload=()=>{localFallbackImage=img;setMapStatus('OFFLINE IMAGE · mars_map.jpg');$('mapFallbackNotice').textContent='Using local mars_map.jpg with built-in grid controls.';drawFallbackMap();};img.onerror=()=>{setMapStatus('PROCEDURAL MARS PLACEHOLDER');$('mapFallbackNotice').textContent='NASA tiles and mars_map.jpg were unavailable. Showing a generated Mars map placeholder.';drawFallbackMap();};img.src=CONFIG.MAP_FALLBACK_IMAGE;drawFallbackMap();return;}
+    const marsCRS=L.extend({},L.CRS.EPSG4326,{transformation:new L.Transformation(1/180,1,-1/180,.5)});
+    leafletMap=L.map(mapRoot,{crs:marsCRS,center:[0,0],zoom:CONFIG.map.fallbackZoom,minZoom:CONFIG.map.minZoom,maxZoom:CONFIG.map.maxZoom,zoomControl:true,attributionControl:true,worldCopyJump:false});
+    leafletMap.setView([0,0],CONFIG.map.fallbackZoom);
+    L.control.attribution({prefix:false}).addAttribution('<a href="https://trek.nasa.gov/tiles/apidoc/trekAPI.html?body=mars" target="_blank" rel="noreferrer">NASA Mars Trek WMTS</a>').addTo(leafletMap);
+    const options={tileSize:256,minZoom:CONFIG.map.minZoom,maxZoom:CONFIG.map.maxZoom,maxNativeZoom:6,noWrap:false,attribution:'NASA/JPL-Caltech'};
+    baseLayers.visible=L.tileLayer(CONFIG.MAP_TILE_URL,options);
+    baseLayers.elevation=L.tileLayer(CONFIG.MAP_ELEVATION_TILE_URL,options);
+    baseLayers.thermal=L.tileLayer(CONFIG.MAP_TILE_URL,options);
+    Object.values(baseLayers).forEach(layer=>{
+      layer.on('tileload',()=>{if(layer!==activeBaseLayer)return;mapTileState.loads++;if(!mapTileState.fallbackStarted){clearTimeout(mapTileState.timer);setMapStatus(activeBaseLayer===baseLayers.elevation?'NASA MOLA COLOR HILLSHADE':activeBaseLayer===baseLayers.thermal?'NASA VIKING · ILLUSTRATIVE THERMAL TINT':'NASA VIKING MDIM 2.1 · GLOBAL COLOR MOSAIC');$('mapFallbackNotice').classList.remove('show');}});
+      layer.on('tileerror',()=>{if(layer===activeBaseLayer){mapTileState.errors++;if(mapTileState.errors>=3&&mapTileState.loads===0)mapTileState.timer=setTimeout(()=>startTileFallback(`${mapTileState.errors} tile errors`),900);}});
+    });
+    gridLayer=L.layerGroup().addTo(leafletMap);recommendationLayer=L.layerGroup().addTo(leafletMap);
+    const featureLayer=L.layerGroup().addTo(leafletMap);
+    for(const f of FEATURES){
+      const icon=L.divIcon({className:'',html:`<span class="feature-pin"><i></i><b>${f.name}</b></span>`,iconSize:[120,18],iconAnchor:[4,9]});
+      const marker=L.marker([f.lat,f.lon],{icon,title:f.name}).addTo(featureLayer);
+      marker.on('click',()=>chooseCell(makeCellMeta(f.lat,f.lon,currentGridStep,f.id)));
+    }
+    leafletMap.on('zoomend',()=>{drawLeafletGrid();});
+    leafletCursorHandler=e=>{const ll=e.latlng;$('cursorCoords').textContent=`CURSOR // LAT ${ll.lat.toFixed(2)}° · LON ${ll.lng.toFixed(2)}°`;};
+    leafletOutHandler=()=>{$('cursorCoords').textContent='CURSOR // LAT — · LON —';};
+    leafletMap.on('mousemove',leafletCursorHandler);leafletMap.on('mouseout',leafletOutHandler);
+    drawLeafletGrid();installLeafletLayer('visible');
+  }
+  function drawFallbackMap() {
+    const canvas=$('fallbackMapCanvas');if(canvas.style.display==='none')return;
+    const rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;
+    const dpr=Math.min(window.devicePixelRatio||1,2),w=Math.round(rect.width*dpr),h=Math.round(rect.height*dpr);
+    if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}
+    const ctx=canvas.getContext('2d');ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,w,h);ctx.fillStyle='#2a1a1b';ctx.fillRect(0,0,w,h);
+    const scale=Math.min(w/360,h/180)*fallbackView.zoom,cx=w/2,cy=h/2,wx=cx-(fallbackView.lon+180)*scale,wy=cy-(90-fallbackView.lat)*scale;
+    const activeLayer=document.querySelector('.layer-switch button.active')?.dataset.layer;
+    ctx.save();if(activeLayer==='thermal')ctx.filter='hue-rotate(38deg) saturate(1.45)';else if(activeLayer==='elevation')ctx.filter='grayscale(.28) contrast(1.35) sepia(.24)';
+    ctx.drawImage(localFallbackImage||proceduralMapImage,wx,wy,360*scale,180*scale);ctx.restore();
+    const step=gridStepForZoom(Math.max(0,Math.log2(fallbackView.zoom)+1));ctx.lineWidth=Math.max(1,dpr*.7);ctx.strokeStyle='rgba(255,227,203,.32)';ctx.fillStyle='rgba(255,240,220,.82)';ctx.font=`${Math.max(8,9*dpr)}px monospace`;
+    for(let lon=-180;lon<=180;lon+=step){const x=cx+(lon-fallbackView.lon)*scale;ctx.beginPath();ctx.moveTo(x,wy);ctx.lineTo(x,wy+180*scale);ctx.stroke();}
+    for(let lat=-90;lat<=90;lat+=step){const y=cy-(lat-fallbackView.lat)*scale;ctx.beginPath();ctx.moveTo(wx,y);ctx.lineTo(wx+360*scale,y);ctx.stroke();}
+    if(step===10){for(let lon=-175,col=0;lon<180;lon+=10,col++)for(let lat=-85,row=1;lat<90;lat+=10,row++){const x=cx+(lon-fallbackView.lon)*scale,y=cy-(lat-fallbackView.lat)*scale;if(x>wx&&x<wx+360*scale&&y>wy&&y<wy+180*scale)ctx.fillText(`${columnName(col)}${row}`,x-7,y+3);}}
+    if(selectedCell){const b=mapCellBounds(selectedCell),x=cx+(b[0][1]-fallbackView.lon)*scale,y=cy-(b[1][0]-fallbackView.lat)*scale,ww=selectedCell.step*scale,hh=selectedCell.step*scale;ctx.fillStyle='#ffe08025';ctx.fillRect(x,y,ww,hh);ctx.strokeStyle='#fff4b5';ctx.lineWidth=3*dpr;ctx.strokeRect(x,y,ww,hh);}
+    if(fallbackHovered){const b=mapCellBounds(fallbackHovered),x=cx+(b[0][1]-fallbackView.lon)*scale,y=cy-(b[1][0]-fallbackView.lat)*scale;ctx.fillStyle='#ffd18a18';ctx.fillRect(x,y,fallbackHovered.step*scale,fallbackHovered.step*scale);ctx.strokeStyle='#fff0d0aa';ctx.lineWidth=1.5*dpr;ctx.strokeRect(x,y,fallbackHovered.step*scale,fallbackHovered.step*scale);}
+    for(const f of FEATURES){const x=cx+(f.lon-fallbackView.lon)*scale,y=cy-(f.lat-fallbackView.lat)*scale;if(x<-100||x>w+100||y<-40||y>h+40)continue;ctx.beginPath();ctx.arc(x,y,4*dpr,0,Math.PI*2);ctx.fillStyle='#ff9c78';ctx.fill();ctx.strokeStyle='#fff2df';ctx.stroke();ctx.fillStyle='#fff0e7';ctx.font=`${9*dpr}px monospace`;ctx.fillText(f.name,x+7*dpr,y+3*dpr);}
+    for(const r of recommendedCells){const b=mapCellBounds(r.cell),x=cx+(b[0][1]-fallbackView.lon)*scale,y=cy-(b[1][0]-fallbackView.lat)*scale;ctx.strokeStyle='#76ffe0';ctx.lineWidth=2*dpr;ctx.strokeRect(x,y,r.cell.step*scale,r.cell.step*scale);}
+    ctx.fillStyle='#e0c2b3';ctx.font=`${9*dpr}px monospace`;ctx.fillText(`ILLUSTRATIVE GLOBAL MAP · GRID ${step}°`,12*dpr,h-15*dpr);
+  }
+  function fallbackPointToLatLon(x,y) {
+    const canvas=$('fallbackMapCanvas'),r=canvas.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2),scale=Math.min(canvas.width/360,canvas.height/180)*fallbackView.zoom;
+    return {lat:Math.max(-89.9,Math.min(89.9,fallbackView.lat-(y*dpr-r.height*dpr/2)/scale)),lon:((fallbackView.lon+(x*dpr-r.width*dpr/2)/scale+180)%360+360)%360-180};
+  }
+  function initializeMissionMap() {
+    document.querySelectorAll('.layer-switch button').forEach(btn=>btn.addEventListener('click',()=>{
+      const name=btn.dataset.layer;
+      if(leafletMap)installLeafletLayer(name);else{setLayerButtons(name);$('mapFallbackNotice').classList.add('show');$('mapFallbackNotice').textContent=name==='thermal'?'Thermal-style tint is illustrative.':'NASA tiles unavailable; showing the generated global Mars placeholder.';drawFallbackMap();}
+    }));
+    $('profileSelect').addEventListener('change',()=>{if(selectedCell){selectedCell.insights=getCellInsights(selectedCell.id);scoreMetrics(selectedCell,selectedCell.insights);if(leafletMap)drawRecommendations();}});
+    $('recommendBtn').addEventListener('click',drawRecommendations);
+    $('landBtn').addEventListener('click',startLanding);
+    $('returnMapBtn').addEventListener('click',returnToMap);
+    $('resumeBtn').addEventListener('click',()=>{ $('pauseScreen').classList.remove('show');try{renderer.domElement.requestPointerLock();}catch(e){$('pauseScreen').classList.add('show');} });
+    const canvas=$('fallbackMapCanvas');
+    canvas.addEventListener('pointerdown',e=>{fallbackDragging={x:e.clientX,y:e.clientY,lat:fallbackView.lat,lon:fallbackView.lon,moved:false};canvas.setPointerCapture(e.pointerId);canvas.classList.add('dragging');});
+    canvas.addEventListener('pointermove',e=>{
+      if(fallbackDragging){const dx=e.clientX-fallbackDragging.x,dy=e.clientY-fallbackDragging.y;fallbackDragging.moved=Math.hypot(dx,dy)>4;const scale=Math.min(canvas.width/360,canvas.height/180)*fallbackView.zoom;fallbackView.lon=fallbackDragging.lon-dx*(Math.min(window.devicePixelRatio||1,2))/scale;fallbackView.lat=Math.max(-90,Math.min(90,fallbackDragging.lat+dy*(Math.min(window.devicePixelRatio||1,2))/scale));drawFallbackMap();return;}
+      const ll=fallbackPointToLatLon(e.offsetX,e.offsetY);$('cursorCoords').textContent=`CURSOR // LAT ${ll.lat.toFixed(2)}° · LON ${ll.lon.toFixed(2)}°`;fallbackHovered=makeCellMeta(ll.lat,ll.lon,gridStepForZoom(Math.max(0,Math.log2(fallbackView.zoom)+1)));drawFallbackMap();
+    });
+    canvas.addEventListener('pointerup',e=>{if(!fallbackDragging)return;const didMove=fallbackDragging.moved;fallbackDragging=null;canvas.classList.remove('dragging');if(!didMove){const ll=fallbackPointToLatLon(e.offsetX,e.offsetY);chooseCell(makeCellMeta(ll.lat,ll.lon,gridStepForZoom(Math.max(0,Math.log2(fallbackView.zoom)+1))));}});
+    canvas.addEventListener('wheel',e=>{e.preventDefault();fallbackView.zoom=Math.max(.6,Math.min(8,fallbackView.zoom*(e.deltaY<0?1.18:.85)));drawFallbackMap();},{passive:false});
+    window.addEventListener('resize',()=>{if(leafletMap)leafletMap.invalidateSize();else drawFallbackMap();});
+    initializeLeafletMap();
+  }
+  function drawRecommendations() {
+    const profile=$('profileSelect').value,step=20,candidates=[];
+    for(let row=0;row<180/step;row++)for(let col=0;col<360/step;col++){
+      const cell=makeCellMeta(-90+(row+.5)*step,-180+(col+.5)*step,step),ins=getCellInsights(cell.id);candidates.push({cell,score:computeSuitability(ins,profile)});
+    }
+    for(const f of FEATURES){const cell=makeCellMeta(f.lat,f.lon,step,f.id),ins=getCellInsights(cell.id);candidates.push({cell,score:computeSuitability(ins,profile)});}
+    const unique=new Map();for(const c of candidates)unique.set(c.cell.id,c);recommendedCells=[...unique.values()].sort((a,b)=>b.score-a.score).slice(0,5);
+    $('recommendStatus').textContent=`TOP ${recommendedCells.length} SITES · ${PROFILES[profile].label.toUpperCase()} PROFILE`;
+    if(leafletMap&&recommendationLayer){recommendationLayer.clearLayers();for(const r of recommendedCells){const b=mapCellBounds(r.cell);L.rectangle(b,{color:'#7fffe1',weight:2,fillColor:'#7fffe1',fillOpacity:.13}).bindTooltip(`RECOMMENDED · ${r.score}/100`).addTo(recommendationLayer);}}
+    if(!window.L)drawFallbackMap();
+  }
+  const sceneCanvas = $('scene');
+  if (!window.THREE) {
+    gameAvailable=false;
+    initializeMissionMap();$('landBtn').disabled=true;$('mapFallbackNotice').classList.add('show');
+    $('mapFallbackNotice').textContent='Three.js could not load. The mission map and site insights still work; landing is disabled until the game library is available.';
+    return;
+  }
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(CONFIG.colors.sky);
+  scene.fog = new THREE.Fog(CONFIG.colors.fog, CONFIG.world.fogNear, CONFIG.world.fogFar);
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas: sceneCanvas, antialias: true, powerPreference: 'high-performance' }); }
+  catch (error) {
+    gameAvailable=false;
+    initializeMissionMap();$('landBtn').disabled=true;$('mapFallbackNotice').classList.add('show');
+    $('mapFallbackNotice').textContent='WebGL is unavailable in this browser. The map and site insights still work, but the 3D landing demo is disabled.';
+    return;
+  }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.65));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.08;
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  const camera = new THREE.PerspectiveCamera(68, window.innerWidth / window.innerHeight, 0.1, 2500);
+  const hemi = new THREE.HemisphereLight(0xffd3ba, 0x38221f, 0.68); scene.add(hemi);
+  const sun = new THREE.DirectionalLight(0xffd0b5, 2.45);
+  sun.position.set(CONFIG.player.start[0]-330, 470, CONFIG.player.start[1]+180); sun.castShadow = true;
+  sun.shadow.mapSize.set(1024, 1024); sun.shadow.camera.left = -125; sun.shadow.camera.right = 125;
+  sun.shadow.camera.top = 125; sun.shadow.camera.bottom = -125; sun.shadow.camera.near = 10; sun.shadow.camera.far = 800;
+  sun.shadow.bias = -0.00028; sun.shadow.normalBias = 0.035;
+  sun.target.position.set(CONFIG.player.start[0], 0, CONFIG.player.start[1]); scene.add(sun.target); scene.add(sun);
+
+  // GAME: procedural local terrain uses deterministic value noise without an extra library.
+  function hash2(ix, iz) {
+    let n = Math.imul(ix, 374761393) + Math.imul(iz, 668265263);
+    n = Math.imul(n ^ (n >>> 13), 1274126177);
+    return ((n ^ (n >>> 16)) >>> 0) / 4294967295;
+  }
+  const fade = t => t * t * (3 - 2 * t);
+  function valueNoise(x, z) {
+    const ix = Math.floor(x), iz = Math.floor(z), fx = fade(x - ix), fz = fade(z - iz);
+    const a = THREE.MathUtils.lerp(hash2(ix, iz), hash2(ix + 1, iz), fx);
+    const b = THREE.MathUtils.lerp(hash2(ix, iz + 1), hash2(ix + 1, iz + 1), fx);
+    return (THREE.MathUtils.lerp(a, b, fz) - 0.5) * 2;
+  }
+  function fbm(x, z, scale, octaves) {
+    let total = 0, amp = 1, norm = 0, frequency = 1;
+    for (let i = 0; i < octaves; i++) { total += valueNoise(x / scale * frequency, z / scale * frequency) * amp; norm += amp; amp *= 0.52; frequency *= 2.03; }
+    return total / norm;
+  }
+  let terrainSeed=CONFIG.rocks.seed;
+  const smoothstep = (a, b, x) => { const t = THREE.MathUtils.clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+  function terrainHeight(x, z) {
+    const seedX=(terrainSeed%100000)*.017,seedZ=(Math.floor(terrainSeed/100000)%100000)*.021;
+    const broad = fbm(x+seedX, z+seedZ, CONFIG.terrain.noiseScale, 4) * CONFIG.terrain.noiseAmplitude;
+    const detail = fbm(x + 71+seedZ, z - 19+seedX, CONFIG.terrain.detailScale, 3) * CONFIG.terrain.detailAmplitude;
+    const landing = CONFIG.zones[0], ridge = CONFIG.zones[1], basin = CONFIG.zones[2];
+    const landingDist = Math.hypot(x - landing.x, z - landing.z);
+    const ridgeDist = Math.hypot(x - ridge.x, z - ridge.z);
+    const basinDist = Math.hypot(x - basin.x, z - basin.z);
+    const flat = 1 - 0.86 * (1 - smoothstep(35, CONFIG.terrain.flatRadius, landingDist));
+    const ridgeLift = Math.exp(-(ridgeDist * ridgeDist) / (2 * 350 * 350)) * CONFIG.terrain.ridgeHeight;
+    const basinSink = Math.exp(-(basinDist * basinDist) / (2 * 320 * 320)) * -9;
+    const craterDist = Math.hypot(x - CONFIG.terrain.craterCenter[0], z - CONFIG.terrain.craterCenter[1]);
+    const crater = -CONFIG.terrain.craterDepth * Math.exp(-Math.pow(craterDist / CONFIG.terrain.craterRadius, 4))
+      + 7.5 * Math.exp(-Math.pow((craterDist - CONFIG.terrain.craterRadius * 1.05) / 25, 2));
+    const canyon=CONFIG.terrain.shape==='Canyon'?-29*Math.exp(-Math.pow((x+245)/112,2))*(.72+.28*Math.cos(z/130)):0;
+    const dunes=CONFIG.terrain.shape==='Dune field'?(Math.sin((x+z*.36)/79)+Math.sin((z-x*.2)/112)) * 4.4:0;
+    return (broad + detail) * flat + ridgeLift + basinSink + crater + canyon + dunes;
+  }
+  function terrainColor(x, z, height) {
+    const low = new THREE.Color(CONFIG.colors.terrainLow), high = new THREE.Color(CONFIG.colors.terrainHigh);
+    const t = THREE.MathUtils.clamp((height + 26) / 66, 0, 1);
+    const col = low.lerp(high, t);
+    const ridge = Math.exp(-Math.hypot(x - CONFIG.zones[1].x, z - CONFIG.zones[1].z) / 550);
+    const basin = Math.exp(-Math.hypot(x - CONFIG.zones[2].x, z - CONFIG.zones[2].z) / 590);
+    const landing = Math.exp(-Math.hypot(x - CONFIG.zones[0].x, z - CONFIG.zones[0].z) / 420);
+    col.lerp(new THREE.Color(0xa35b43), landing * 0.22);
+    col.lerp(new THREE.Color(0xb38a62), ridge * 0.28);
+    col.lerp(new THREE.Color(0xd38c70), basin * 0.24);
+    const grain = hash2(Math.floor(x * .9), Math.floor(z * .9)) * .055;
+    col.offsetHSL(0, 0, grain - .025);
+    return col;
+  }
+
+  // 2 km procedural height-field, color-shaded by elevation and region.
+  const half = CONFIG.world.size / 2, seg = CONFIG.world.segments;
+  const terrainGeo = new THREE.PlaneGeometry(CONFIG.world.size, CONFIG.world.size, seg, seg);
+  terrainGeo.rotateX(-Math.PI / 2);
+  const pos = terrainGeo.attributes.position, colors = [];
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i), z = pos.getZ(i), h = terrainHeight(x, z);
+    pos.setY(i, h);
+    const c = terrainColor(x, z, h); colors.push(c.r, c.g, c.b);
+  }
+  terrainGeo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+  terrainGeo.computeVertexNormals();
+  const terrain = new THREE.Mesh(terrainGeo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, metalness: 0, flatShading: false }));
+  terrain.receiveShadow = true; scene.add(terrain);
+
+  // Scatter instanced basalt fragments; the PRNG makes each reload deterministic.
+  let rngState = CONFIG.rocks.seed >>> 0;
+  function random() { rngState = (Math.imul(rngState, 1664525) + 1013904223) >>> 0; return rngState / 4294967296; }
+  const rockGeo = new THREE.DodecahedronGeometry(1, 0);
+  const rockMat = new THREE.MeshStandardMaterial({ color: 0x684238, roughness: 0.94, flatShading: true });
+  const rocks = new THREE.InstancedMesh(rockGeo, rockMat, CONFIG.rocks.capacity);
+  rocks.castShadow = true; rocks.receiveShadow = true;
+  rocks.count=CONFIG.rocks.count;
+  const dummy = new THREE.Object3D();
+  for (let i = 0; i < CONFIG.rocks.count; i++) {
+    const x = (random() * 2 - 1) * (half - 18), z = (random() * 2 - 1) * (half - 18);
+    const scale = CONFIG.rocks.minScale + random() * (CONFIG.rocks.maxScale - CONFIG.rocks.minScale);
+    dummy.position.set(x, terrainHeight(x, z) + scale * .48, z);
+    dummy.rotation.set(random() * .45, random() * Math.PI * 2, random() * .5);
+    dummy.scale.set(scale * (0.7 + random() * .55), scale * (0.55 + random() * .65), scale * (0.7 + random() * .55));
+    dummy.updateMatrix(); rocks.setMatrixAt(i, dummy.matrix);
+  }
+  rocks.instanceMatrix.needsUpdate = true;
+  scene.add(rocks);
+  const boulderGeo = new THREE.DodecahedronGeometry(4.3, 1);
+  const boulderMat = new THREE.MeshStandardMaterial({ color: 0x58352f, roughness: 1, flatShading: true });
+  const boulders=[];
+  for (let i = 0; i < 19; i++) {
+    const x = (random() * 2 - 1) * 870, z = (random() * 2 - 1) * 870;
+    const b = new THREE.Mesh(boulderGeo, boulderMat);
+    const s = 0.6 + random() * 1.6;
+    b.position.set(x, terrainHeight(x, z) + 4.0 * s, z); b.scale.set(s * (0.75 + random()*.6), s, s * (0.7 + random()*.8));
+    b.rotation.set(random()*.4, random()*Math.PI*2, random()*.4); b.castShadow = true; b.receiveShadow = true; scene.add(b);boulders.push(b);
+  }
+
+  function labelSprite(text, color) {
+    const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 128;
+    const ctx = canvas.getContext('2d'); ctx.fillStyle = 'rgba(20,12,15,.76)'; ctx.fillRect(10, 17, 492, 94);
+    ctx.strokeStyle = color; ctx.globalAlpha = .8; ctx.strokeRect(10, 17, 492, 94); ctx.globalAlpha = 1;
+    ctx.fillStyle = color; ctx.font = 'bold 34px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text.toUpperCase(), 256, 66);
+    const texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace;
+    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false }));
+    sprite.scale.set(42, 10.5, 1); return sprite;
+  }
+  const beaconGroups=[];
+  function addBeacon(zone) {
+    const group = new THREE.Group(); const y = terrainHeight(zone.x, zone.z); group.position.set(zone.x, y, zone.z); scene.add(group);
+    const c = new THREE.Color(zone.color);
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(.18, .26, 13, 8), new THREE.MeshStandardMaterial({ color: 0x493333, metalness: .45, roughness: .52 }));
+    stem.position.y = 6.5; stem.castShadow = true; group.add(stem);
+    const beam = new THREE.Mesh(new THREE.ConeGeometry(3.8, 23, 16, 1, true), new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: .105, depthWrite: false, side: THREE.DoubleSide }));
+    beam.position.y = 11.5; group.add(beam);
+    const bulb = new THREE.Mesh(new THREE.SphereGeometry(.9, 16, 12), new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: 2.3, roughness: .3 }));
+    bulb.position.y = 13.3; group.add(bulb);
+    const flag = new THREE.Mesh(new THREE.PlaneGeometry(4.5, 2.1), new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: .26, side: THREE.DoubleSide, roughness: .65 }));
+    flag.position.set(2.15, 10.7, 0); group.add(flag);
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(2.7, .07, 6, 32), new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: .8 }));
+    ring.rotation.x = Math.PI/2; ring.position.y = .18; group.add(ring);
+    const light = new THREE.PointLight(c, 13, 82, 2); light.position.y = 13; group.add(light);
+    const label = labelSprite(zone.name, zone.color); label.position.y = 20; group.add(label);return group;
+  }
+  CONFIG.zones.forEach(zone=>beaconGroups.push(addBeacon(zone)));
+  function addDestination() {
+    const d = CONFIG.destination, group = new THREE.Group(); group.position.set(d.x, terrainHeight(d.x,d.z), d.z); scene.add(group);
+    const beam = new THREE.Mesh(new THREE.CylinderGeometry(.18, 6.8, 88, 18, 1, true), new THREE.MeshBasicMaterial({ color: d.color, transparent: true, opacity: .125, depthWrite: false, side: THREE.DoubleSide }));
+    beam.position.y = 44; group.add(beam);
+    const core = new THREE.Mesh(new THREE.CylinderGeometry(.09,.09,88,8), new THREE.MeshBasicMaterial({ color: d.color, transparent: true, opacity: .42 })); core.position.y = 44; group.add(core);
+    const beacon = new THREE.Mesh(new THREE.OctahedronGeometry(1.3,0), new THREE.MeshStandardMaterial({ color:d.color, emissive:d.color, emissiveIntensity:2.4, roughness:.25 })); beacon.position.y=88; group.add(beacon);
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(4.3,.12,8,48), new THREE.MeshBasicMaterial({color:d.color,transparent:true,opacity:.9})); ring.rotation.x=Math.PI/2; ring.position.y=.25; group.add(ring);
+    const label=labelSprite(d.name,d.color); label.position.y=94; label.scale.set(36,9,1); group.add(label);
+    group.add(new THREE.PointLight(d.color,35,160,2)); group.children[group.children.length-1].position.y=83;
+    return group;
+  }
+  const destinationGroup=addDestination();
+
+  // Primitive-built EVA astronaut with independently animated arms and legs.
+  const astronaut = new THREE.Group(); scene.add(astronaut);
+  const suitMat = new THREE.MeshStandardMaterial({ color: 0xe3dcd1, roughness: .72, metalness: .08 });
+  const trimMat = new THREE.MeshStandardMaterial({ color: 0x4c5252, roughness: .64, metalness: .25 });
+  const orangeMat = new THREE.MeshStandardMaterial({ color: 0xec7957, roughness: .62, metalness: .12 });
+  const visorMat = new THREE.MeshStandardMaterial({ color: 0x142e35, metalness: .7, roughness: .2, emissive: 0x173841, emissiveIntensity: .22 });
+  const torso = new THREE.Mesh(new THREE.CapsuleGeometry(.43, .93, 5, 10), suitMat); torso.position.y=1.48; torso.castShadow=true; astronaut.add(torso);
+  const helmet = new THREE.Mesh(new THREE.SphereGeometry(.53, 20, 14), suitMat); helmet.position.set(0,2.47,0); helmet.castShadow=true; astronaut.add(helmet);
+  const visor = new THREE.Mesh(new THREE.SphereGeometry(.385, 20, 14), visorMat); visor.scale.set(1,.72,.24); visor.position.set(0,2.5,-.42); astronaut.add(visor);
+  const visorBand = new THREE.Mesh(new THREE.TorusGeometry(.405,.025,6,32), orangeMat); visorBand.scale.set(1,.72,1); visorBand.position.set(0,2.49,-.39); astronaut.add(visorBand);
+  const pack = new THREE.Mesh(new THREE.BoxGeometry(.78,1.05,.42), trimMat); pack.position.set(0,1.52,.49); pack.castShadow=true; astronaut.add(pack);
+  const packTop = new THREE.Mesh(new THREE.BoxGeometry(.62,.18,.48), orangeMat); packTop.position.set(0,2.08,.48); astronaut.add(packTop);
+  const chest = new THREE.Mesh(new THREE.BoxGeometry(.46,.37,.09), trimMat); chest.position.set(0,1.7,-.405); astronaut.add(chest);
+  const chestLight = new THREE.Mesh(new THREE.CircleGeometry(.08,12), new THREE.MeshBasicMaterial({color:0x7ef2df})); chestLight.position.set(.12,1.72,-.46); astronaut.add(chestLight);
+  const armPivots=[], legPivots=[];
+  for (const side of [-1,1]) {
+    const armPivot=new THREE.Group(); armPivot.position.set(side*.53,1.82,0); astronaut.add(armPivot); armPivots.push(armPivot);
+    const arm=new THREE.Mesh(new THREE.CapsuleGeometry(.145,.56,4,8),suitMat); arm.position.y=-.39; arm.rotation.z=side*-.14; arm.castShadow=true; armPivot.add(arm);
+    const cuff=new THREE.Mesh(new THREE.CylinderGeometry(.16,.16,.16,10),orangeMat); cuff.position.set(side*-.06,-.7,0); cuff.rotation.z=side*-.14; armPivot.add(cuff);
+    const glove=new THREE.Mesh(new THREE.SphereGeometry(.17,10,8),trimMat); glove.position.set(side*-.08,-.84,-.01); armPivot.add(glove);
+    const legPivot=new THREE.Group(); legPivot.position.set(side*.22,.89,0); astronaut.add(legPivot); legPivots.push(legPivot);
+    const leg=new THREE.Mesh(new THREE.CapsuleGeometry(.17,.52,4,8),suitMat); leg.position.y=-.38; leg.castShadow=true; legPivot.add(leg);
+    const boot=new THREE.Mesh(new THREE.BoxGeometry(.36,.22,.52),trimMat); boot.position.set(0,-.75,-.07); boot.castShadow=true; legPivot.add(boot);
+    const knee=new THREE.Mesh(new THREE.BoxGeometry(.31,.22,.15),orangeMat); knee.position.set(0,-.28,-.135); legPivot.add(knee);
+  }
+  const dustPool=[];
+  const dustGeo=new THREE.SphereGeometry(.075,5,4), dustMat=new THREE.MeshBasicMaterial({color:0xf6aa82,transparent:true,opacity:.5,depthWrite:false});
+  for(let i=0;i<32;i++){const p=new THREE.Mesh(dustGeo,dustMat);p.visible=false;scene.add(p);dustPool.push({mesh:p,life:0,velocity:new THREE.Vector3()});}
+  let dustCursor=0, stepClock=0;
+  function spawnDust() {
+    const p=dustPool[dustCursor++%dustPool.length], side=random()<.5?-1:1;
+    p.mesh.position.set(astronaut.position.x+Math.sin(astronaut.rotation.y)*side*.28,astronaut.position.y+.12,astronaut.position.z+Math.cos(astronaut.rotation.y)*side*.2);
+    p.velocity.set((random()-.5)*.7,.35+random()*.55,(random()-.5)*.7); p.life=.72; p.mesh.visible=true; p.mesh.scale.setScalar(.65+random()*.8);
+  }
+
+  const player={x:CONFIG.player.start[0],z:CONFIG.player.start[1],y:0,vx:0,vz:0,vy:0,onGround:true,yaw:0,oxygen:100,battery:100};
+  player.y=terrainHeight(player.x,player.z);
+  let cameraYaw=0, cameraPitch=-.13, cameraMode=0, viewBlend=0, mapRotates=false, fullMapOpen=false,lastMapPress=0;
+  const keys=Object.create(null), cameraTarget=new THREE.Vector3(), lookVec=new THREE.Vector3();
+  let gameFrameId=0;
+  sceneCanvas.addEventListener('click',()=>{ if(appState==='game' && document.pointerLockElement!==renderer.domElement)renderer.domElement.requestPointerLock(); });
+  document.addEventListener('pointerlockchange',()=>{
+    const released=appState==='game'&&document.pointerLockElement!==renderer.domElement;
+    $('lockHint').classList.toggle('show',released);
+    $('pauseScreen').classList.toggle('show',released);
+    if(released)for(const k of Object.keys(keys))keys[k]=false;
+    if(appState==='game'&&document.pointerLockElement===renderer.domElement){$('pauseScreen').classList.remove('show');startGameLoop();}
+  });
+  document.addEventListener('mousemove',e=>{
+    if(appState!=='game'||document.pointerLockElement!==renderer.domElement)return;
+    cameraYaw -= e.movementX*CONFIG.controls.mouseSensitivity;
+    cameraPitch -= e.movementY*CONFIG.controls.mouseSensitivity;
+    cameraPitch=THREE.MathUtils.clamp(cameraPitch,CONFIG.camera.minPitch,CONFIG.camera.maxPitch);
+  });
+  document.addEventListener('keydown',e=>{
+    if(appState!=='game')return;
+    if(['Space','Tab','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();
+    if(e.repeat)return;keys[e.code]=true;
+    if(e.code==='KeyV') { cameraMode=1-cameraMode; }
+    if(e.code==='KeyM') {
+      const now=performance.now();
+      if(now-lastMapPress<900){lastMapPress=0;returnToMap();return;}
+      lastMapPress=now;mapRotates=!mapRotates;$('mapMode').textContent=mapRotates?'PLAYER UP · GRID SIMULATED':'GRID SIMULATED · M TO ROTATE';
+    }
+    if(e.code==='Tab') { fullMapOpen=!fullMapOpen; $('fullMap').classList.toggle('open',fullMapOpen); }
+    if(e.code==='Escape') { keys[e.code]=false;if(document.pointerLockElement!==renderer.domElement)$('pauseScreen').classList.add('show'); }
+  });
+  document.addEventListener('keyup',e=>{keys[e.code]=false;});
+  document.addEventListener('pointerlockerror',()=>$('lockHint').classList.add('show'));
+
+  // MINIMAP: regenerate its local terrain texture after a site is selected.
+  const mapBase=document.createElement('canvas'); mapBase.width=CONFIG.world.mapResolution; mapBase.height=CONFIG.world.mapResolution;
+  const mapCtx=mapBase.getContext('2d');
+  function drawZoneOverlay(ctx){
+    for(const zone of CONFIG.zones){const px=(zone.x+half)/CONFIG.world.size*mapBase.width,py=(zone.z+half)/CONFIG.world.size*mapBase.height,r=zone.radius/CONFIG.world.size*mapBase.width;ctx.beginPath();ctx.arc(px,py,r,0,Math.PI*2);ctx.fillStyle=zone.color+'18';ctx.fill();ctx.strokeStyle=zone.color+'66';ctx.lineWidth=1;ctx.stroke();}
+  }
+  function rebuildMinimapBase(){
+    const image=mapCtx.createImageData(mapBase.width,mapBase.height);
+    for(let py=0;py<mapBase.height;py++)for(let px=0;px<mapBase.width;px++){
+      const x=(px/(mapBase.width-1)*2-1)*half,z=(py/(mapBase.height-1)*2-1)*half,h=terrainHeight(x,z),c=terrainColor(x,z,h);
+      const i=(py*mapBase.width+px)*4,shade=THREE.MathUtils.clamp(.76+(h+24)*.0035,.68,1.08);
+      image.data[i]=Math.round(c.r*255*shade);image.data[i+1]=Math.round(c.g*255*shade);image.data[i+2]=Math.round(c.b*255*shade);image.data[i+3]=255;
+    }
+    mapCtx.putImageData(image,0,0);drawZoneOverlay(mapCtx);
+  }
+  function applyCellToWorld(cell,insights){
+    const rough=insights.roughness/100,shape=insights.terrain;
+    const terrainFactor={'Flat plain':.46,'Rocky field':1.02,'Mountainous':1.62,'Crater rim':.94,'Canyon':1.08,'Dune field':.62,'Basin':.58}[shape]||1;
+    const rockFactor={'Flat plain':.56,'Rocky field':1.32,'Mountainous':1.02,'Crater rim':1.12,'Canyon':1.18,'Dune field':.68,'Basin':.72}[shape]||1;
+    terrainSeed=stringSeed(cell.id);CONFIG.rocks.seed=terrainSeed;
+    CONFIG.terrain.shape=shape;CONFIG.terrain.noiseAmplitude=(6+rough*24)*terrainFactor;
+    CONFIG.terrain.noiseScale=Math.max(42,155-rough*86-(shape==='Dune field'?22:0));
+    CONFIG.terrain.detailScale=Math.max(18,64-rough*39);CONFIG.terrain.detailAmplitude=(1.3+rough*8.3)*terrainFactor;
+    CONFIG.terrain.ridgeHeight=(shape==='Mountainous'?31:12)+rough*14;
+    CONFIG.terrain.craterCenter=shape==='Crater rim'?[-100,95]:[65,85];
+    CONFIG.terrain.craterRadius=shape==='Crater rim'?255:185;CONFIG.terrain.craterDepth=shape==='Crater rim'?27:17;
+    CONFIG.terrain.flatRadius=shape==='Flat plain'?370:250;
+    CONFIG.rocks.count=Math.max(260,Math.min(CONFIG.rocks.capacity,Math.round((430+rough*1370)*rockFactor)));
+    CONFIG.player.start=[0,0];
+    const baseRad=.15+insights.radiation/100*1.38;
+    const ridgeX=245+insights.minerals*2.05,iceX=260+insights.water*2.85;
+    CONFIG.zones[0].x=0;CONFIG.zones[0].z=0;CONFIG.zones[0].radius=265;
+    CONFIG.zones[0].profile={temp:insights.temperature,rad:baseRad,water:insights.water,minerals:insights.minerals,dust:insights.dust};
+    CONFIG.zones[1].x=ridgeX;CONFIG.zones[1].z=-215;CONFIG.zones[1].radius=300;
+    CONFIG.zones[1].profile={temp:insights.temperature+13,rad:Math.min(1.7,baseRad+.18),water:Math.min(95,insights.water+10),minerals:Math.min(100,insights.minerals+27),dust:Math.min(100,insights.dust+9)};
+    CONFIG.zones[2].x=-315;CONFIG.zones[2].z=345;CONFIG.zones[2].radius=330;
+    CONFIG.zones[2].profile={temp:insights.temperature-14,rad:Math.min(1.8,baseRad+.66),water:Math.min(98,insights.water+20),minerals:Math.max(8,insights.minerals-24),dust:Math.min(100,insights.dust+39)};
+    CONFIG.destination.x=iceX;CONFIG.destination.z=425;CONFIG.destination.radius=190+insights.water*.55;
+    CONFIG.destination.water=Math.max(insights.water,48);
+    CONFIG.hud.baseline={temp:insights.temperature,rad:baseRad,water:insights.water,minerals:insights.minerals,dust:insights.dust};
+    CONFIG.hud.stormAfterSeconds=Math.max(27,160-insights.dust*1.22);
+    const haze=insights.dust/100,sky=new THREE.Color(0xd28b75).lerp(new THREE.Color(0x835144),haze*.68);
+    CONFIG.colors.sky=sky.getHex();CONFIG.colors.fog=sky.getHex();scene.background.setHex(CONFIG.colors.sky);scene.fog.color.setHex(CONFIG.colors.fog);
+    scene.fog.near=CONFIG.world.fogNear-haze*150;scene.fog.far=CONFIG.world.fogFar-haze*590;
+    const p=terrainGeo.attributes.position,c=terrainGeo.attributes.color;
+    for(let i=0;i<p.count;i++){const x=p.getX(i),z=p.getZ(i),h=terrainHeight(x,z),col=terrainColor(x,z,h);p.setY(i,h);c.setXYZ(i,col.r,col.g,col.b);}
+    p.needsUpdate=true;c.needsUpdate=true;terrainGeo.computeVertexNormals();terrainGeo.computeBoundingSphere();
+    rngState=CONFIG.rocks.seed>>>0;rocks.count=CONFIG.rocks.count;
+    for(let i=0;i<rocks.count;i++){
+      const x=(random()*2-1)*(half-18),z=(random()*2-1)*(half-18),s=CONFIG.rocks.minScale+random()*(CONFIG.rocks.maxScale-CONFIG.rocks.minScale);
+      dummy.position.set(x,terrainHeight(x,z)+s*.48,z);dummy.rotation.set(random()*.45,random()*Math.PI*2,random()*.5);dummy.scale.set(s*(.7+random()*.55),s*(.55+random()*.65),s*(.7+random()*.55));dummy.updateMatrix();rocks.setMatrixAt(i,dummy.matrix);
+    }
+    rocks.instanceMatrix.needsUpdate=true;
+    for(const b of boulders){const x=(random()*2-1)*870,z=(random()*2-1)*870,s=.6+random()*1.6;b.position.set(x,terrainHeight(x,z)+4*s,z);b.scale.set(s*(.75+random()*.6),s,s*(.7+random()*.8));b.rotation.set(random()*.4,random()*Math.PI*2,random()*.4);}
+    CONFIG.zones.forEach((zone,i)=>{beaconGroups[i].position.set(zone.x,terrainHeight(zone.x,zone.z),zone.z);beaconGroups[i].scale.setScalar(i===1 ? .85+insights.minerals/260 : 1);});
+    destinationGroup.position.set(CONFIG.destination.x,terrainHeight(CONFIG.destination.x,CONFIG.destination.z),CONFIG.destination.z);destinationGroup.scale.setScalar(.8+insights.water/280);
+    player.x=0;player.z=0;player.y=terrainHeight(0,0);player.vx=player.vz=player.vy=0;player.onGround=true;player.oxygen=100;player.battery=100;
+    cameraYaw=0;cameraPitch=-.13;cameraMode=0;viewBlend=0;mapRotates=false;fullMapOpen=false;$('hud').classList.remove('helmet');
+    astronaut.position.set(player.x,player.y,player.z);astronaut.rotation.y=0;
+    for(const part of dustPool)part.mesh.visible=false;
+    trail.length=0;lastTrailX=player.x;lastTrailZ=player.z;
+    hudNow.temp=insights.temperature;hudNow.rad=baseRad;hudNow.water=insights.water;hudNow.minerals=insights.minerals;hudNow.dust=insights.dust;
+    rebuildMinimapBase();
+    const location=`${cell.name}, ${formatCoord(cell.lat)} ${formatLon(cell.lon)}`;
+    $('locationLabel').textContent=`LOCATION: ${location}`;$('minimapTitle').textContent=`${cell.name.toUpperCase()} // ${formatCoord(cell.lat)} ${formatLon(cell.lon)}`;$('mapCredit').textContent=`GRID ${cell.label} · ILLUSTRATIVE`;
+  }
+  const trail=[]; let trailDistance=0, lastTrailX=player.x,lastTrailZ=player.z;
+  function drawMap(canvas) {
+    const ctx=canvas.getContext('2d'), w=canvas.width, h=canvas.height, cx=w/2, cy=h/2;
+    ctx.clearRect(0,0,w,h);
+    ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,Math.min(w,h)*.48,0,Math.PI*2); ctx.clip();
+    const radiusMeters=fullMapOpen?1050:355, scale=(Math.min(w,h)*.94)/(radiusMeters*2);
+    ctx.translate(cx,cy); if(mapRotates) ctx.rotate(player.yaw); ctx.scale(scale,scale); ctx.translate(-player.x,-player.z);
+    ctx.drawImage(mapBase,-half,-half,CONFIG.world.size,CONFIG.world.size);
+    // Fading exploration trail.
+    if(trail.length>1){for(let i=1;i<trail.length;i++){const a=trail[i-1],b=trail[i];ctx.beginPath();ctx.moveTo(a.x,a.z);ctx.lineTo(b.x,b.z);ctx.lineWidth=3/scale;ctx.strokeStyle=`rgba(111,244,224,${.08+.65*i/trail.length})`;ctx.stroke();}}
+    // Direct navigation route.
+    ctx.save();ctx.beginPath();ctx.moveTo(player.x,player.z);ctx.lineTo(CONFIG.destination.x,CONFIG.destination.z);ctx.setLineDash([10/scale,8/scale]);ctx.lineWidth=2/scale;ctx.strokeStyle='rgba(137,255,241,.88)';ctx.stroke();ctx.restore();
+    // Zone markers and labels.
+    for(const zone of CONFIG.zones){ctx.beginPath();ctx.arc(zone.x,zone.z,7/scale,0,Math.PI*2);ctx.fillStyle=zone.color;ctx.fill();ctx.lineWidth=2/scale;ctx.strokeStyle='rgba(20,12,15,.85)';ctx.stroke();ctx.font=`bold ${12/scale}px monospace`;ctx.textAlign='center';ctx.fillStyle='#fff0e7';ctx.shadowColor='#160c0c';ctx.shadowBlur=8/scale;ctx.fillText(zone.name.toUpperCase(),zone.x,zone.z-18/scale);ctx.shadowBlur=0;}
+    // Destination star.
+    const d=CONFIG.destination;ctx.save();ctx.translate(d.x,d.z);ctx.rotate(Math.PI/2);ctx.beginPath();for(let i=0;i<10;i++){const r=(i%2?5:11)/scale,a=i*Math.PI/5;ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);}ctx.closePath();ctx.fillStyle=d.color;ctx.shadowColor=d.color;ctx.shadowBlur=18/scale;ctx.fill();ctx.restore();
+    ctx.restore();
+    // Fixed player marker over the rotating or north-up map.
+    ctx.save();ctx.translate(cx,cy);if(!mapRotates)ctx.rotate(-player.yaw);ctx.beginPath();ctx.moveTo(0,-10*(w/256));ctx.lineTo(7*(w/256),8*(w/256));ctx.lineTo(0,5*(w/256));ctx.lineTo(-7*(w/256),8*(w/256));ctx.closePath();ctx.fillStyle='#fff5e9';ctx.shadowColor='#61ffeb';ctx.shadowBlur=14*(w/256);ctx.fill();ctx.restore();
+    // Cardinal tick marks remain upright as UI.
+    ctx.save();ctx.strokeStyle='rgba(255,238,222,.55)';ctx.lineWidth=Math.max(1,w/256);ctx.beginPath();ctx.moveTo(cx,cy-Math.min(w,h)*.46);ctx.lineTo(cx,cy-Math.min(w,h)*.42);ctx.stroke();ctx.restore();
+    ctx.beginPath();ctx.arc(cx,cy,Math.min(w,h)*.48,0,Math.PI*2);ctx.strokeStyle='rgba(255,223,201,.42)';ctx.lineWidth=Math.max(1,w/256);ctx.stroke();
+  }
+
+  // HUD: blend local zone readings over the selected cell's baseline.
+  const hudNow={temp:-61,rad:.43,water:24,minerals:22,dust:31};
+  function desiredTelemetry(time) {
+    const weights=CONFIG.zones.map(z=>Math.exp(-(Math.hypot(player.x-z.x,player.z-z.z)**2)/(2*z.radius*z.radius)));
+    let total=CONFIG.hud.blendFloor, out=Object.fromEntries(Object.entries(CONFIG.hud.baseline).map(([key,value])=>[key,value*CONFIG.hud.blendFloor]));
+    for(let i=0;i<CONFIG.zones.length;i++){const w=weights[i];total+=w;for(const k of Object.keys(out))out[k]+=CONFIG.zones[i].profile[k]*w;}
+    for(const k of Object.keys(out))out[k]/=total;
+    const iceWeight=Math.exp(-(Math.hypot(player.x-CONFIG.destination.x,player.z-CONFIG.destination.z)**2)/(2*CONFIG.destination.radius**2));
+    out.water=THREE.MathUtils.lerp(out.water,CONFIG.destination.water,iceWeight*.94);
+    const pulse=Math.sin(time*1.55+player.x*.013+player.z*.009)*.014+Math.sin(time*.41+1.3)*.008;
+    out.temp+=pulse*20;out.rad=Math.max(0,out.rad+pulse*.28);out.water=THREE.MathUtils.clamp(out.water+pulse*45,0,100);
+    out.minerals=THREE.MathUtils.clamp(out.minerals+pulse*38,0,100);out.dust=THREE.MathUtils.clamp(out.dust-pulse*31,0,100);
+    return out;
+  }
+  const setText=(id,value)=>{ $(id).textContent=value; };
+  function updateHUD(dt,time,running) {
+    const target=desiredTelemetry(time), k=1-Math.exp(-CONFIG.hud.smoothing*dt);
+    for(const key of Object.keys(hudNow))hudNow[key]=THREE.MathUtils.lerp(hudNow[key],target[key],k);
+    player.oxygen=Math.max(0,player.oxygen-dt*(CONFIG.player.oxygenDrain+(running ? .018 : 0)));
+    player.battery=Math.max(0,player.battery-dt*(CONFIG.player.batteryDrain+(running?CONFIG.player.runDrain:0)));
+    setText('temp',hudNow.temp.toFixed(1));setText('radValue',hudNow.rad.toFixed(2));
+    const radEl=$('radValue');radEl.classList.toggle('safe',hudNow.rad<.6);radEl.classList.toggle('caution',hudNow.rad>=.6&&hudNow.rad<=1);radEl.classList.toggle('danger',hudNow.rad>1);$('radWarn').classList.toggle('show',hudNow.rad>1);
+    const nearest=CONFIG.zones.map(z=>({z,d:Math.hypot(player.x-z.x,player.z-z.z)})).sort((a,b)=>a.d-b.d)[0];
+    setText('sector',nearest.d<nearest.z.radius*1.22?nearest.z.name.toUpperCase():'OPEN TERRAIN');
+    setText('coords',`${player.x.toFixed(0).padStart(4,'0')} / ${player.z.toFixed(0).padStart(4,'0')}`);
+    setText('water',Math.round(hudNow.water));setText('minerals',Math.round(hudNow.minerals));setText('dust',Math.round(hudNow.dust));
+    setText('oxygen',Math.round(player.oxygen));setText('battery',Math.round(player.battery));
+    $('waterMeter').style.width=`${hudNow.water}%`;$('mineralMeter').style.width=`${hudNow.minerals}%`;$('dustMeter').style.width=`${hudNow.dust}%`;$('oxygenMeter').style.width=`${player.oxygen}%`;$('batteryMeter').style.width=`${player.battery}%`;
+    const dx=CONFIG.destination.x-player.x,dz=CONFIG.destination.z-player.z,dist=Math.hypot(dx,dz);
+    setText('distance',`${Math.round(dist).toLocaleString()} m`);
+    const bearingDeg=(Math.atan2(dx,-dz)*180/Math.PI+360)%360, rel=((bearingDeg+player.yaw*180/Math.PI)%360+360)%360;
+    setText('bearing',`${Math.round(bearingDeg).toString().padStart(3,'0')}°`);$('bearingArrow').style.transform=`rotate(${rel}deg)`;
+    const missionMinutes=9*60+41+Math.floor(time/60);
+    setText('clock',`SOL 18 · ${String(Math.floor(missionMinutes/60)%24).padStart(2,'0')}:${String(missionMinutes%60).padStart(2,'0')}`);
+  }
+
+  let elapsed=0, stormVisibleUntil=0, lastStorm=0;
+  const clock=new THREE.Clock();
+  const desiredCamPos=new THREE.Vector3(), thirdCamPos=new THREE.Vector3(), firstCamPos=new THREE.Vector3();
+  const firstLookTarget=new THREE.Vector3(), blendedLookTarget=new THREE.Vector3();
+  function updatePlayer(dt) {
+    const forward=keys.KeyW||keys.ArrowUp?1:0,back=keys.KeyS||keys.ArrowDown?1:0,left=keys.KeyA||keys.ArrowLeft?1:0,right=keys.KeyD||keys.ArrowRight?1:0;
+    const strafe=right-left, fwd=forward-back;
+    let moveX=strafe*Math.cos(cameraYaw)-fwd*Math.sin(cameraYaw);
+    let moveZ=-strafe*Math.sin(cameraYaw)-fwd*Math.cos(cameraYaw);
+    const len=Math.hypot(moveX,moveZ);if(len>0){moveX/=len;moveZ/=len;}
+    const running=!!(keys.ShiftLeft||keys.ShiftRight)&&len>0, speed=running?CONFIG.controls.runSpeed:CONFIG.controls.walkSpeed;
+    const gx=(terrainHeight(player.x+2,player.z)-terrainHeight(player.x-2,player.z))/4;
+    const gz=(terrainHeight(player.x,player.z+2)-terrainHeight(player.x,player.z-2))/4;
+    const slope=Math.hypot(gx,gz), slopeFactor=THREE.MathUtils.clamp(1-slope*CONFIG.controls.slopePenalty,.34,1);
+    const accel=1-Math.exp(-CONFIG.controls.acceleration*dt);
+    player.vx=THREE.MathUtils.lerp(player.vx,moveX*speed*slopeFactor,accel);
+    player.vz=THREE.MathUtils.lerp(player.vz,moveZ*speed*slopeFactor,accel);
+    if(!len){const drag=Math.exp(-9*dt);player.vx*=drag;player.vz*=drag;}
+    player.x=THREE.MathUtils.clamp(player.x+player.vx*dt,-CONFIG.controls.boundary,CONFIG.controls.boundary);
+    player.z=THREE.MathUtils.clamp(player.z+player.vz*dt,-CONFIG.controls.boundary,CONFIG.controls.boundary);
+    if(keys.Space&&player.onGround){player.vy=CONFIG.controls.jumpVelocity;player.onGround=false;keys.Space=false;}
+    if(!player.onGround){player.vy-=CONFIG.controls.gravity*dt;player.y+=player.vy*dt;const ground=terrainHeight(player.x,player.z);if(player.y<=ground){player.y=ground;player.vy=0;player.onGround=true;}}
+    else player.y=terrainHeight(player.x,player.z);
+    const planarSpeed=Math.hypot(player.vx,player.vz), moving=planarSpeed>.35;
+    if(moving){const targetYaw=Math.atan2(-player.vx,-player.vz);let delta=(targetYaw-astronaut.rotation.y+Math.PI*3)%(Math.PI*2)-Math.PI;astronaut.rotation.y+=delta*Math.min(1,dt*7);}
+    player.yaw=cameraMode===0?astronaut.rotation.y:cameraYaw;
+    astronaut.position.set(player.x,player.y,player.z);
+    const swing=moving?Math.sin(elapsed*(running?11:7.2))*Math.min(1,planarSpeed/3):0;
+    legPivots[0].rotation.x=swing;legPivots[1].rotation.x=-swing;armPivots[0].rotation.x=-swing*.68;armPivots[1].rotation.x=swing*.68;
+    stepClock+=dt*(running?1.45:1);
+    if(moving&&player.onGround&&stepClock>(running ? .26 : .43)){stepClock=0;spawnDust();}
+    for(const p of dustPool){if(!p.mesh.visible)continue;p.life-=dt;if(p.life<=0){p.mesh.visible=false;continue;}p.mesh.position.addScaledVector(p.velocity,dt);p.velocity.y-=.18*dt;p.mesh.scale.multiplyScalar(1-dt*.65);}
+    return running;
+  }
+  function updateCamera(dt) {
+    sun.target.position.set(player.x, player.y, player.z);
+    sun.position.set(player.x-330, player.y+470, player.z+180);
+    cameraTarget.set(player.x,player.y+1.55,player.z);
+    const dist=CONFIG.camera.followDistance, cp=Math.cos(cameraPitch),sp=Math.sin(cameraPitch);
+    desiredCamPos.set(player.x+Math.sin(cameraYaw)*cp*dist,player.y+CONFIG.camera.followHeight-sp*dist,player.z+Math.cos(cameraYaw)*cp*dist);
+    thirdCamPos.lerp(desiredCamPos,1-Math.exp(-CONFIG.camera.followSmoothing*dt));
+    firstCamPos.set(player.x,player.y+CONFIG.camera.firstPersonHeight,player.z);
+    lookVec.set(-Math.sin(cameraYaw)*Math.cos(cameraPitch),Math.sin(cameraPitch),-Math.cos(cameraYaw)*Math.cos(cameraPitch));
+    firstLookTarget.copy(firstCamPos).add(lookVec);
+    viewBlend=THREE.MathUtils.lerp(viewBlend,cameraMode,1-Math.exp(-7*dt));
+    camera.position.copy(thirdCamPos).lerp(firstCamPos,viewBlend);
+    blendedLookTarget.copy(cameraTarget).lerp(firstLookTarget,viewBlend);
+    camera.lookAt(blendedLookTarget);
+    astronaut.visible=viewBlend<.98;
+    $('hud').classList.toggle('helmet',viewBlend>.5);
+    $('telemetryTitle').textContent=viewBlend>.5?'HELMET ENVIRONMENT // LIVE':'ENVIRONMENTAL TELEMETRY';
+  }
+  // LANDING: apply the selected cell, play the short descent, then activate the game loop.
+  function startLanding(){
+    if(appState!=='map'||!selectedCell)return;
+    const insights=selectedCell.insights||getCellInsights(selectedCell.id);
+    applyCellToWorld(selectedCell,insights);
+    appState='landing';enableLeafletInteractions(false);$('missionMapScreen').classList.add('depart');$('landingSequence').classList.add('show');
+    $('descentStep').textContent='ENTRY';$('descentCount').textContent='AUTONOMOUS DESCENT IN 5';
+    try{const req=renderer.domElement.requestPointerLock();if(req&&req.catch)req.catch(()=>{});}catch(e){}
+    setTimeout(()=>$('descentStep').textContent='DESCENT',1450);
+    setTimeout(()=>{$('descentStep').textContent='LANDING';$('descentCount').textContent='SURFACE CONTACT IN 2';},2950);
+    setTimeout(()=>{
+      $('missionMapScreen').classList.remove('depart');$('landingSequence').classList.remove('show');
+      appState='game';document.body.classList.add('state-game');$('pauseScreen').classList.toggle('show',document.pointerLockElement!==renderer.domElement);
+      $('lockHint').classList.toggle('show',document.pointerLockElement!==renderer.domElement);
+      elapsed=0;lastStorm=0;stormVisibleUntil=0;clock.start();startGameLoop();
+    },4550);
+  }
+  function returnToMap(){
+    if(gameFrameId){cancelAnimationFrame(gameFrameId);gameFrameId=0;}
+    if(document.pointerLockElement===renderer.domElement)document.exitPointerLock();
+    appState='map';document.body.classList.remove('state-game');$('pauseScreen').classList.remove('show');$('lockHint').classList.remove('show');
+    $('landingSequence').classList.remove('show');$('missionMapScreen').classList.remove('depart');$('fullMap').classList.remove('open');
+    $('hud').classList.remove('helmet');fullMapOpen=false;enableLeafletInteractions(true);
+    if(leafletMap){leafletMap.invalidateSize();drawLeafletGrid();}else drawFallbackMap();
+  }
+  function startGameLoop(){
+    if(gameFrameId||appState!=='game'||document.pointerLockElement!==renderer.domElement)return;
+    const frame=()=>{
+      gameFrameId=0;
+      if(appState!=='game'||document.pointerLockElement!==renderer.domElement)return;
+      const dt=Math.min(clock.getDelta(),.05);elapsed+=dt;
+      const running=updatePlayer(dt);updateCamera(dt);updateHUD(dt,elapsed,running);
+      if(trail.length===0||Math.hypot(player.x-lastTrailX,player.z-lastTrailZ)>4){trail.push({x:player.x,z:player.z});lastTrailX=player.x;lastTrailZ=player.z;if(trail.length>750)trail.shift();}
+      if(elapsed-lastStorm>=CONFIG.hud.stormAfterSeconds){lastStorm=elapsed;stormVisibleUntil=elapsed+CONFIG.hud.stormDurationSeconds;$('storm').classList.add('show');}
+      if(elapsed>stormVisibleUntil)$('storm').classList.remove('show');
+      drawMap($('minimap'));if(fullMapOpen)drawMap($('largeMap'));
+      renderer.render(scene,camera);gameFrameId=requestAnimationFrame(frame);
+    };
+    gameFrameId=requestAnimationFrame(frame);
+  }
+  initializeMissionMap();
+  window.addEventListener('resize',()=>{camera.aspect=window.innerWidth/window.innerHeight;camera.updateProjectionMatrix();renderer.setSize(window.innerWidth,window.innerHeight);});
+})();
+</script>
+</body>
+</html>
