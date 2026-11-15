@@ -1,0 +1,41 @@
+{
+  "status": "ok",
+  "region_id": "jezero-m1",
+  "region_manifest_sha256": "92a388c7bba2bd9612b17a78fdf4e3aa681a704d6e6aa95bd9eb059840d49134",
+  "inputs": {
+    "walking_speed_kmh": 4.0,
+    "available_time_min": 180.0,
+    "science_stop_min": 20.0,
+    "reserve_min": 15.0,
+    "terrain_weight": 100.0,
+    "max_cell_slope_deg": null
+  },
+  "budgets": {
+    "distance": {
+      "outbound_distance_m": 3507.3037939000537,
+      "return_distance_m": 3507.3037939000533,
+      "round_trip_distance_m": 7014.607587800107,
+      "walking_time_min": 105.21911381700158,
+      "science_stop_min": 20.0,
+      "reserve_min": 15.0,
+      "required_total_min": 140.21911381700158,
+      "available_time_min": 180.0,
+      "remaining_margin_min": 39.780886182998415,
+      "within_time_budget": true
+    },
+    "terrain": {
+      "outbound_distance_m": 3964.302128277314,
+      "return_distance_m": 3964.3021282773175,
+      "round_trip_distance_m": 7928.604256554631,
+      "walking_time_min": 118.92906384831946,
+      "science_stop_min": 20.0,
+      "reserve_min": 15.0,
+      "required_total_min": 153.92906384831946,
+      "available_time_min": 180.0,
+      "remaining_margin_min": 26.07093615168054,
+      "within_time_budget": true
+    }
+  },
+  "method": "Independent M2 outbound and reverse-direction routes for each objective; distance divided by the user-assumed constant walking speed, plus user-entered stop and reserve minutes. No grade/physiology/time-of-day adjustment.",
+  "assessment": "arithmetic_only_not_an_operational_or_safety_guarantee"
+}

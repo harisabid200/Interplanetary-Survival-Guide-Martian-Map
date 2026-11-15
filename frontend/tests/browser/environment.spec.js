@@ -11,6 +11,8 @@ test('actual MEDA series, detector selection, pressure, provenance and independe
   const request=page.waitForResponse(response=>response.url().endsWith('/api/environment'));
   await page.getByLabel('Temperature & weather context',{exact:true}).check();
   expect((await request).status()).toBe(200);
+  await expect(page.getByText('PANEL ONLY / NO MAP LAYER').first()).toBeVisible();
+  await expect(page.getByLabel('Surface thermal response map',{exact:true})).toBeEnabled();
   const card=page.locator('.context-card').filter({has:page.getByRole('heading',{name:'Temperature & weather',exact:true})});
   await expect(card).toContainText('190.58–252.15');
   await expect(card).toContainText('721.69–741.33');

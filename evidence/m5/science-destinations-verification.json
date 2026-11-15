@@ -1,0 +1,30 @@
+{
+  "status": "verified",
+  "source_layer": "USGS SIM 3464 LocationFeatures",
+  "products": {
+    "pilot": {
+      "region_id": "jezero-m1",
+      "region_manifest_sha256": "92a388c7bba2bd9612b17a78fdf4e3aa681a704d6e6aa95bd9eb059840d49134",
+      "source_archive_sha256": "a88bd53a5573743cc4a20036c10e585106d08a433ad2f34af269e9cea1529f87",
+      "feature_count": 3,
+      "types": [
+        "small crater"
+      ],
+      "feature_collection_sha256": "b23c9bb32a111ca6ef216374f4d51d74c97d6c5825e754852b270cf3158e76a3",
+      "positional_limit": "USGS reports random 100-200 m offsets versus the controlled CTX surface-operations mosaic; no shift applied.",
+      "use_limit": "Optional user-selected exploration stops only. No ranking or accessibility claim is made."
+    },
+    "expanded": {
+      "region_id": "expanded-7p5km",
+      "region_manifest_sha256": "398e5bfc3db222c6fa277c2c770add0b886e719590f89a1c9702ef833a10e896",
+      "source_archive_sha256": "a88bd53a5573743cc4a20036c10e585106d08a433ad2f34af269e9cea1529f87",
+      "feature_count": 8,
+      "types": [
+        "small crater"
+      ],
+      "feature_collection_sha256": "b5f627b1126dbfe3c787a34f3557af0b49cc028f53f6025173b3cbced247fe3c",
+      "positional_limit": "USGS reports random 100-200 m offsets versus the controlled CTX surface-operations mosaic; no shift applied.",
+      "use_limit": "Optional user-selected exploration stops only. No ranking or accessibility claim is made."
+    }
+  }
+}

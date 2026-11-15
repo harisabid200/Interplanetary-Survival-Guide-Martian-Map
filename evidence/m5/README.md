@@ -1,6 +1,6 @@
 # M5 geology overlay verification
 
-Date: 2026-11-14. M5 is in progress: verified geology and a partial-coverage CRISM spectral-parameter layer are available; science-destination recommendations remain pending.
+Date: 2026-11-15. M5 is complete for source-backed context and user-selected science stops. No scientific ranking or safety-qualified destination recommendation is made.
 
 ## Source acquisition and inspection
 
@@ -27,6 +27,16 @@ No mineral concentrations, accessible drinking water, extractable ice, present-d
 - **UI:** enable **Scientific intelligence → CRISM D2300 spectral index**. Change the shared overlay opacity if desired. Click a point inside colored observation coverage for a numeric value; blank cells mean outside source coverage or source nodata. This is not a mineral map.
 
 Rebuild from verified local raw files with `scripts/fetch_crism_candidate.py` and `scripts/build_crism_overlay.py`; raw source files are ignored and fetch refuses to overwrite existing assets. Generated runtime rasters and manifests are ignored under `data/processed/crism/` and `frontend/public/data/crism/`.
+
+## Source-mapped science stops
+
+The acquired official SIM 3464 geodatabase `LocationFeatures` layer contains 341 point records and only one attribute, `TYPE`; all 341 are `small crater`. `scripts/build_science_destinations.py` transforms the actual point coordinates from the source Mars Transverse Mercator CRS into each selected app-region CRS and clips to the verified region. The measured product contains 3 points for `jezero-m1` and 8 for `expanded-7p5km`. Every feature retains its actual source feature ID and point geometry. The user can enable **Scientific intelligence → Mapped science stops** to show C01… markers and choose one in **Mission planning → USGS mapped science stop** to fill destination B. M1 and expanded products have separate region-manifest identities and GeoJSON hashes.
+
+These are hypothetical user-selected stops at source-mapped point locations. The app does not call them crater centroids, identify their individual scientific value, rank them, infer route access, or screen safety. The SIM 3464 1:75,000 scale and 100–200 m random registration offset are disclosed. Reproduce both products using the commands in the root README; `scripts/verify_science_destinations.py` validates source identity, output hashes, region identity, point type and containment. Results: [source/region/hash audit](science-destinations-verification.json).
+
+Dedicated Chrome evidence showing selectable points and calculated routes: [science-destinations-desktop.png](science-destinations-desktop.png). The complete 25-case Chrome regression run passed; its isolated screenshots are under `evidence/m5-regression/` so older milestone images remain unchanged. Current check counts and caveats are in [STATUS.md](../../STATUS.md).
+
+Ancient-lake context now paraphrases NASA/JPL's published Jezero lakeshore explanation with a direct link and retained image-source attribution. It remains historical interpretation and has no local water polygon or resource estimate. No accessible drinking water or extractable ice is claimed.
 
 ## Reproduction
 

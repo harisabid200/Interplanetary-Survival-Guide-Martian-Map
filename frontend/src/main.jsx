@@ -69,7 +69,7 @@ async function loadRegion(regionId='jezero-m1') {
   return {region, manifestHash, sourceManifestHash, regionId, dataPrefix, imagery, grids: {elevation: floats(buffers[0]), slope: floats(buffers[1]), valid: new Uint8Array(buffers[2]), slopeValid: new Uint8Array(buffers[3])}};
 }
 
-function TerrainMap({data, thermal, thermalOn, crism, crismOn, geology, geologyOn, imageryOn, elevationOn, slopeOn, opacity, referencesOn, onSample, onGeologySample, onImageError, mapRef, markers, routeResult, activeRoute, routeVisibility}) {
+function TerrainMap({data, thermal, thermalOn, crism, crismOn, geology, geologyOn, scienceStops, scienceStopsOn, imageryOn, elevationOn, slopeOn, opacity, referencesOn, onSample, onGeologySample, onImageError, mapRef, markers, routeResult, activeRoute, routeVisibility}) {
   const target = useRef(null);
   const layers = useRef(null);
   const latestSample = useRef(onSample);
@@ -110,6 +110,10 @@ function TerrainMap({data, thermal, thermalOn, crism, crismOn, geology, geologyO
         const color = GEOLOGY_COLORS[(Number(feature.get('style_index')) || 0) % GEOLOGY_COLORS.length];
         return new Style({fill: new Fill({color: `${color}38`}), stroke: new Stroke({color: `${color}d0`, width: 1.3})});
       }});
+    const scienceStopsSource = new VectorSource({attributions: 'Mapped science stops: USGS SIM 3464, Sun & Stack (2020)'});
+    const scienceStopsLayer = new VectorLayer({source: scienceStopsSource, visible: false, extent: region.bounds_m,
+      style: feature => new Style({image:new CircleStyle({radius:8,fill:new Fill({color:'#f2b47e'}),stroke:new Stroke({color:'#1a2426',width:2})}),
+        text:new Text({text:feature.get('map_label'),offsetY:-13,fill:new Fill({color:'#fff5e8'}),stroke:new Stroke({color:'#172124',width:3}),font:'bold 9px monospace'})})});
     const [w, s, e, n] = region.bounds_m;
     const footprint = new Feature(new Polygon([[[w, s], [e, s], [e, n], [w, n], [w, s]]]));
     const boundary = new VectorLayer({source: new VectorSource({features: [footprint]}), style: new Style({stroke: new Stroke({color: '#f7e5bd', width: 1.5, lineDash: [7, 6]})})});
@@ -125,7 +129,7 @@ function TerrainMap({data, thermal, thermalOn, crism, crismOn, geology, geologyO
     const endpointSource = new VectorSource();
     const routeLayer = new VectorLayer({source:routeSource});
     const endpointLayer = new VectorLayer({source:endpointSource});
-    const map = new Map({target: target.current, layers: [imagery, elevation, slope, thermalLayer, crismLayer, geologyLayer, boundary, references, routeLayer, endpointLayer, selected],
+    const map = new Map({target: target.current, layers: [imagery, elevation, slope, thermalLayer, crismLayer, geologyLayer, scienceStopsLayer, boundary, references, routeLayer, endpointLayer, selected],
       controls: defaultControls({rotate: false, attributionOptions: {collapsible: false}}).extend([new ScaleLine({className:'mars-scale-line',units:'metric',minWidth:100})]),
       view: new View({projection: mars, extent: region.imagery_bounds_m, constrainOnlyCenter: true, minResolution: 2, maxResolution: 80})});
     const inspect = coordinate => {
@@ -150,7 +154,7 @@ function TerrainMap({data, thermal, thermalOn, crism, crismOn, geology, geologyO
     observer.observe(target.current);
     mapRef.current = {fit, fitWider, inspect, sampleCenter: () => inspect(map.getView().getCenter()),
       inspectReference: i => inspect([region.control_points[i].x_m, region.control_points[i].y_m])};
-    layers.current = {imagery, elevation, slope, thermalLayer, crismLayer, geologyLayer, geologySource, references, routeSource, endpointSource, functions};
+    layers.current = {imagery, elevation, slope, thermalLayer, crismLayer, geologyLayer, geologySource, scienceStopsLayer, scienceStopsSource, references, routeSource, endpointSource, functions};
     return () => {observer.disconnect(); mapRef.current = null; map.setTarget(undefined);};
   }, [data]);
   useEffect(() => {
@@ -159,6 +163,13 @@ function TerrainMap({data, thermal, thermalOn, crism, crismOn, geology, geologyO
     source.clear();
     source.addFeatures(new GeoJSON().readFeatures(geology.geojson, {dataProjection: layers.current.imagery.getSource().getProjection(), featureProjection: layers.current.imagery.getSource().getProjection()}));
   }, [geology, data]);
+  useEffect(() => {
+    if (!layers.current) return;
+    const source=layers.current.scienceStopsSource;
+    source.clear();
+    if(scienceStops)source.addFeatures(new GeoJSON().readFeatures(scienceStops.geojson,{dataProjection:layers.current.imagery.getSource().getProjection(),featureProjection:layers.current.imagery.getSource().getProjection()}));
+  },[scienceStops,data]);
+  useEffect(()=>{layers.current?.scienceStopsLayer.setVisible(Boolean(scienceStops&&scienceStopsOn));},[scienceStops,scienceStopsOn,data]);
   useEffect(() => {layers.current?.geologyLayer.setVisible(Boolean(geology && geologyOn));}, [geology, geologyOn, data]);
   useEffect(() => {layers.current?.imagery.setVisible(imageryOn);}, [imageryOn, data]);
   useEffect(() => {layers.current?.elevation.setVisible(elevationOn);}, [elevationOn, data]);
@@ -253,6 +264,8 @@ function App() {
   const [geology,setGeology]=useState(null);
   const [geologyError,setGeologyError]=useState('');
   const [geologySample,setGeologySample]=useState(null);
+  const [scienceStops,setScienceStops]=useState(null);
+  const [scienceStopsError,setScienceStopsError]=useState('');
   const [crism,setCrism]=useState(null);
   const [crismError,setCrismError]=useState('');
   const [crismSampleValue,setCrismSampleValue]=useState(null);
@@ -262,10 +275,32 @@ function App() {
   const [wideView,setWideView]=useState(true);
   const geologyOn=contexts.includes('geology');
   const crismOn=contexts.includes('minerals');
+  const scienceStopsOn=contexts.includes('science-stops');
   const [routeVisibility,setRouteVisibility]=useState({distance:true,terrain:true});
   const toggleContext=id=>setContexts(old=>old.includes(id)?old.filter(value=>value!==id):[...old,id]);
   const handleSample=sample=>{setSample(sample);if(mission.mode!=='inspect')mission.pick(sample);};
-  useEffect(() => {let active = true;setData(null);setError('');setThermal(null);setCrism(null);setGeology(null);setCrismError('');setGeologyError('');loadRegion(regionId).then(result => {if (active){setData(result);setWideView(regionId==='jezero-m1');if(result.imagery.error)setImageError(result.imagery.error);}}).catch(error => {if (active) setError(`Terrain data could not be loaded: ${error.message}`);}); return () => {active = false;};}, [regionId]);
+  useEffect(() => {let active = true;setData(null);setError('');setThermal(null);setCrism(null);setGeology(null);setScienceStops(null);setScienceStopsError('');setCrismError('');setGeologyError('');loadRegion(regionId).then(result => {if (active){setData(result);setWideView(regionId==='jezero-m1');if(result.imagery.error)setImageError(result.imagery.error);}}).catch(error => {if (active) setError(`Terrain data could not be loaded: ${error.message}`);}); return () => {active = false;};}, [regionId]);
+  useEffect(()=>{
+    if(!data)return;
+    let active=true;
+    (async()=>{
+      const base=`/data/${data.dataPrefix}science-destinations/`;
+      const [manifestResponse,geoResponse]=await Promise.all([fetch(base+'manifest.json'),fetch(base+'sim3464-location-features.geojson')]);
+      if(!manifestResponse.ok||!geoResponse.ok)throw new Error('Run the SIM 3464 science-destination preprocessing command, then reload.');
+      const manifest=await manifestResponse.json(),raw=await geoResponse.arrayBuffer();
+      const actual=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',raw)),byte=>byte.toString(16).padStart(2,'0')).join('');
+      if(manifest.status!=='source-derived'||manifest.product_id!=='USGS-SIM-3464-LocationFeatures'||actual!==manifest.feature_collection_sha256)throw new Error('Mapped science stops failed source-product or checksum validation.');
+      if(data.manifestHash!==manifest.region_manifest_sha256||manifest.region_id!==data.regionId)throw new Error('Mapped science stops were built for a different terrain region.');
+      const geojson=JSON.parse(new TextDecoder().decode(raw));
+      const [west,south,east,north]=data.region.bounds_m;
+      if(geojson.type!=='FeatureCollection'||raw.byteLength!==manifest.feature_collection_bytes||geojson.features.length!==manifest.intersecting_feature_count||geojson.features.some(feature=>{
+        if(feature.geometry?.type!=='Point'||feature.properties?.feature_type!=='small crater'||!feature.geometry.coordinates.every(Number.isFinite))return true;
+        const [x,y]=feature.geometry.coordinates;return x<west||x>east||y<south||y>north;
+      }))throw new Error('Mapped science-stop data contains an unsupported feature or coordinate.');
+      if(active)setScienceStops({manifest,geojson});
+    })().catch(error=>{if(active)setScienceStopsError(error.message);});
+    return()=>{active=false;};
+  },[data]);
   useEffect(()=>{
     if (!data) return;
     let active=true,asset=null;
@@ -305,7 +340,7 @@ function App() {
     <main id="main" className="workspace">
       <aside className="sidebar">
         <div className="sidebar-intro"><div className="eyebrow orange">JEZERO / MISSION CONTROL</div><h1>Explore<br/>Jezero.</h1><p>Terrain, scientific context and mission decisions, grounded in evidence.</p></div>
-        <MissionPlanner mission={mission}/>
+        <MissionPlanner mission={mission} scienceStops={scienceStops?.geojson.features} data={data}/>
         <section className="region-card"><span className="type-label">VERIFIED TERRAIN / ROUTE COVERAGE</span><div className="extent-number">~{data?.regionId==='expanded-7p5km'?'7.5':'5'} × {data?.regionId==='expanded-7p5km'?'7.5':'5'} <span>km native DEM</span><span className="corner-arrow">↗</span></div><p>Dashed boundary shows the selected real DEM and routing grid at native 20 m spacing. CTX imagery extends beyond it.</p><label className="region-select">Terrain coverage<select aria-label="Terrain coverage" value={regionId} onChange={e=>setRegionId(e.target.value)}><option value="jezero-m1">Original pilot · 5 × 5 km</option><option value="expanded-7p5km">Expanded · 7.5 × 7.5 km</option></select></label>{regionId==='expanded-7p5km'&&<small>SIM 3464 geology and CRISM use the expanded source intersection. CRISM has uncovered grid cells. THEMIS covers this region with its native 100 m pixels.</small>}</section>
         <section className="layers-section" id="data-layers"><div className="section-heading"><h2>Map layers</h2><span>VERIFIED</span></div>
           <label className="layer-row"><span className="layer-icon">▧</span><span><b>CTX imagery</b><small>NASA / USGS · {data?.imagery.detail?'Z13 · ~5 M TILE PIXEL':'M1 CACHED FALLBACK'}</small></span><input type="checkbox" aria-label="CTX imagery" checked={imageryOn} onChange={e => setImageryOn(e.target.checked)}/></label>
@@ -323,7 +358,7 @@ function App() {
         </section>
         <ContextLayers group="Environmental" enabled={contexts} onToggle={toggleContext}/>
         {crismError&&<p role="status" className="context-limit">{crismError}</p>}
-        <ContextLayers group="Scientific" enabled={contexts} onToggle={id=>{toggleContext(id);if(id==='geology')setGeologySample(null);if(id==='minerals')setCrismSampleValue(null);}} geologyAvailable={Boolean(geology)} geologyError={geologyError} geologyMeta={geology?.manifest} crismAvailable={Boolean(crism)} crismError={crismError} crismMeta={crism?.meta} regionId={data?.regionId}/>
+        <ContextLayers group="Scientific" enabled={contexts} onToggle={id=>{toggleContext(id);if(id==='geology')setGeologySample(null);if(id==='minerals')setCrismSampleValue(null);}} geologyAvailable={Boolean(geology)} geologyError={geologyError} geologyMeta={geology?.manifest} crismAvailable={Boolean(crism)} crismError={crismError} crismMeta={crism?.meta} scienceStopsAvailable={Boolean(scienceStops)} scienceStopsError={scienceStopsError} scienceStopsMeta={scienceStops?.manifest} regionId={data?.regionId}/>
         <section className="route-layers"><div className="section-heading"><h2>Route layers</h2><span>DERIVED</span></div>{['distance','terrain'].map(objective=><label className={`route-toggle ${objective}`} key={objective}><input type="checkbox" aria-label={`${objective} route layer`} checked={routeVisibility[objective]} onChange={e=>setRouteVisibility(old=>({...old,[objective]:e.target.checked}))}/><i/>{objective==='distance'?'Distance route':'Terrain route'}</label>)}</section>
           <section className="method-note"><div className="eyebrow">HOW TO READ THIS MAP</div><p>Color shows terrain gradient, from gentle to steep. It does not classify safe travel.</p><p className="muted">Environmental context contains dated rover observations and regional reports. No current regional weather, measured Jezero radiation or resource inventory.</p></section>
         <details className="sources"><summary>Sources & processing <span>↗</span></summary><div>
@@ -336,7 +371,7 @@ function App() {
         <div className="sidebar-footer">NASA SPACE APPS 2026 <span>M3 / MISSION CONTROL</span></div>
       </aside>
       <section className="map-stage" aria-label="Terrain exploration workspace">
-        {data && <TerrainMap data={data} thermal={thermal} thermalOn={thermalOn} crism={crism} crismOn={crismOn} geology={geology} geologyOn={geologyOn} imageryOn={imageryOn} elevationOn={elevationOn} slopeOn={slopeOn} opacity={opacity} referencesOn={referencesOn} onSample={handleSample} onGeologySample={setGeologySample} onImageError={setImageError} mapRef={mapRef} markers={mission.markers} routeResult={mission.result} activeRoute={mission.activeRoute} routeVisibility={routeVisibility}/>}
+        {data && <TerrainMap data={data} thermal={thermal} thermalOn={thermalOn} crism={crism} crismOn={crismOn} geology={geology} geologyOn={geologyOn} scienceStops={scienceStops} scienceStopsOn={scienceStopsOn} imageryOn={imageryOn} elevationOn={elevationOn} slopeOn={slopeOn} opacity={opacity} referencesOn={referencesOn} onSample={handleSample} onGeologySample={setGeologySample} onImageError={setImageError} mapRef={mapRef} markers={mission.markers} routeResult={mission.result} activeRoute={mission.activeRoute} routeVisibility={routeVisibility}/>}
         {!data && <div className="loading" role={error ? 'alert' : 'status'}><span className="eyebrow">MARSWALK / DATA</span><h2>{error ? 'Terrain unavailable' : 'Opening Jezero…'}</h2><p>{error || 'Loading verified local imagery and native elevation cells.'}</p>{error && <button onClick={() => window.location.reload()}>Reload data</button>}</div>}
         {imageError && <div className="image-error" role="alert">{imageError}</div>}
         {data && <>
@@ -344,11 +379,11 @@ function App() {
           <div className="north" aria-label="North is up">N<span>↑</span></div>
           {mission.mode!=='inspect'&&<div className="pick-instruction" role="status">Select {mission.mode==='start'?'starting location A':'destination B'} on the map, or use Sample map center.<button onClick={()=>mission.setMode('inspect')}>Cancel selection</button></div>}
           {mission.result?.status==='ok'&&<div className="map-route-status" data-testid="map-route-status">{mission.result.routes.filter(route=>routeVisibility[route.objective]).length} calculated route layers displayed · A start / B destination</div>}
-          <div className="map-bottom"><div className="legend"><div className="eyebrow">{crismOn?'CRISM D2300 · DIMENSIONLESS SPECTRAL INDEX':geologyOn?'USGS GEOLOGIC UNIT INTERPRETATION':thermalOn?'THERMAL INERTIA · NOT TEMPERATURE':slopeOn?'DERIVED SLOPE / DEGREES':elevationOn?'SOURCE ELEVATION / METRES':'NASA / USGS CTX ORBITAL IMAGERY'}</div>{crismOn&&crism?<div className="crism-legend"><div/><span>−0.01</span><span>0</span><span>+0.02</span></div>:geologyOn&&geology?<div className="geology-legend">{[...new globalThis.Map(geology.geojson.features.map(feature=>[feature.properties.map_unit,feature.properties])).values()].sort((a,b)=>a.style_index-b.style_index).map(unit=><div key={unit.map_unit}><i style={{backgroundColor:GEOLOGY_COLORS[unit.style_index%GEOLOGY_COLORS.length]}}/><span><b>{unit.map_unit}</b> {unit.unit_name}</span></div>)}</div>:thermalOn?<div className="legend-colors">{thermal.meta.legend.colors.map((c, i) => <div key={i}><span style={{backgroundColor:`rgb(${c.join(',')})`}}/><small>{thermal.meta.legend.labels[i]}</small></div>)}</div>:slopeOn?<div className="legend-colors">{data.region.legend.colors.map((c, i) => <div key={i}><span style={{backgroundColor:`rgb(${c.join(',')})`}}/><small>{data.region.legend.labels[i]}</small></div>)}</div>:<div className="imagery-legend"><span className="imagery-swatch"/> Optical orbital image</div>}<p>{crismOn?'Continuous D2300 spectral-shape index; no threshold or mineral classification. Blank areas are outside product coverage.':geologyOn?'Categorical colors distinguish map-unit symbols only; they are not measurements. Source positional offset: 100–200 m.':thermalOn?'J m⁻² K⁻¹ s⁻½ · native 100 m source · derived mosaic':slopeOn?'Dashed outline: numeric terrain coverage':elevationOn?'Color tint from measured DEM elevations; 20 m source cells.':'CTX imagery provides surface appearance, not elevation or current conditions.'}</p></div><Sample sample={sample} thermal={thermal} thermalOn={thermalOn} crism={crism} crismOn={crismOn} crismSampleValue={crismSampleValue} geologySample={geologySample}/></div>
+          <div className="map-bottom"><div className="legend"><div className="eyebrow">{crismOn?'CRISM D2300 · DIMENSIONLESS SPECTRAL INDEX':geologyOn?'USGS GEOLOGIC UNIT INTERPRETATION':scienceStopsOn?'USGS SIM 3464 MAPPED SMALL-CRATER POINTS':thermalOn?'THERMAL INERTIA · NOT TEMPERATURE':slopeOn?'DERIVED SLOPE / DEGREES':elevationOn?'SOURCE ELEVATION / METRES':'NASA / USGS CTX ORBITAL IMAGERY'}</div>{crismOn&&crism?<div className="crism-legend"><div/><span>−0.01</span><span>0</span><span>+0.02</span></div>:geologyOn&&geology?<div className="geology-legend">{[...new globalThis.Map(geology.geojson.features.map(feature=>[feature.properties.map_unit,feature.properties])).values()].sort((a,b)=>a.style_index-b.style_index).map(unit=><div key={unit.map_unit}><i style={{backgroundColor:GEOLOGY_COLORS[unit.style_index%GEOLOGY_COLORS.length]}}/><span><b>{unit.map_unit}</b> {unit.unit_name}</span></div>)}</div>:scienceStopsOn&&scienceStops?<div className="science-stop-legend"><i/>Mapped small-crater point locations - SIM 3464</div>:thermalOn?<div className="legend-colors">{thermal.meta.legend.colors.map((c, i) => <div key={i}><span style={{backgroundColor:`rgb(${c.join(',')})`}}/><small>{thermal.meta.legend.labels[i]}</small></div>)}</div>:slopeOn?<div className="legend-colors">{data.region.legend.colors.map((c, i) => <div key={i}><span style={{backgroundColor:`rgb(${c.join(',')})`}}/><small>{data.region.legend.labels[i]}</small></div>)}</div>:<div className="imagery-legend"><span className="imagery-swatch"/> Optical orbital image</div>}<p>{crismOn?'Continuous D2300 spectral-shape index; no threshold or mineral classification. Blank areas are outside product coverage.':scienceStopsOn?'Source-mapped small-crater locations; user-selected stops only, not ranked or safety-screened.':geologyOn?'Categorical colors distinguish map-unit symbols only; they are not measurements. Source positional offset: 100–200 m.':thermalOn?'J m⁻² K⁻¹ s⁻½ · native 100 m source · derived mosaic':slopeOn?'Dashed outline: numeric terrain coverage':elevationOn?'Color tint from measured DEM elevations; 20 m source cells.':'CTX imagery provides surface appearance, not elevation or current conditions.'}</p></div><Sample sample={sample} thermal={thermal} thermalOn={thermalOn} crism={crism} crismOn={crismOn} crismSampleValue={crismSampleValue} geologySample={geologySample}/></div>
           <div className="map-caption"><span>CTX ORBITAL IMAGERY · POSITIVE-EAST LONGITUDE · PLANETOCENTRIC LATITUDE</span><span>PLANNING DEMONSTRATION · NO SAFETY CERTIFICATION</span></div>
         </>}
       </section>
-      <MissionInsights mission={mission} contexts={contexts} geologyMeta={geology?.manifest} crismMeta={crism?.meta}/>
+      <MissionInsights mission={mission} contexts={contexts} geologyMeta={geology?.manifest} crismMeta={crism?.meta} scienceStopsMeta={scienceStops?.manifest}/>
     </main>
   </div>;
 }

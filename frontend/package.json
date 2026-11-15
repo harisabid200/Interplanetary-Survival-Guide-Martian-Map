@@ -7,7 +7,7 @@
     "dev": "vite --config ./vite.config.js --host 127.0.0.1",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1 --port 4173 --strictPort",
-    "test": "node --test tests/coordinates.test.js tests/api.test.js tests/environment-map.test.js",
+    "test": "node --test tests/coordinates.test.js tests/api.test.js tests/environment-map.test.js tests/candidate-ranking.test.js",
     "test:browser": "playwright test"
   },
   "dependencies": {

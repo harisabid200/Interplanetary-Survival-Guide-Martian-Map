@@ -1,4 +1,4 @@
-# M3–M4 local API contract
+# M3–M6 local API contract
 
 Run `python -m backend.server` with the project API environment from repository root. Host is loopback `127.0.0.1`, port 8000, one process. Existing verified M1 grid loads once in FastAPI lifespan; every route delegates to the unchanged [M2 engine](ROUTING.md). No API key, service dependency, file writes or scientific source fetch is on the request path.
 
@@ -36,6 +36,11 @@ Missing, unreadable or checksum-invalid artifacts return **503**, code `environm
 ```
 
 Both objectives are always computed with the same grid/parameters; `primary_objective` chooses the initial display focus, not a different scientific model. Response is the M2 result plus `primary_objective` and `region_manifest_sha256`. Preserve all M2 units, profile fields, assumptions and provenance. Native same-cell geometry is a Point. No-path returns HTTP 200, `status=no_path`, null geometries/metrics and empty paths. Never draw a substitute straight line.
+
+## POST /api/mission-budget (M6)
+Uses the same route request fields and adds required finite assumptions: `walking_speed_kmh` (>0 and <=20), `available_time_min` (>0 and <=10080), `science_stop_min` (0..10080) and `reserve_min` (0..10080). For each M2 objective, the API calculates outbound and reverse-direction routes independently. It reports both distances and computes walking minutes as round-trip distance divided by constant user-assumed speed, then adds the entered stop and reserve. Each objective has its own budget, margin and within-entered-time boolean. If either direction has no path, it returns `status=no_path` and no totals. The estimate omits grade/pacing, fatigue, terrain mobility, life-support and operational constraints; it is arithmetic only and is not an EVA duration, feasibility determination or safety guarantee.
+
+Candidate screening runs in the frontend against verified source features and current DEM buffers. It filters actual SIM 3464 small-crater point records using user-entered Mars-geodesic straight-line range and maximum buffered DEM slope, requiring full DEM coverage of the 200 m source registration uncertainty disk. Deterministic ordering: straight-line distance, maximum buffered slope, source ID. It does not evaluate route accessibility, scientific priority, hazards, landing/habitat suitability or safety. Environmental map grids do not exist for temperature, storms or radiation, so they are not ranking inputs.
 
 Strict finite numeric inputs; strings/booleans/nonfinite values, wrong coordinate cardinality and extra fields are rejected. Longitude/latitude domains/coverage and nodata are enforced by M2; the API bounds terrain weight to [0,1,000,000] as an engineering input limit, not physiological meaning. Optional local cell-gradient exclusion is [0,90]°, distinct from directional segment slope. JSON body is bounded to 4096 actual streamed bytes before parsing. One route computation at a time prevents uncontrolled parallel CPU work.
 

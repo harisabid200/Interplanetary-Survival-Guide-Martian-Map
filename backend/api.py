@@ -30,6 +30,13 @@ class RouteRequest(BaseModel):
     region_id: Annotated[str, Field(pattern=r'^[a-z0-9-]{1,40}$')] = 'jezero-m1'
 
 
+class MissionBudgetRequest(RouteRequest):
+    walking_speed_kmh: Annotated[Number, Field(gt=0, le=20)]
+    available_time_min: Annotated[Number, Field(gt=0, le=10080)]
+    science_stop_min: Annotated[Number, Field(ge=0, le=10080)]
+    reserve_min: Annotated[Number, Field(ge=0, le=10080)]
+
+
 class BodyLimit:
     """Bound actual streamed JSON before FastAPI parsing, not just Content-Length."""
     def __init__(self, app):
@@ -120,8 +127,9 @@ def create_app(region_dir=DEFAULT_REGION, grid_factory=None, environment_dir=ROO
                 'routing_available': True, 'model': 'marswalk-grid-astar-v1',
                 'availability': {'terrain': 'validated', 'imagery': 'validated', 'temperature_weather': 'historical_MEDA_local' if app.state.environment else 'unavailable_M4_data',
                                  'dust_storms': 'historical_MARCI_report_only' if app.state.environment else 'unavailable_M4_data', 'radiation': 'Gale_reference_only_metadata' if app.state.environment else 'Gale_reference_only_unavailable',
-                                 'minerals': 'planned_M5', 'geology': 'planned_M5', 'ancient_water': 'context_pending_M5',
-                                 'budgets_recommendations': 'planned_M6'}}
+                                 'minerals': 'validated_CRISM_D2300_parameter', 'geology': 'validated_SIM3464_units',
+                                 'science_destinations': 'validated_SIM3464_mapped_points', 'ancient_water': 'cited_historical_context_only',
+                                 'budgets_recommendations': 'implemented_user_assumed_budget_and_terrain_screen'}}
 
     @app.get('/api/environment')
     def environment():
@@ -144,6 +152,52 @@ def create_app(region_dir=DEFAULT_REGION, grid_factory=None, environment_dir=ROO
             result['primary_objective'] = body.primary_objective
             result['region_manifest_sha256'] = grid.provenance['region_manifest_sha256']
             return result
+        except RoutingError as error:
+            return JSONResponse({'code': error.code, 'message': str(error)}, status_code=422)
+        finally:
+            app.state.route_lock.release()
+
+    @app.post('/api/mission-budget')
+    def mission_budget(body: MissionBudgetRequest):
+        selected = ({'grid': app.state.grid, 'manifest': app.state.region} if app.state.grid is not None and app.state.region is not None else None) if body.region_id == 'jezero-m1' else app.state.regions.get(body.region_id)
+        if selected is None:
+            return JSONResponse({'code': 'data_unavailable', 'message': 'Verified terrain is unavailable'}, status_code=503)
+        grid = selected['grid']
+        if body.region_manifest_sha256 != grid.provenance['region_manifest_sha256']:
+            return JSONResponse({'code': 'dataset_mismatch', 'message': 'Map and routing datasets differ. Regenerate data and reload.'}, status_code=409)
+        if not app.state.route_lock.acquire(blocking=False):
+            return JSONResponse({'code': 'busy', 'message': 'A route calculation is already running. Retry shortly.'}, status_code=429, headers={'Retry-After': '1'})
+        try:
+            outbound = grid.compare(body.start_lonlat, body.end_lonlat, body.terrain_weight, body.max_cell_slope_deg)
+            returning = grid.compare(body.end_lonlat, body.start_lonlat, body.terrain_weight, body.max_cell_slope_deg)
+            if outbound['status'] != 'ok' or returning['status'] != 'ok':
+                return {'status': 'no_path', 'message': 'An outbound or return path does not exist under the selected terrain assumptions; no round-trip budget was calculated.',
+                        'region_id': body.region_id, 'region_manifest_sha256': grid.provenance['region_manifest_sha256'],
+                        'directions': {'outbound': outbound['status'], 'return': returning['status']}}
+            budgets = {}
+            for objective in ('distance', 'terrain'):
+                out_route = next(route for route in outbound['routes'] if route['objective'] == objective)
+                back_route = next(route for route in returning['routes'] if route['objective'] == objective)
+                out_m = out_route['metrics']['distance_m']
+                back_m = back_route['metrics']['distance_m']
+                total_m = out_m + back_m
+                walk_min = total_m / (body.walking_speed_kmh * 1000 / 60)
+                required_min = walk_min + body.science_stop_min + body.reserve_min
+                budgets[objective] = {
+                    'outbound_distance_m': out_m, 'return_distance_m': back_m,
+                    'round_trip_distance_m': total_m, 'walking_time_min': walk_min,
+                    'science_stop_min': body.science_stop_min, 'reserve_min': body.reserve_min,
+                    'required_total_min': required_min, 'available_time_min': body.available_time_min,
+                    'remaining_margin_min': body.available_time_min - required_min,
+                    'within_time_budget': required_min <= body.available_time_min,
+                }
+            return {'status': 'ok', 'assessment': 'arithmetic_only_not_an_operational_or_safety_guarantee',
+                    'region_id': body.region_id, 'region_manifest_sha256': grid.provenance['region_manifest_sha256'],
+                    'inputs': {'walking_speed_kmh': body.walking_speed_kmh, 'available_time_min': body.available_time_min,
+                               'science_stop_min': body.science_stop_min, 'reserve_min': body.reserve_min,
+                               'terrain_weight': body.terrain_weight, 'max_cell_slope_deg': body.max_cell_slope_deg},
+                    'budgets': budgets,
+                    'method': 'Independent M2 outbound and reverse-direction routes for each objective; distance divided by the user-assumed constant walking speed, plus user-entered stop and reserve minutes. No grade/physiology/time-of-day adjustment.'}
         except RoutingError as error:
             return JSONResponse({'code': error.code, 'message': str(error)}, status_code=422)
         finally:

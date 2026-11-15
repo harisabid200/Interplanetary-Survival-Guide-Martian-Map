@@ -1,0 +1,40 @@
+import {test,expect} from '@playwright/test';
+import {readFileSync,mkdirSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
+
+const manifest=JSON.parse(readFileSync(new URL('../../public/data/expanded/science-destinations/manifest.json',import.meta.url)));
+const points=JSON.parse(readFileSync(new URL('../../public/data/expanded/science-destinations/sim3464-location-features.geojson',import.meta.url)));
+const output=new URL('../../../evidence/m5/',import.meta.url);
+mkdirSync(output,{recursive:true});
+
+test('source-mapped SIM 3464 science stops display and can be selected as a route destination',async({page})=>{
+  expect(manifest.status).toBe('source-derived');
+  expect(manifest.region_id).toBe('expanded-7p5km');
+  expect(manifest.intersecting_feature_count).toBe(8);
+  expect(points.features).toHaveLength(8);
+  expect(points.features.every(feature=>feature.properties.feature_type==='small crater')).toBe(true);
+  await page.setViewportSize({width:1600,height:1000});
+  const errors=[];page.on('pageerror',error=>errors.push(error.message));
+  await page.goto('/');
+  const response=page.waitForResponse(result=>result.url().endsWith('/data/expanded/science-destinations/sim3464-location-features.geojson'));
+  await page.getByRole('combobox',{name:'Terrain coverage'}).selectOption('expanded-7p5km');
+  const stopsToggle=page.getByRole('checkbox',{name:'Mapped science stops context',exact:true});
+  await expect(page.getByText(/VERIFIED SIM 3464 \/ 7\.5 KM \/ 8 mapped small-crater points/)).toBeVisible();
+  await stopsToggle.check();
+  expect((await response).status()).toBe(200);
+  await expect(page.getByText('USGS SIM 3464 MAPPED SMALL-CRATER POINTS',{exact:true})).toBeVisible();
+  await expect(page.locator('.science-stop-legend')).toContainText('Mapped small-crater point locations - SIM 3464');
+  await page.getByRole('button',{name:'Load verification pair'}).click();
+  const destinationPicker=page.getByRole('combobox',{name:'USGS mapped science stop'});
+  await expect(destinationPicker.locator('option')).toHaveCount(9);
+  await destinationPicker.selectOption({index:1});
+  const lon=Number(await page.getByRole('spinbutton',{name:'Destination longitude'}).inputValue());
+  const lat=Number(await page.getByRole('spinbutton',{name:'Destination latitude'}).inputValue());
+  expect(lon).toBeGreaterThan(0);expect(lon).toBeLessThan(360);
+  expect(lat).toBeGreaterThan(18.3);expect(lat).toBeLessThan(18.6);
+  await page.getByRole('button',{name:/Compare routes/}).click();
+  await expect(page.getByTestId('distance-distance')).toBeVisible({timeout:30000});
+  await expect(page.getByText(/registration uncertainty/)).toBeVisible();
+  await page.screenshot({path:fileURLToPath(new URL('science-destinations-desktop.png',output))});
+  expect(errors).toEqual([]);
+});
